@@ -79,9 +79,10 @@ class EdgeCloudManager:
         self.layer_costs = {}  # Cache for layer-wise costs
         self.last_partition = None  # Last partition decision
         
-        # Start device monitoring if not already started
-        if not self.device_monitor.is_monitoring():
-            self.device_monitor.start_background_monitoring()
+        # Start device monitoring if device monitor is provided and not already monitoring
+        if self.device_monitor is not None and hasattr(self.device_monitor, 'is_monitoring'):
+            if not self.device_monitor.is_monitoring():
+                self.device_monitor.start_background_monitoring()
         
     def measure_network_conditions(self):
         """
@@ -122,14 +123,17 @@ class EdgeCloudManager:
         Returns:
             A tuple (local_layers, remote_layers) indicating which layers should be run where
         """
+        # Get number of layers from model config, or use default
+        num_layers = 12  # Default number of layers
+        if self.model is not None and hasattr(self.model, 'config'):
+            num_layers = getattr(self.model.config, "num_hidden_layers", num_layers)
+            
         # If we're forcing a specific execution mode, respect that
         if self.force_execution_mode == "local":
             logger.info("Forcing local execution for all layers")
-            num_layers = self.model.config.num_hidden_layers
             return list(range(num_layers)), []
         elif self.force_execution_mode == "remote":
             logger.info("Forcing remote execution for all layers")
-            num_layers = self.model.config.num_hidden_layers
             return [], list(range(num_layers))
             
         # Get current hardware and network conditions
@@ -201,7 +205,10 @@ class EdgeCloudManager:
             transmission_latency = input_size / (bandwidth * 1024 * 1024 / 8)  # Size in bytes / bandwidth in bytes/sec
             
             # Cloud processing latency (assume constant for simplicity)
-            cloud_latency = self.cloud_client.latency * remote_layers
+            cloud_latency = 0.5  # Default latency in seconds
+            if self.cloud_client is not None and hasattr(self.cloud_client, 'latency'):
+                cloud_latency = self.cloud_client.latency
+            cloud_latency = cloud_latency * remote_layers
             
             # Total latency
             latency_cost = transmission_latency + cloud_latency
@@ -229,7 +236,10 @@ class EdgeCloudManager:
         Returns:
             A tuple (local_layers, remote_layers) with layer indices
         """
-        num_layers = self.model.config.num_hidden_layers
+        # Get number of layers from model config, or use default
+        num_layers = 12  # Default number of layers
+        if self.model is not None and hasattr(self.model, 'config'):
+            num_layers = getattr(self.model.config, "num_hidden_layers", num_layers)
         
         if local_only or self.force_execution_mode == "local":
             # All layers local
@@ -550,7 +560,10 @@ class EdgeCloudManager:
         Returns:
             List of partitioning options to evaluate
         """
-        num_layers = self.model.config.num_hidden_layers
+        # Get number of layers from model config, or use default
+        num_layers = 12  # Default number of layers
+        if self.model is not None and hasattr(self.model, 'config'):
+            num_layers = getattr(self.model.config, "num_hidden_layers", num_layers)
         
         # For simplicity, we'll consider a few basic partitioning strategies:
         # 1. All local
