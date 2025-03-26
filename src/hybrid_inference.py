@@ -29,6 +29,7 @@ import time
 import json
 from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime
+import torch.nn.functional as F
 
 # Import the four key modules
 from edge_cloud.edge_cloud_manager import EdgeCloudManager
@@ -44,18 +45,43 @@ def create_fake_hidden_state(batch_size: int, seq_len: int, hidden_size: int) ->
     """Create a simulated hidden state tensor for demonstration purposes."""
     return torch.rand(batch_size, seq_len, hidden_size)
 
-def create_fake_attention_matrix(batch_size: int, num_heads: int, seq_len: int) -> torch.Tensor:
+def create_fake_hidden_states(batch_size: int, seq_len: int, hidden_size: int) -> torch.Tensor:
+    """Create simulated hidden states for token pruning demonstration."""
+    return torch.randn(batch_size, seq_len, hidden_size)
+
+def create_fake_attention_matrix(seq_len):
     """Create a simulated attention matrix for token pruning demonstration."""
-    attn = torch.zeros(batch_size, num_heads, seq_len, seq_len)
-    # Create a pattern where attention is focused on more recent tokens
-    for i in range(seq_len):
-        for j in range(i+1):
-            weight = 1.0 - 0.8 * (i - j) / max(i, 1)  # Higher weight for recent tokens
-            attn[:, :, i, j] = max(0, weight) 
+    # Create base attention pattern [seq_len, seq_len]
+    attention_matrix = torch.zeros((seq_len, seq_len))
     
-    # Normalize
-    attn = torch.nn.functional.softmax(attn, dim=-1)
-    return attn
+    # Create attention pattern where:
+    # - First few tokens get medium attention (0.5)
+    # - Middle tokens get medium-high attention (0.7)
+    # - Recent tokens get high attention (0.85)
+    # - Latest token gets very high attention (0.95)
+    # - Self-attention is always high (0.9)
+    
+    for i in range(seq_len):
+        for j in range(seq_len):
+            if i == j:  # Self attention
+                attention_matrix[i,j] = 0.9
+            elif j == seq_len - 1:  # Latest token
+                attention_matrix[i,j] = 0.95
+            elif j < 3:  # First few tokens
+                attention_matrix[i,j] = 0.5
+            elif j > seq_len - 4:  # Recent tokens
+                attention_matrix[i,j] = 0.85
+            else:  # Middle tokens
+                attention_matrix[i,j] = 0.7
+                
+    # Normalize each row
+    attention_matrix = F.softmax(attention_matrix * 5.0, dim=-1)  # Lower temperature for less extreme distribution
+    
+    # Expand to [batch=1, heads=12, seq_len, seq_len]
+    attention_matrix = attention_matrix.unsqueeze(0).unsqueeze(0)
+    attention_matrix = attention_matrix.expand(1, 12, seq_len, seq_len)
+    
+    return attention_matrix
 
 def simulate_network_conditions() -> Dict[str, float]:
     """Simulate varying network conditions for edge-cloud decisions."""
@@ -214,7 +240,7 @@ def run_inference(
     
     # Token Pruner
     token_pruner = TokenPruner(
-        pruning_threshold=0.05,  # Tokens with attention below this get pruned
+        pruning_threshold=0.3,  # Less aggressive pruning threshold
         max_shadow_size=100      # Maximum number of tokens to keep in shadow set
     )
     
@@ -293,25 +319,46 @@ def run_inference(
             logger.info(f"Compressed {compressed_pages} pages to save memory")
             stats["memory_saved_mb"] += compressed_pages * 0.5  # Approximate memory saved
             
-        # 2. Token Pruning: Create fake attention matrix and prune tokens
-        attention_matrix = create_fake_attention_matrix(batch_size, num_heads, current_seq_len)
-        
-        # Get scores and prune tokens
+        # 1. Token Pruning
         pruned_indices = []
         if enable_token_pruning:
+            # Create attention matrix and hidden states for token scoring
+            attention_matrix = create_fake_attention_matrix(current_seq_len)
+            hidden_states = create_fake_hidden_states(batch_size, current_seq_len, hidden_size)
+            
             token_scores = token_pruner.score_tokens(attention_matrix, list(range(current_seq_len))) 
             pruned_indices = token_pruner.identify_prunable_tokens()
-        
-        # Calculate pruned token positions and update statistics
-        pruned_tokens_count = len(pruned_indices)
-        stats["tokens_pruned"] += pruned_tokens_count
-        step_stats["tokens_pruned"] = pruned_tokens_count
-        
-        # Log pruning information
-        if pruned_tokens_count > 0:
-            logger.info(f"Pruned {pruned_tokens_count} tokens (positions: {pruned_indices})")
-        else:
-            logger.info("No tokens pruned in this step")
+            
+            if pruned_indices:
+                # Create boolean mask for tokens to keep
+                mask = torch.ones(current_seq_len, dtype=torch.bool)
+                mask[pruned_indices] = False
+                
+                # Apply mask to attention matrix (both dimensions)
+                attention_matrix = attention_matrix[:, :, ~mask][:, :, :, ~mask]
+                
+                # Update hidden states
+                if isinstance(hidden_states, torch.Tensor):
+                    hidden_states = hidden_states[:, ~mask]
+                elif isinstance(hidden_states, tuple):
+                    hidden_states = tuple(h[:, ~mask] for h in hidden_states)
+                
+                # Update sequence length
+                current_seq_len = int((~mask).sum())
+                
+                # Log pruning results
+                print(f"Pruned {len(pruned_indices)} tokens, new sequence length: {current_seq_len}")
+                
+                # Update token indices for memory manager
+                token_indices = np.array(token_indices)
+                token_indices = token_indices[~mask.cpu().numpy()]
+                token_indices = token_indices.tolist()
+                
+                # Update statistics
+                stats["tokens_pruned"] += len(pruned_indices)
+                step_stats["tokens_pruned"] = len(pruned_indices)
+            else:
+                logger.info("No tokens pruned in this step")
         
         # 3. Edge-Cloud Layer Partitioning: Simulate network and device conditions
         network_conditions = simulate_network_conditions()

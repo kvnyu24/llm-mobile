@@ -33,12 +33,12 @@ class TokenPruner:
     a "shadow set" for potential token reintroduction.
     """
     
-    def __init__(self, pruning_threshold=0.01, max_shadow_size=100):
+    def __init__(self, pruning_threshold=0.23, max_shadow_size=100):
         """
         Initialize the Token Pruner.
         
         Args:
-            pruning_threshold: Threshold below which tokens are considered low-impact
+            pruning_threshold: Threshold below which tokens are considered low-impact (default: 0.23)
             max_shadow_size: Maximum number of tokens to keep in the shadow set
         """
         self.pruning_threshold = pruning_threshold
@@ -81,7 +81,7 @@ class TokenPruner:
         seq_len = attention_scores.shape[2]
         
         # Calculate importance score for each token (averaged across heads)
-        # Using maximum attention received by each token as importance
+        # Using both maximum attention received and attention paid by each token
         scores = {}
         
         # For each token position
@@ -90,15 +90,20 @@ class TokenPruner:
                 continue
             
             # Get attention received by token idx from all other tokens across all heads
-            # attention_scores has shape [batch, heads, seq_len, seq_len]
-            # We take attention_scores[0, :, :, idx] to get attention TO token idx
             attn_to_token = attention_scores[0, :, :, idx]  # Shape: [heads, seq_len]
             
-            # Calculate maximum attention score for each head
-            max_attns = np.max(attn_to_token, axis=1)  # Shape: [heads]
+            # Get attention paid by token idx to all other tokens
+            attn_from_token = attention_scores[0, :, idx, :]  # Shape: [heads, seq_len]
+            
+            # Calculate maximum attention score for each head (both received and paid)
+            max_attns_received = np.max(attn_to_token, axis=1)  # Shape: [heads]
+            max_attns_paid = np.max(attn_from_token, axis=1)  # Shape: [heads]
+            
+            # Combine both metrics (average of max attention received and paid)
+            combined_scores = (max_attns_received + max_attns_paid) / 2
             
             # Average across heads as the importance score
-            score = np.mean(max_attns)
+            score = np.mean(combined_scores)
             scores[idx] = float(score)
         
         # Update token scores dictionary
@@ -125,7 +130,15 @@ class TokenPruner:
         # First few tokens (e.g., 0, 1, 2) are often special tokens that should not be pruned
         protected_tokens = 3  
         
-        for idx, score in self.token_scores.items():
+        # Sort tokens by score to ensure we prune the lowest scoring ones first
+        sorted_tokens = sorted(self.token_scores.items(), key=lambda x: x[1])
+        
+        # Print all token scores for debugging
+        print("\nToken Scores:")
+        for idx, score in sorted_tokens:
+            print(f"Token {idx}: {score:.4f}")
+        
+        for idx, score in sorted_tokens:
             # Skip protected tokens at the beginning of the sequence
             if idx < protected_tokens:
                 continue
@@ -133,6 +146,12 @@ class TokenPruner:
             # If score is below threshold, mark for pruning
             if score < self.pruning_threshold:
                 prunable_tokens.append(idx)
+                print(f"Token {idx} marked for pruning with score {score:.4f} (below threshold {self.pruning_threshold})")
+        
+        if not prunable_tokens:
+            print("No tokens identified for pruning - all scores above threshold")
+        else:
+            print(f"Identified {len(prunable_tokens)} tokens for pruning")
         
         return prunable_tokens
         
