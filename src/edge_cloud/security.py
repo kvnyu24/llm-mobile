@@ -127,19 +127,37 @@ class DimensionalityReducer:
         """
         original_shape = sample_data.shape
         
+        # Convert to numpy if it's a torch tensor
+        if hasattr(sample_data, 'detach') and hasattr(sample_data, 'cpu') and hasattr(sample_data, 'numpy'):
+            sample_data = sample_data.detach().cpu().numpy()
+            
         # Reshape to 2D if needed
         if len(original_shape) > 2:
-            sample_data = sample_data.reshape(original_shape[0], -1)
+            # For transformer hidden states, they are often [batch_size, seq_len, hidden_dim]
+            # Reshape to [batch_size * seq_len, hidden_dim]
+            sample_data = sample_data.reshape(-1, original_shape[-1])
             
-        # Determine number of components
-        if self.target_dims is None:
-            n_components = max(1, int(sample_data.shape[1] * self.reduction_ratio))
-        else:
-            n_components = min(self.target_dims, sample_data.shape[1])
+        # Ensure we have enough samples for fitting
+        if sample_data.shape[0] < 2:
+            # If we have only one sample, duplicate it to have at least 2
+            sample_data = np.vstack([sample_data, sample_data])
             
+        # Determine number of components - ensure it's smaller than both dimensions
+        n_components = min(
+            max(1, int(min(sample_data.shape) * self.reduction_ratio)),
+            sample_data.shape[0] - 1,
+            sample_data.shape[1]
+        )
+        
         # Create and fit the reducer
         if self.reduction_method == "pca":
-            self.reducer = PCA(n_components=n_components)
+            # Use a solver that works well with the data shape
+            if sample_data.shape[0] < sample_data.shape[1]:
+                svd_solver = 'arpack'  # For wide matrices (more features than samples)
+            else:
+                svd_solver = 'auto'
+                
+            self.reducer = PCA(n_components=n_components, svd_solver=svd_solver)
         else:  # random projection
             self.reducer = GaussianRandomProjection(n_components=n_components)
             
@@ -152,19 +170,29 @@ class DimensionalityReducer:
         Reduce the dimensionality of a tensor.
         
         Args:
-            tensor: The tensor to compress
+            tensor: The tensor to compress (numpy array or torch tensor)
             
         Returns:
             Tuple of (reduced_tensor, metadata_for_reconstruction)
         """
+        # Save original tensor type for later reconstruction
+        is_torch_tensor = False
+        if hasattr(tensor, 'detach') and hasattr(tensor, 'cpu') and hasattr(tensor, 'numpy'):
+            is_torch_tensor = True
+            tensor_device = tensor.device if hasattr(tensor, 'device') else None
+            tensor_dtype = tensor.dtype
+            tensor = tensor.detach().cpu().numpy()
+        
         if not self.fitted:
             self.fit(tensor)
             
         original_shape = tensor.shape
         
-        # Reshape to 2D if needed
+        # Reshape to 2D if needed - using same pattern as in fit method
         if len(original_shape) > 2:
-            tensor_2d = tensor.reshape(original_shape[0], -1)
+            # For transformer hidden states [batch_size, seq_len, hidden_dim]
+            # Reshape to [batch_size * seq_len, hidden_dim]
+            tensor_2d = tensor.reshape(-1, original_shape[-1])
         else:
             tensor_2d = tensor
             
@@ -175,8 +203,14 @@ class DimensionalityReducer:
         metadata = {
             "original_shape": original_shape,
             "reduction_method": self.reduction_method,
-            "n_components": reduced.shape[1]
+            "n_components": reduced.shape[1],
+            "is_torch_tensor": is_torch_tensor
         }
+        
+        # Store torch tensor metadata if applicable
+        if is_torch_tensor:
+            metadata["tensor_device"] = str(tensor_device)
+            metadata["tensor_dtype"] = str(tensor_dtype)
         
         # For PCA, we also store components for reconstruction
         if self.reduction_method == "pca":
@@ -185,7 +219,7 @@ class DimensionalityReducer:
             
         return reduced, metadata
         
-    def reconstruct(self, reduced_tensor: np.ndarray, metadata: Dict[str, Any]) -> np.ndarray:
+    def reconstruct(self, reduced_tensor: np.ndarray, metadata: Dict[str, Any]) -> Union[np.ndarray, "torch.Tensor"]:
         """
         Approximately reconstruct the original tensor from reduced form.
         
@@ -194,7 +228,7 @@ class DimensionalityReducer:
             metadata: Metadata from the reduction process
             
         Returns:
-            Reconstructed tensor (approximate)
+            Reconstructed tensor (approximate), either numpy array or torch tensor
         """
         original_shape = metadata["original_shape"]
         
@@ -208,11 +242,56 @@ class DimensionalityReducer:
         else:
             # For random projection, best we can do is a placeholder with zeros
             # In a real implementation, you might use more sophisticated methods
-            flat_size = np.prod(original_shape[1:])
-            reconstructed_2d = np.zeros((original_shape[0], flat_size))
+            if len(original_shape) > 2:
+                # Use the right flattening dimension based on our reshape pattern
+                flattened_dim = -1
+                for i in range(len(original_shape)-1):
+                    flattened_dim *= original_shape[i]
+                reconstructed_2d = np.zeros((flattened_dim, original_shape[-1]))
+            else:
+                flat_size = np.prod(original_shape[1:])
+                reconstructed_2d = np.zeros((original_shape[0], flat_size))
             
         # Reshape back to original shape
         reconstructed = reconstructed_2d.reshape(original_shape)
+        
+        # Convert back to torch tensor if the original was a torch tensor
+        if metadata.get("is_torch_tensor", False):
+            import torch
+            
+            # Convert numpy array to torch tensor
+            reconstructed = torch.from_numpy(reconstructed)
+            
+            # Try to restore original dtype if specified
+            if "tensor_dtype" in metadata:
+                try:
+                    # Parse the dtype string
+                    dtype_str = metadata["tensor_dtype"]
+                    if "float32" in dtype_str:
+                        reconstructed = reconstructed.float()
+                    elif "float64" in dtype_str or "double" in dtype_str:
+                        reconstructed = reconstructed.double()
+                    elif "int64" in dtype_str or "long" in dtype_str:
+                        reconstructed = reconstructed.long()
+                    elif "int32" in dtype_str or "int" in dtype_str:
+                        reconstructed = reconstructed.int()
+                except:
+                    # If dtype conversion fails, keep as is
+                    pass
+                    
+            # Try to move to original device if specified
+            if "tensor_device" in metadata:
+                try:
+                    device_str = metadata["tensor_device"]
+                    if "cuda" in device_str:
+                        if torch.cuda.is_available():
+                            reconstructed = reconstructed.cuda()
+                    elif "cpu" in device_str:
+                        reconstructed = reconstructed.cpu()
+                except:
+                    # If device placement fails, keep on CPU
+                    pass
+                        
         return reconstructed
 
 

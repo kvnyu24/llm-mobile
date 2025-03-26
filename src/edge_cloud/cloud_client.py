@@ -297,27 +297,34 @@ class MockCloudClient:
         # Now the request is complete, generate a result
         if request["result"] is None:
             # In a real implementation, this would do actual computation
-            # Here we just pass through or modify the tensor slightly
-            input_tensor = request["tensor"]
+            # For mock, just pass the tensor through without changes
             
-            # Apply a simple transformation (e.g., add a small random noise)
-            result_tensor = input_tensor + np.random.normal(0, 0.01, input_tensor.shape)
-            
-            request["result"] = {
-                "tensor": result_tensor,
-                "shape": result_tensor.shape,
-                "dtype": str(result_tensor.dtype),
+            # Format result to be compatible with EdgeCloudManager expectations
+            result = {
+                "status": "completed",
                 "layer_idx": request["layer_idx"],
-                "metadata": request["metadata"],
-                "processing_time": self.latency
+                "timestamp": time.time()
             }
-            request["status"] = "completed"
             
-        self.logger.info(f"Mock cloud returning result for request {request_id}")
-        return {
-            "status": "completed",
-            **request["result"]
-        }
+            # If there's an actual tensor, include it directly
+            # For MockClient we just pass through the original tensor
+            if hasattr(request["tensor"], 'shape'):
+                result["tensor"] = request["tensor"]
+            elif isinstance(request["tensor"], dict) and "tensor" in request["tensor"]:
+                # If tensor is in a dict already (e.g., from privacy protection)
+                result["tensor"] = request["tensor"]["tensor"]
+            else:
+                # Fallback response
+                result["mock_result"] = "processed"
+                
+            # Include any metadata that was sent
+            for key, value in request.get("metadata", {}).items():
+                if key not in result:
+                    result[key] = value
+                    
+            request["result"] = result
+            
+        return request["result"]
         
     def cancel_request(self, request_id: str) -> bool:
         """Simulate cancelling a request."""
