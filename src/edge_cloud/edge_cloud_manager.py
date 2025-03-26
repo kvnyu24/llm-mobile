@@ -64,10 +64,24 @@ class EdgeCloudManager:
         self.metrics = {
             "cloud_requests": 0,
             "local_inferences": 0,
+            "failed_cloud_requests": 0,
             "avg_latency_ms": 0,
             "mini_llm_usage": 0,
-            "total_tokens": 0
+            "total_tokens": 0,
+            "bandwidth_savings": 0,  # in MB
+            "energy_savings": 0,     # estimated in Joules
         }
+        
+        # Execution mode can be forced for testing
+        self.force_execution_mode = None  # None, "local", or "remote"
+        
+        # Cache for model layers and network statistics
+        self.layer_costs = {}  # Cache for layer-wise costs
+        self.last_partition = None  # Last partition decision
+        
+        # Start device monitoring if not already started
+        if not self.device_monitor.is_monitoring():
+            self.device_monitor.start_background_monitoring()
         
     def measure_network_conditions(self):
         """
@@ -97,134 +111,143 @@ class EdgeCloudManager:
         # Fallback to default values if no device monitor provided
         return {"cpu_usage_percent": 50, "memory": {"available_mb": 1000, "used_percent": 50}}
         
-    def decide_partition(self, layer_idx, local_cost, remote_cost):
+    def decide_partition(self, input_size, prompt_len=0):
         """
-        Determine whether a layer should be executed locally or remotely.
-        
-        As described in the paper, this implements a simple cost model C(S) for 
-        comparing local vs. remote execution costs, factoring in computation,
-        communication, and energy considerations.
+        Decide which layers to run locally vs in the cloud.
         
         Args:
-            layer_idx: Index of the Transformer layer
-            local_cost: Estimated cost of local execution
-            remote_cost: Estimated cost of remote execution
+            input_size: Size of the input tensor
+            prompt_len: Length of the prompt (for autoregressive generation)
             
         Returns:
-            str: "local" or "remote" decision
+            A tuple (local_layers, remote_layers) indicating which layers should be run where
         """
-        # Simple rule as specified: if local cost is lower, execute locally
-        if local_cost < remote_cost:
-            decision = "local"
-        else:
-            decision = "remote"
+        # If we're forcing a specific execution mode, respect that
+        if self.force_execution_mode == "local":
+            logger.info("Forcing local execution for all layers")
+            num_layers = self.model.config.num_hidden_layers
+            return list(range(num_layers)), []
+        elif self.force_execution_mode == "remote":
+            logger.info("Forcing remote execution for all layers")
+            num_layers = self.model.config.num_hidden_layers
+            return [], list(range(num_layers))
             
-        # Store the decision for this layer
-        self.current_partition[layer_idx] = decision
-        return decision
+        # Get current hardware and network conditions
+        network_conditions = self.measure_network_conditions()
+        device_load = self.measure_device_load()
         
-    def determine_full_partition(self, model_config, input_length):
-        """
-        Determine the optimal partition for all layers based on current conditions.
+        # No remote execution if network is down
+        if network_conditions['bandwidth_mbps'] < 0.1:  # Very low bandwidth
+            logger.warning("Network bandwidth too low, forcing local execution")
+            return self.determine_full_partition(local_only=True)
         
-        This implements the paper's approach for dynamic layer partitioning by
-        estimating costs for each layer and deciding where to execute it.
+        # Estimate costs for different partitioning strategies
+        partitioning_options = self._generate_partitioning_options()
+        lowest_cost = float('inf')
+        best_partition = None
         
-        Args:
-            model_config: Configuration of the Transformer model
-            input_length: Current sequence length
-            
-        Returns:
-            dict: Mapping from layer indices to "local" or "remote" decisions
-        """
-        network_metrics = self.measure_network_conditions()
-        device_metrics = self.measure_device_load()
-        
-        # Reset partition decisions
-        self.current_partition = {}
-        
-        # If not connected, run everything locally
-        if not network_metrics.get("connected", False):
-            num_layers = getattr(model_config, "num_hidden_layers", 12)
-            for layer_idx in range(num_layers):
-                self.current_partition[layer_idx] = "local"
-            return self.current_partition
-        
-        # For each layer, estimate costs and decide where to execute
-        num_layers = getattr(model_config, "num_hidden_layers", 12)
-        hidden_size = getattr(model_config, "hidden_size", 768)
-        
-        # Define base computation costs (estimated FLOPs per token per layer)
-        # For a Transformer layer: 4 * hidden_size^2 (for each MLP matrix)
-        # Plus 4 * hidden_size * input_length (for attention computation)
-        base_compute_cost = 4 * hidden_size * hidden_size + 4 * hidden_size * input_length
-        
-        # Available memory on device (in MB)
-        available_memory = device_metrics.get("memory", {}).get("available_mb", 1000)
-        
-        # Get the cloud cost multiplier based on bandwidth
-        # Lower bandwidth = higher cloud cost
-        bandwidth = network_metrics.get("bandwidth_mbps", 1.0)
-        cloud_bandwidth_multiplier = max(0.1, min(1.0, 5.0 / bandwidth))
-        
-        # Get device load factor
-        cpu_usage = device_metrics.get("cpu_usage_percent", 50) / 100.0
-        device_load_factor = 1.0 + cpu_usage  # Higher CPU usage = higher local cost
-        
-        for layer_idx in range(num_layers):
-            # Computation cost (higher for later layers due to complexity)
-            layer_compute_factor = 1.0 + 0.1 * layer_idx  # Later layers are typically more complex
-            
-            # Memory cost (activation size for this layer)
-            # Increase with sequence length and layer index (later layers might have larger activations)
-            memory_cost = hidden_size * input_length * (1.0 + 0.05 * layer_idx) / 1024.0  # In MB
-            
-            # Check if we have enough memory for this layer
-            memory_available_for_layer = available_memory - sum(
-                hidden_size * input_length * (1.0 + 0.05 * idx) / 1024.0 
-                for idx, decision in self.current_partition.items() 
-                if decision == "local"
+        for partition in partitioning_options:
+            cost = self._estimate_partition_cost(
+                partition, 
+                network_conditions, 
+                device_load, 
+                input_size
             )
             
-            # If not enough memory, force cloud execution
-            if memory_cost > memory_available_for_layer:
-                self.current_partition[layer_idx] = "remote"
-                continue
+            if cost < lowest_cost:
+                lowest_cost = cost
+                best_partition = partition
+        
+        # Convert the partition representation to lists of local and remote layers
+        local_layers, remote_layers = self._partition_to_layer_lists(best_partition)
+        
+        # Cache this decision
+        self.last_partition = (local_layers, remote_layers)
+        
+        logger.info(f"Decided partition: {len(local_layers)} layers local, {len(remote_layers)} layers remote")
+        return local_layers, remote_layers
+        
+    def _estimate_partition_cost(self, partition, network_conditions, device_load, input_size):
+        """
+        Estimate the cost of a given partitioning strategy.
+        
+        Args:
+            partition: The partition to evaluate
+            network_conditions: Current network metrics
+            device_load: Current device metrics
+            input_size: Size of the input tensor
+            
+        Returns:
+            Estimated cost (lower is better)
+        """
+        # Simplified cost model
+        num_layers = len(partition)
+        local_layers = sum(1 for p in partition if p == "local")
+        remote_layers = num_layers - local_layers
+        
+        # Base costs
+        energy_cost = local_layers * 1.0  # Local execution costs energy
+        latency_cost = 0.0
+        memory_cost = local_layers * 1.0  # Local execution uses memory
+        
+        # Network-dependent costs
+        if remote_layers > 0:
+            # Communication cost
+            bandwidth = network_conditions['bandwidth_mbps']
+            if bandwidth < 0.1:
+                bandwidth = 0.1  # Avoid division by zero
                 
-            # Calculate local execution cost
-            local_compute_cost = base_compute_cost * layer_compute_factor * device_load_factor
-            local_memory_cost = memory_cost / available_memory * 100  # Weight by percentage of memory used
-            local_energy_cost = local_compute_cost * 0.01  # Simplified energy model
+            # Higher bandwidth means lower latency cost
+            transmission_latency = input_size / (bandwidth * 1024 * 1024 / 8)  # Size in bytes / bandwidth in bytes/sec
             
-            total_local_cost = (
-                self.latency_weight * local_compute_cost +
-                self.memory_weight * local_memory_cost +
-                self.energy_weight * local_energy_cost
-            )
+            # Cloud processing latency (assume constant for simplicity)
+            cloud_latency = self.cloud_client.latency * remote_layers
             
-            # Calculate remote execution cost
-            remote_compute_cost = base_compute_cost * 0.5  # Cloud typically has more compute power
-            remote_memory_cost = 0  # Cloud has effectively unlimited memory for our purposes
+            # Total latency
+            latency_cost = transmission_latency + cloud_latency
             
-            # Communication cost (data that needs to be transferred)
-            # For sending to cloud: hidden_size * input_length bytes
-            # For receiving from cloud: hidden_size * input_length bytes (simplified)
-            communication_size_mb = 2 * hidden_size * input_length / (1024 * 1024)  # Convert to MB
-            communication_cost = communication_size_mb / bandwidth * 1000  # Convert to ms
+            # Energy cost of transmission
+            transmission_energy = 0.5 * transmission_latency  # Simplified model
+            energy_cost += transmission_energy
+        
+        # Weight the costs
+        total_cost = (
+            self.energy_weight * energy_cost +
+            self.latency_weight * latency_cost +
+            self.memory_weight * memory_cost
+        )
+        
+        return total_cost
+        
+    def determine_full_partition(self, local_only=False):
+        """
+        Determine the full partitioning strategy for all layers.
+        
+        Args:
+            local_only: Whether to force all computation to be local
             
-            # Remote energy cost (primarily from radio usage for communication)
-            remote_energy_cost = communication_size_mb * 0.05  # Simplified energy model for communication
-            
-            total_remote_cost = (
-                self.latency_weight * (remote_compute_cost + communication_cost) +
-                self.memory_weight * remote_memory_cost +
-                self.energy_weight * remote_energy_cost
-            ) * cloud_bandwidth_multiplier
-            
-            # Make the decision
-            self.decide_partition(layer_idx, total_local_cost, total_remote_cost)
-            
-        return self.current_partition
+        Returns:
+            A tuple (local_layers, remote_layers) with layer indices
+        """
+        num_layers = self.model.config.num_hidden_layers
+        
+        if local_only or self.force_execution_mode == "local":
+            # All layers local
+            return list(range(num_layers)), []
+        
+        if self.force_execution_mode == "remote":
+            # All layers remote
+            return [], list(range(num_layers))
+        
+        # Get current network conditions
+        network_conditions = self.measure_network_conditions()
+        device_load = self.measure_device_load()
+        
+        # Estimate input size (this would be more accurate in a real implementation)
+        input_size = 1024 * 1024  # 1MB as a placeholder
+        
+        # Use the decision method
+        return self.decide_partition(input_size)
         
     def compress_and_encrypt(self, hidden_state):
         """
@@ -449,72 +472,99 @@ class EdgeCloudManager:
             outputs = self.model(input_data)
             return outputs
             
-    def process_hybrid(self, input_data):
+    def process_hybrid(self, input_ids):
         """
-        Process input using a hybrid of local and cloud execution.
+        Process the input with dynamic layer partitioning.
         
-        This implements the core edge-cloud collaborative inference approach,
-        dynamically splitting the model between local and cloud execution.
+        This is the main entry point for the Edge-Cloud Collaborative Inference.
+        It determines which layers to execute locally vs. remotely based on current conditions.
         
         Args:
-            input_data: Input token IDs or embeddings
+            input_ids: Input token IDs
             
         Returns:
-            Model outputs
+            Model output with completed inference
         """
-        # Determine the optimal layer partitioning
-        input_length = len(input_data[0]) if isinstance(input_data, list) else input_data.shape[1]
-        model_config = self.model.config if self.model else type('Config', (), {"num_hidden_layers": 12, "hidden_size": 768})
-        partition = self.determine_full_partition(model_config, input_length)
+        # Get model config
+        model_config = self.model.config
+        input_length = input_ids.shape[1]
         
-        # Process the input through the model, layer by layer
-        import torch
+        # Determine layer partitioning
+        local_layers, remote_layers = self.determine_full_partition()
         
-        # Run inference with output_hidden_states=True to get all layer outputs
-        if self.model:
+        # For simulation, we'll run the full model if it's available 
+        # and log which layers would be on device vs cloud
+        if self.model is not None:
+            logger.info(f"Running model inference with {len(local_layers)} local layers and {len(remote_layers)} remote layers")
+            
+            # In a real implementation, we would handle this by executing layers selectively
+            # and transferring intermediate results between device and cloud
+            
+            # Log the layer partitioning for demonstration
+            for layer_idx in range(model_config.num_hidden_layers):
+                if layer_idx in local_layers:
+                    logger.info(f"Layer {layer_idx} would run locally")
+                else:
+                    logger.info(f"Layer {layer_idx} would run remotely (in cloud)")
+                
+            # Run the model
             with torch.no_grad():
-                # For demonstration, instead of actual layer-by-layer processing,
-                # we'll run the full model and show which layers would have been offloaded
-                outputs = self.model(input_data, output_hidden_states=True)
+                outputs = self.model(input_ids)
                 
-                # Log which layers would have been processed where
-                for layer_idx, location in partition.items():
-                    if layer_idx < len(outputs.hidden_states):
-                        # In a real implementation, we would process each layer according to partition
-                        logger.info(f"Layer {layer_idx}: Would process {location}ly")
-                        
-                        if location == "remote":
-                            # Simulate cloud processing by sending and receiving hidden states
-                            hidden_state = outputs.hidden_states[layer_idx]
-                            request_id = self.send_to_cloud(hidden_state, layer_idx)
-                            if request_id:
-                                # This is just a simulation - in a real system we'd wait for and use the result
-                                _ = self.receive_from_cloud(request_id)
+            # Increment the metrics counter
+            self.metrics["local_inferences"] += 1
+            if remote_layers:  # If any layers were remote
+                self.metrics["cloud_requests"] += 1
                 
-                # Return the final output
-                return outputs
-        else:
-            # If no model, return mock output
-            return {"mock_output": "hybrid_inference_result"}
-
-        # Process each layer according to the partition
-        # For GPT-2 models, we can't access layers directly so we'll simulate processing 
-        # by running the full model and just managing the hidden states
-        outputs = self.model(input_data, output_hidden_states=True)
+            return outputs
         
-        # Now we can process the hidden states according to our partition
-        for layer_idx, location in partition.items():
-            if layer_idx >= len(outputs.hidden_states) - 1:
-                continue
+        # If no model is available, return a mock output
+        return None
+    
+    def _partition_to_layer_lists(self, best_partition):
+        """
+        Convert the partition representation to lists of local and remote layers.
+        
+        Args:
+            best_partition: The partition representation
             
-            hidden_state = outputs.hidden_states[layer_idx+1]  # +1 because 0 is input embeddings
-            
-            if location == "remote":
-                # Send to cloud for processing
-                request_id = self.send_to_cloud(hidden_state, layer_idx)
-                if request_id:
-                    # Wait for result from cloud
-                    result = self.receive_from_cloud(request_id)
-                    if "tensor" in result:
-                        # In a real implementation, we would update the hidden state
-                        pass 
+        Returns:
+            (local_layers, remote_layers): Lists of layer indices
+        """
+        # Simple implementation: assuming best_partition is already a list of "local" or "remote" decisions
+        local_layers = []
+        remote_layers = []
+        
+        for layer_idx, decision in enumerate(best_partition):
+            if decision == "local":
+                local_layers.append(layer_idx)
+            else:
+                remote_layers.append(layer_idx)
+                
+        return local_layers, remote_layers
+        
+    def _generate_partitioning_options(self):
+        """
+        Generate different partitioning strategies to evaluate.
+        
+        Returns:
+            List of partitioning options to evaluate
+        """
+        num_layers = self.model.config.num_hidden_layers
+        
+        # For simplicity, we'll consider a few basic partitioning strategies:
+        # 1. All local
+        # 2. All remote
+        # 3. First half local, second half remote
+        # 4. First quarter local, rest remote
+        # 5. First three quarters local, last quarter remote
+        
+        options = [
+            ["local"] * num_layers,  # All local
+            ["remote"] * num_layers,  # All remote
+            ["local"] * (num_layers // 2) + ["remote"] * (num_layers - num_layers // 2),  # Half and half
+            ["local"] * (num_layers // 4) + ["remote"] * (num_layers - num_layers // 4),  # Quarter local
+            ["local"] * (3 * num_layers // 4) + ["remote"] * (num_layers - 3 * num_layers // 4)  # Three quarters local
+        ]
+        
+        return options

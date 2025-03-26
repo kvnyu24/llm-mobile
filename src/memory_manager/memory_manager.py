@@ -5,6 +5,12 @@ import logging
 
 # Initialize logger
 logger = logging.getLogger("memory_manager")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 try:
     import torch
@@ -31,7 +37,7 @@ class MemoryManager:
     """
     
     def __init__(self, max_memory_mb=512, page_size=16, quantization_enabled=True, 
-                 memory_threshold_percent=90, offloading_enabled=True):
+                 memory_threshold_percent=90, offloading_enabled=True, enable_logging=True):
         """
         Initialize the Memory Manager.
         
@@ -41,12 +47,14 @@ class MemoryManager:
             quantization_enabled: Whether to enable quantization for memory savings
             memory_threshold_percent: Percentage of max memory that triggers eviction/compression
             offloading_enabled: Whether to allow offloading pages to the cloud
+            enable_logging: Whether to log operations (can be disabled for benchmarking)
         """
         self.max_memory_mb = max_memory_mb
         self.page_size = page_size
         self.quantization_enabled = quantization_enabled
         self.memory_threshold_percent = memory_threshold_percent
         self.offloading_enabled = offloading_enabled
+        self.enable_logging = enable_logging
         
         # KV cache organized by layers and pages
         # Structure: {layer_idx: {page_idx: {'keys': tensor, 'values': tensor, 'token_indices': []}}}
@@ -69,8 +77,15 @@ class MemoryManager:
             "evicted_pages": 0,
             "offloaded_pages": 0,
             "pruned_tokens": 0,
-            "memory_savings_mb": 0.0
+            "memory_savings_mb": 0.0,
+            "cache_hits": 0,
+            "cache_misses": 0,
+            "compression_time_ms": 0.0,
+            "offload_time_ms": 0.0,
+            "fetch_time_ms": 0.0
         }
+        
+        logger.info(f"Memory Manager initialized with {max_memory_mb}MB budget, {page_size} tokens per page")
         
     def initialize_kv_cache(self, model_config):
         """
@@ -95,8 +110,9 @@ class MemoryManager:
         for layer_idx in range(num_layers):
             self.kv_cache[layer_idx] = {}
             
-        print(f"Initialized KV cache for {num_layers} layers with page size {self.page_size}")
-        print(f"Memory budget: {self.max_memory_mb} MB, threshold: {self.memory_threshold_percent}%")
+        if self.enable_logging:
+            logger.info(f"Initialized KV cache for {num_layers} layers with page size {self.page_size}")
+            logger.info(f"Memory budget: {self.max_memory_mb} MB, threshold: {self.memory_threshold_percent}%")
         
     def add_to_kv_cache(self, layer_idx, key, value, token_indices=None):
         """
@@ -284,7 +300,12 @@ class MemoryManager:
         Returns:
             Retrieved key-value tensors
         """
+        # Track tokens requested and found
+        tokens_requested = len(token_indices)
+        tokens_found = 0
+        
         if layer_idx not in self.kv_cache:
+            self.stats["cache_misses"] += tokens_requested
             return None, None
             
         # Group tokens by pages
@@ -334,6 +355,7 @@ class MemoryManager:
                         
                         all_keys.append(k)
                         all_values.append(v)
+                        tokens_found += 1
             else:
                 # NumPy implementation
                 for token_idx in page_token_indices:
@@ -350,6 +372,17 @@ class MemoryManager:
                             
                         all_keys.append(k)
                         all_values.append(v)
+                        tokens_found += 1
+        
+        # Update cache hit/miss statistics
+        self.stats["cache_hits"] += tokens_found
+        self.stats["cache_misses"] += (tokens_requested - tokens_found)
+        
+        # Try prefetching future pages if we're retrieving in sequence
+        if tokens_requested > 0 and tokens_found > 0:
+            # Use the highest token index as a hint for prefetching
+            highest_token = max(token_indices)
+            self.prefetch_pages(highest_token)
         
         # Concatenate results from all pages
         if all_keys and all_values:
@@ -366,7 +399,8 @@ class MemoryManager:
         
     def _mark_page_accessed(self, layer_idx, page_idx):
         """
-        Mark a page as recently accessed for LRU tracking.
+        Mark a page as recently accessed for tracking.
+        Updates both recency (LRU) and frequency counters for priority-based eviction.
         
         Args:
             layer_idx: Index of the Transformer layer
@@ -374,9 +408,13 @@ class MemoryManager:
         """
         page_key = (layer_idx, page_idx)
         
-        # Update access timestamp
+        # Update access timestamp and frequency
         if page_key in self.page_metadata:
             self.page_metadata[page_key]['last_accessed'] = time.time()
+            if 'access_frequency' not in self.page_metadata[page_key]:
+                self.page_metadata[page_key]['access_frequency'] = 1
+            else:
+                self.page_metadata[page_key]['access_frequency'] += 1
         
         # Remove previous occurrence from access history if present
         if page_key in self.page_access_history:
@@ -407,6 +445,7 @@ class MemoryManager:
             self.page_metadata[page_key].get('compressed', False)):
             return 0
             
+        start_time = time.time()
         page = self.kv_cache[layer_idx][page_idx]
         
         # Calculate pre-compression size
@@ -464,7 +503,12 @@ class MemoryManager:
         self.stats["compressed_pages"] += 1
         self.stats["memory_savings_mb"] += memory_saved / (1024 * 1024)
         
-        print(f"Compressed page ({layer_idx}, {page_idx}): saved {memory_saved / 1024:.2f} KB")
+        # Track compression time
+        compression_time_ms = (time.time() - start_time) * 1000
+        self.stats["compression_time_ms"] += compression_time_ms
+        
+        if self.enable_logging:
+            logger.info(f"Compressed page ({layer_idx}, {page_idx}): saved {memory_saved / 1024:.2f} KB")
         
         return memory_saved
         
@@ -493,15 +537,19 @@ class MemoryManager:
         
         return key_size + value_size + overhead
         
-    def evict_pages(self, num_pages_to_evict):
+    def evict_pages(self, num_pages_to_evict, strategy='priority'):
         """
-        Evict least recently used pages when memory is constrained.
+        Evict pages based on chosen strategy when memory is constrained.
         
         Args:
             num_pages_to_evict: Number of pages to evict
+            strategy: Strategy to use for eviction ('lru', 'priority', 'position')
+                - 'lru': Classic least recently used strategy
+                - 'priority': Combined recency and frequency scoring
+                - 'position': Favor evicting early tokens first
             
         Returns:
-            Indices of evicted pages
+            List of evicted page keys (layer_idx, page_idx)
         """
         if not self.page_access_history:
             return []
@@ -509,17 +557,64 @@ class MemoryManager:
         evicted_pages = []
         pages_evicted = 0
         
-        # Iterate through pages from least recently used to most recently used
-        for page_key in self.page_access_history[::-1]:  # Reverse to get LRU first
+        # Get candidate pages (only those that are on-chip)
+        candidates = [p for p in self.page_metadata.keys() if p in self.onchip_pages and p not in self.offchip_pages]
+        
+        # Skip if no candidates
+        if not candidates:
+            logger.warning("No candidate pages available for eviction")
+            return []
+        
+        # Sort candidates based on chosen strategy
+        if strategy == 'lru':
+            # Use existing LRU order
+            sorted_candidates = [p for p in self.page_access_history if p in candidates]
+            # Reverse to get least recently used first
+            sorted_candidates = sorted_candidates[::-1]
+        
+        elif strategy == 'priority':
+            # Calculate priority scores (lower is more evictable)
+            # Formula: priority = (recency_weight * recency_score) + (frequency_weight * frequency_score)
+            current_time = time.time()
+            max_frequency = max([self.page_metadata[p].get('access_frequency', 1) for p in candidates])
+            
+            # Calculate scores
+            scored_candidates = []
+            for page_key in candidates:
+                last_accessed = self.page_metadata[page_key].get('last_accessed', 0)
+                frequency = self.page_metadata[page_key].get('access_frequency', 1)
+                
+                # Normalized recency (0-1, where 1 is oldest)
+                recency = 1.0 - min(1.0, max(0.0, (current_time - last_accessed) / 3600.0))
+                
+                # Normalized frequency (0-1, where 1 is most frequent)
+                freq_norm = frequency / max_frequency
+                
+                # Combined score (higher means more valuable to keep)
+                # Adjust weights (0.7/0.3) to favor recency more than frequency
+                score = (0.7 * recency) + (0.3 * freq_norm)
+                
+                scored_candidates.append((page_key, score))
+                
+            # Sort by score (lowest first, so they get evicted first)
+            sorted_candidates = [x[0] for x in sorted(scored_candidates, key=lambda x: x[1])]
+        
+        elif strategy == 'position':
+            # Favor evicting earlier tokens first (lower page_idx first)
+            sorted_candidates = sorted(candidates, key=lambda x: x[1])  # Sort by page_idx
+        
+        else:
+            # Default to LRU if unknown strategy
+            sorted_candidates = [p for p in self.page_access_history if p in candidates]
+            sorted_candidates = sorted_candidates[::-1]  # Reverse to get LRU first
+        
+        # Now evict pages based on the sorted order
+        for page_key in sorted_candidates:
             if pages_evicted >= num_pages_to_evict:
                 break
                 
             layer_idx, page_idx = page_key
             
-            # Skip if page is already offchip
-            if page_key in self.offchip_pages or page_key not in self.onchip_pages:
-                continue
-                
             # Try to offload to cloud if enabled
             if self.offloading_enabled:
                 self._offload_page_to_cloud(layer_idx, page_idx)
@@ -545,7 +640,8 @@ class MemoryManager:
                     self.stats["evicted_pages"] += 1
                     self.stats["memory_savings_mb"] += memory_freed / (1024 * 1024)
                     
-                    print(f"Evicted page ({layer_idx}, {page_idx})")
+                    if self.enable_logging:
+                        logger.info(f"Evicted page ({layer_idx}, {page_idx})")
         
         # Update access history to remove evicted pages
         self.page_access_history = [p for p in self.page_access_history if p not in evicted_pages]
@@ -569,7 +665,7 @@ class MemoryManager:
         if current_usage_mb <= threshold_mb:
             return False
             
-        print(f"Memory usage ({current_usage_mb:.2f} MB) exceeds threshold ({threshold_mb:.2f} MB)")
+        logger.info(f"Memory usage ({current_usage_mb:.2f} MB) exceeds threshold ({threshold_mb:.2f} MB)")
         
         # First try compression
         if self.quantization_enabled:
@@ -594,6 +690,7 @@ class MemoryManager:
     def _compress_uncompressed_pages(self):
         """
         Compress pages that aren't already compressed to save memory.
+        Uses the smarter strategy instead of simple LRU.
         
         Returns:
             Number of pages compressed
@@ -601,36 +698,90 @@ class MemoryManager:
         if not self.quantization_enabled:
             return 0
             
-        compressed_count = 0
+        compressed_count, _ = self.smart_compress_pages()
+        return compressed_count
         
-        # Sort pages by last accessed time (compress oldest first)
-        pages_by_age = sorted(
-            self.page_metadata.items(),
-            key=lambda x: x[1].get('last_accessed', 0)
-        )
+    def smart_compress_pages(self):
+        """
+        Intelligently choose which pages to compress based on a set of heuristics.
         
-        # Compress uncompressed pages
-        for (layer_idx, page_idx), metadata in pages_by_age:
-            # Skip already compressed pages
-            if metadata.get('compressed', False):
-                continue
-                
-            # Skip offchip pages
-            page_key = (layer_idx, page_idx)
-            if page_key in self.offchip_pages or page_key not in self.onchip_pages:
-                continue
-                
-            # Compress the page
-            memory_saved = self.compress_page(layer_idx, page_idx)
+        This method implements a smarter strategy that considers:
+        1. Age of the page (older pages are better candidates)
+        2. Position in the token sequence (earlier tokens are better candidates)
+        3. Access frequency (less frequently accessed pages are better candidates)
+        4. Layer position (earlier layers may be less critical for some models)
+        
+        Returns:
+            Number of pages compressed and total memory saved
+        """
+        if not self.quantization_enabled:
+            return 0, 0
             
+        # Get uncompressed pages that are candidates for compression
+        candidates = []
+        for page_key in self.onchip_pages:
+            if (page_key in self.page_metadata and 
+                not self.page_metadata[page_key].get('compressed', False)):
+                candidates.append(page_key)
+        
+        if not candidates:
+            logger.debug("No uncompressed pages available for smart compression")
+            return 0, 0
+        
+        # Score each candidate based on multiple factors
+        current_time = time.time()
+        scored_candidates = []
+        
+        for page_key in candidates:
+            layer_idx, page_idx = page_key
+            
+            # Get metadata for scoring
+            last_accessed = self.page_metadata[page_key].get('last_accessed', 0)
+            access_frequency = self.page_metadata[page_key].get('access_frequency', 1)
+            
+            # Calculate age score (older is better for compression)
+            age = current_time - last_accessed
+            age_score = min(1.0, age / 60.0)  # Normalize: 1 minute old = score of 1.0
+            
+            # Position score (earlier pages better for compression)
+            # Assuming higher page_idx = later tokens
+            position_score = 1.0 - (1.0 / (page_idx + 1))
+            
+            # Frequency score (less frequently accessed is better for compression)
+            # Cap at 20 to avoid extreme values
+            freq_score = 1.0 - min(20, access_frequency) / 20.0
+            
+            # Layer score (can be tuned based on model architecture)
+            # For now, slightly favor compressing earlier layers
+            # Assuming model has at least a few layers
+            num_layers = max(12, max([l for l, _ in self.onchip_pages]) + 1)
+            layer_score = 1.0 - (layer_idx / num_layers)
+            
+            # Combined score with weights (higher = better to compress)
+            # Weights can be tuned based on empirical results
+            combined_score = (
+                (0.4 * age_score) +
+                (0.3 * position_score) +
+                (0.2 * freq_score) +
+                (0.1 * layer_score)
+            )
+            
+            scored_candidates.append((page_key, combined_score))
+        
+        # Sort by score (highest first - best candidates for compression)
+        sorted_candidates = sorted(scored_candidates, key=lambda x: x[1], reverse=True)
+        
+        # Compress the top candidates (limit to avoid compressing too many at once)
+        compressed_count = 0
+        total_memory_saved = 0
+        
+        for (layer_idx, page_idx), _ in sorted_candidates[:5]:  # Limit to top 5
+            memory_saved = self.compress_page(layer_idx, page_idx)
             if memory_saved > 0:
                 compressed_count += 1
+                total_memory_saved += memory_saved
                 
-            # Stop if we've compressed a reasonable number of pages
-            if compressed_count >= 5:  # Arbitrary limit to avoid compressing too many in one go
-                break
-                
-        return compressed_count
+        return compressed_count, total_memory_saved
         
     def _estimate_average_page_size_mb(self):
         """
@@ -748,7 +899,7 @@ class MemoryManager:
                             # Update stats
                             self.stats["total_pages"] -= 1
                             total_memory_saved += memory_saved
-                            print(f"Removed empty page ({layer_idx}, {page_idx}) after pruning")
+                            logger.info(f"Removed empty page ({layer_idx}, {page_idx}) after pruning")
                             
         # Update stats
         self.stats["pruned_tokens"] += len(token_indices)
@@ -791,17 +942,18 @@ class MemoryManager:
         self.stats["offloaded_pages"] += 1
         self.stats["memory_savings_mb"] += memory_saved / (1024 * 1024)
         
-        print(f"Offloaded page ({layer_idx}, {page_idx}) to cloud")
+        logger.info(f"Offloaded page ({layer_idx}, {page_idx}) to cloud")
         
         return memory_saved
         
-    def _fetch_page_from_offchip(self, layer_idx, page_idx):
+    def _fetch_page_from_offchip(self, layer_idx, page_idx, is_prefetch=False):
         """
         Fetch a page from off-chip storage back to on-chip memory.
         
         Args:
             layer_idx: Index of the layer
             page_idx: Index of the page
+            is_prefetch: Whether this is a predictive prefetch
             
         Returns:
             Boolean indicating success
@@ -814,6 +966,9 @@ class MemoryManager:
             
         # In a real implementation, we would fetch the page from cloud/disk here
         # For simulation, we'll just track that it happened
+        
+        # Record timing for metrics
+        start_time = time.time() 
         
         # Before bringing back, check if we need to evict something else
         current_usage_mb = self.calculate_memory_usage()
@@ -835,7 +990,15 @@ class MemoryManager:
         # Mark as accessed
         self._mark_page_accessed(layer_idx, page_idx)
         
-        print(f"Fetched page ({layer_idx}, {page_idx}) from cloud to local memory")
+        # Update timing stats
+        fetch_time_ms = (time.time() - start_time) * 1000
+        self.stats["fetch_time_ms"] += fetch_time_ms
+        
+        if self.enable_logging:
+            if is_prefetch:
+                logger.debug(f"Prefetched page ({layer_idx}, {page_idx}) from cloud to local memory")
+            else:
+                logger.info(f"Fetched page ({layer_idx}, {page_idx}) from cloud to local memory")
         
         return True
         
@@ -874,3 +1037,45 @@ class MemoryManager:
         stats["offchip_pages"] = len(self.offchip_pages)
         
         return stats 
+
+    def prefetch_pages(self, current_token_idx, lookahead=5):
+        """
+        Predictively fetch pages that are likely to be accessed soon.
+        
+        This uses a simple lookahead strategy, based on the assumption
+        that tokens will be accessed in approximately sequential order.
+        
+        Args:
+            current_token_idx: The current token being processed
+            lookahead: How many pages ahead to prefetch
+            
+        Returns:
+            Number of pages prefetched
+        """
+        prefetched = 0
+        
+        # Predict which pages might be needed soon
+        for i in range(1, lookahead + 1):
+            future_token_idx = current_token_idx + i
+            future_page_idx = future_token_idx // self.page_size
+            
+            # Check for each layer if the page needs prefetching
+            for layer_idx in self.kv_cache.keys():
+                page_key = (layer_idx, future_page_idx)
+                
+                # If page is off-chip, try to prefetch it
+                if page_key in self.offchip_pages:
+                    # Use probability to decide whether to prefetch
+                    # Higher probability for pages closer to current position
+                    probability = (lookahead - i + 1) / lookahead
+                    
+                    if np.random.random() < probability:
+                        success = self._fetch_page_from_offchip(layer_idx, future_page_idx, is_prefetch=True)
+                        if success:
+                            prefetched += 1
+                            
+                            # Don't prefetch too many at once to avoid memory pressure
+                            if prefetched >= 3:
+                                return prefetched
+        
+        return prefetched 

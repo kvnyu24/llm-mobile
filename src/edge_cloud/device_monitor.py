@@ -429,6 +429,14 @@ class DeviceMonitor:
             self.stop_flag.set()
             self.monitor_thread.join(timeout=2.0)
             
+    def is_monitoring(self):
+        """Check if background monitoring is currently active.
+        
+        Returns:
+            bool: True if monitoring thread is running, False otherwise
+        """
+        return self.monitor_thread is not None and self.monitor_thread.is_alive()
+            
     def _background_monitor(self):
         """Background thread that continuously collects metrics."""
         while not self.stop_flag.is_set():
