@@ -1,0 +1,8 @@
+Optimization Impact Statistics:
+Memory savings: 0.84375 MB
+Memory reduction: 49%
+Energy savings: 60.5%
+Tokens pruned: 35
+Layers skipped: 7
+Layers compressed: 11
+Cloud-offloaded layers: 42
