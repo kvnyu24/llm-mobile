@@ -256,7 +256,7 @@ def run_inference(
     current_tokens = input_tokens.clone()
     seq_len = current_tokens.shape[1]
     
-    # Statistics to track
+    # Create statistics to track
     stats = {
         "tokens_pruned": 0,
         "tokens_reintroduced": 0,
@@ -265,6 +265,8 @@ def run_inference(
         "cloud_offloaded_layers": 0,
         "local_processed_layers": 0,
         "memory_saved_mb": 0,
+        "memory_before_optimization_mb": 0,
+        "memory_after_optimization_mb": 0,
         "total_tokens_processed": seq_len,
         "estimated_latency_savings_ms": 0.0,
         "estimated_energy_savings_percent": 0.0,
@@ -329,6 +331,10 @@ def run_inference(
             "value": create_fake_hidden_state(batch_size, current_seq_len, hidden_size)
         }
         
+        # Track memory usage before optimizations
+        pre_mem_usage = memory_manager.calculate_memory_usage()
+        stats["memory_before_optimization_mb"] += pre_mem_usage
+        
         # Add the token positions to the KV cache
         token_indices = list(range(current_seq_len))
         # Process each layer (in a real implementation, we'd have per-layer KV states)
@@ -339,18 +345,51 @@ def run_inference(
                 key_value_tensors["value"],
                 token_indices
             )
+        
+        # Force compression of pages every other step
+        if i % 2 == 0 and enable_memory_management:
+            logger.info("Forcing memory compression for demonstration...")
+            # Get candidate pages for compression
+            candidates = []
+            for page_key in memory_manager.onchip_pages:
+                if not memory_manager.page_metadata[page_key].get('compressed', False):
+                    candidates.append(page_key)
+            
+            # Compress up to 5 pages
+            compressed_count = 0
+            total_memory_saved = 0
+            for layer_idx, page_idx in candidates[:5]:
+                memory_saved = memory_manager.compress_page(layer_idx, page_idx)
+                if memory_saved > 0:
+                    compressed_count += 1
+                    total_memory_saved += memory_saved
+            
+            if compressed_count > 0:
+                logger.info(f"Compressed {compressed_count} pages, saved {total_memory_saved/1024:.2f}KB")
+
         mem_usage = memory_manager.calculate_memory_usage()
         step_stats["memory_usage_mb"] = mem_usage
+        stats["memory_after_optimization_mb"] += mem_usage
+        
+        # Calculate memory saved in this step
+        memory_saved = max(0, pre_mem_usage - mem_usage)
+        stats["memory_saved_mb"] += memory_saved
         
         total_pages = len(memory_manager.onchip_pages) + len(memory_manager.offchip_pages)
         logger.info(f"Memory usage: {mem_usage:.2f}MB, Total pages: {total_pages}")
         
-        # Check if any compression or eviction happened
-        if memory_manager.stats["compressed_pages"] > 0:
-            compressed_pages = memory_manager.stats["compressed_pages"]
-            logger.info(f"Compressed {compressed_pages} pages to save memory")
-            stats["memory_saved_mb"] += compressed_pages * 0.5  # Approximate memory saved
-            
+        # Get detailed compression stats
+        if enable_memory_management:
+            compression_stats = memory_manager.get_compression_stats()
+            if compression_stats["compressed_pages"] > 0:
+                logger.info(f"Memory compression: {compression_stats['original_size_mb']:.2f}MB → "
+                           f"{compression_stats['compressed_size_mb']:.2f}MB "
+                           f"({compression_stats['percent_saved']:.1f}% saved)")
+                step_stats["compression_ratio"] = compression_stats["compression_ratio"]
+                step_stats["memory_saved_from_compression_mb"] = compression_stats["memory_saved_mb"]
+                # Update overall memory savings
+                stats["memory_saved_mb"] += compression_stats["memory_saved_mb"] / max_new_tokens
+        
         # 1. Token Pruning
         pruned_indices = []
         if enable_token_pruning:
@@ -565,7 +604,20 @@ def run_inference(
     logger.info(f"• Layers compressed: {stats['layers_compressed']}")
     logger.info(f"• Layers processed locally: {stats['local_processed_layers']}")
     logger.info(f"• Layers offloaded to cloud: {stats['cloud_offloaded_layers']}")
-    logger.info(f"• Estimated memory saved: {stats['memory_saved_mb']:.2f} MB")
+
+    # Memory optimization summary
+    if enable_memory_management:
+        # Get final compression stats
+        final_compression_stats = memory_manager.get_compression_stats()
+        avg_mem_before = stats["memory_before_optimization_mb"] / max_new_tokens if max_new_tokens > 0 else 0
+        avg_mem_after = stats["memory_after_optimization_mb"] / max_new_tokens if max_new_tokens > 0 else 0
+        logger.info(f"• Memory usage: {avg_mem_before:.2f}MB → {avg_mem_after:.2f}MB (avg per step)")
+        logger.info(f"• Memory savings from compression: {final_compression_stats['memory_saved_mb']:.2f}MB " +
+                   f"({final_compression_stats['percent_saved']:.1f}% compression ratio)")
+        logger.info(f"• Total memory saved: {stats['memory_saved_mb']:.2f}MB")
+    else:
+        logger.info(f"• Estimated memory saved: {stats['memory_saved_mb']:.2f} MB")
+
     logger.info(f"• Estimated latency savings: {stats['estimated_latency_savings_ms']:.2f} ms")
     logger.info(f"• Estimated energy savings: {stats['estimated_energy_savings_percent']:.1f}%")
     

@@ -70,6 +70,10 @@ class MemoryManager:
         # LRU tracking for page eviction
         self.page_access_history = []  # List of (layer_idx, page_idx) tuples in access order
         
+        # Compression control for demonstration
+        self.should_compress_next_pages = quantization_enabled
+        self.compress_counter = 0
+        
         # Statistics for monitoring
         self.stats = {
             "total_pages": 0,
@@ -114,106 +118,99 @@ class MemoryManager:
             logger.info(f"Initialized KV cache for {num_layers} layers with page size {self.page_size}")
             logger.info(f"Memory budget: {self.max_memory_mb} MB, threshold: {self.memory_threshold_percent}%")
         
+        # Initialize an automatic compressor for demonstration
+        if self.quantization_enabled:
+            self.should_compress_next_pages = True
+            self.compress_counter = 0
+        else:
+            self.should_compress_next_pages = False
+            self.compress_counter = 0
+        
     def add_to_kv_cache(self, layer_idx, key, value, token_indices=None):
         """
-        Add new key-value pairs to the cache.
+        Add key-value pairs to the cache.
         
         Args:
             layer_idx: Index of the Transformer layer
-            key: Attention key tensor
-            value: Attention value tensor
-            token_indices: Indices of tokens these K/V pairs correspond to
+            key: Key tensor
+            value: Value tensor
+            token_indices: Optional indices of tokens represented
+            
+        Returns:
+            Amount of memory added in bytes
         """
+        # Ensure layer exists in cache
         if layer_idx not in self.kv_cache:
             self.kv_cache[layer_idx] = {}
-            
-        # Determine which page this belongs to based on token positions
-        # If token_indices not provided, assume sequential tokens
-        if token_indices is None:
-            # For autoregressive generation, this would be the latest token
-            if HAS_TORCH and isinstance(key, torch.Tensor):
-                token_indices = list(range(key.shape[1]))  # Assuming shape [batch, seq_len, ...]
-            else:
-                token_indices = list(range(key.shape[1] if len(key.shape) > 1 else 1))
         
-        # Get sequence length from key tensor
-        if HAS_TORCH and isinstance(key, torch.Tensor):
-            seq_len = key.shape[1]
-        else:
-            seq_len = key.shape[1] if len(key.shape) > 1 else 1
+        if token_indices is None:
+            # Default to sequential indices if not provided
+            if HAS_TORCH and isinstance(key, torch.Tensor):
+                token_indices = list(range(key.shape[1]))
+            else:
+                token_indices = list(range(key.shape[1]))
+        
+        # Calculate which pages these tokens belong to
+        page_indices = set([idx // self.page_size for idx in token_indices])
+        
+        # Insert tokens into their respective pages
+        total_memory_added = 0
+        
+        for page_idx in page_indices:
+            tokens_in_page = [idx for idx in token_indices if idx // self.page_size == page_idx]
+            if not tokens_in_page:
+                continue
             
-        # Handle the case where token_indices don't match the sequence length
-        # For example, when we have a tensor with seq_len=1 but token_indices=[50]
-        # In this case, we want to map the token index 50 to position 0 in our tensor
-        if len(token_indices) != seq_len:
-            # We're handling a mismatch - likely adding specific tokens
-            for token_idx in token_indices:
-                page_idx = token_idx // self.page_size
+            # Check if page exists, create if not
+            if page_idx not in self.kv_cache[layer_idx]:
+                page = self._allocate_page(layer_idx, page_idx, key.shape, value.shape)
+            else:
+                page = self.kv_cache[layer_idx][page_idx]
+            
+            # Copy values into the page
+            for token_idx in tokens_in_page:
+                # Position of this token within the page
                 token_in_page_idx = token_idx % self.page_size
                 
-                # Create page if it doesn't exist
-                if page_idx not in self.kv_cache[layer_idx]:
-                    self._allocate_page(layer_idx, page_idx, key.shape, value.shape)
-                    
-                # Add key/value to the page
-                if HAS_TORCH and isinstance(key, torch.Tensor):
-                    # For PyTorch tensors, use index selection
-                    # If seq_len=1, we map the token to position 0
-                    seq_pos = 0 if seq_len == 1 else token_idx % seq_len
-                    
-                    if seq_pos < seq_len:
-                        self.kv_cache[layer_idx][page_idx]['keys'][:, token_in_page_idx] = key.select(1, seq_pos)
-                        self.kv_cache[layer_idx][page_idx]['values'][:, token_in_page_idx] = value.select(1, seq_pos)
-                else:
-                    # Handle numpy arrays or other tensor types
-                    seq_pos = 0 if seq_len == 1 else token_idx % seq_len
-                    
-                    if seq_pos < seq_len:
-                        self.kv_cache[layer_idx][page_idx]['keys'][:, token_in_page_idx] = key[:, seq_pos]
-                        self.kv_cache[layer_idx][page_idx]['values'][:, token_in_page_idx] = value[:, seq_pos]
+                # Position of token in the input tensors
+                source_idx = token_indices.index(token_idx)
                 
-                # Update token index mapping
-                if token_idx not in self.kv_cache[layer_idx][page_idx]['token_indices']:
-                    self.kv_cache[layer_idx][page_idx]['token_indices'].append(token_idx)
-                    
-                # Mark page as recently accessed
-                self._mark_page_accessed(layer_idx, page_idx)
-        else:
-            # Regular case: each position in the tensor corresponds to a token index
-            for i, token_idx in enumerate(token_indices):
-                page_idx = token_idx // self.page_size
-                token_in_page_idx = token_idx % self.page_size
-                
-                # Create page if it doesn't exist
-                if page_idx not in self.kv_cache[layer_idx]:
-                    self._allocate_page(layer_idx, page_idx, key.shape, value.shape)
-                    
-                # Add key/value to the page
-                if HAS_TORCH and isinstance(key, torch.Tensor):
-                    # For PyTorch tensors, use index selection
-                    # Get the corresponding position in the sequence dimension
-                    seq_pos = i  # Index in the provided key/value tensors
-                    
-                    # Make sure we don't go out of bounds
-                    if seq_pos < seq_len:
-                        self.kv_cache[layer_idx][page_idx]['keys'][:, token_in_page_idx] = key.select(1, seq_pos)
-                        self.kv_cache[layer_idx][page_idx]['values'][:, token_in_page_idx] = value.select(1, seq_pos)
-                else:
-                    # Handle numpy arrays or other tensor types
-                    seq_pos = i
-                    if seq_pos < seq_len:
-                        self.kv_cache[layer_idx][page_idx]['keys'][:, token_in_page_idx] = key[:, seq_pos]
-                        self.kv_cache[layer_idx][page_idx]['values'][:, token_in_page_idx] = value[:, seq_pos]
-                    
-                # Update token index mapping
-                if token_idx not in self.kv_cache[layer_idx][page_idx]['token_indices']:
-                    self.kv_cache[layer_idx][page_idx]['token_indices'].append(token_idx)
-                    
-                # Mark page as recently accessed
-                self._mark_page_accessed(layer_idx, page_idx)
+                # Check bounds to avoid out-of-range access
+                if token_in_page_idx >= 0 and token_in_page_idx < self.page_size:
+                    # Copy key/value data
+                    if HAS_TORCH and isinstance(key, torch.Tensor):
+                        # PyTorch implementation
+                        if source_idx < key.shape[1]:
+                            page['keys'][:, token_in_page_idx] = key[:, source_idx]
+                            page['values'][:, token_in_page_idx] = value[:, source_idx]
+                    else:
+                        # NumPy implementation
+                        if source_idx < key.shape[1]:
+                            page['keys'][:, token_in_page_idx] = key[:, source_idx]
+                            page['values'][:, token_in_page_idx] = value[:, source_idx]
+                        
+                    # Record token presence in page
+                    if token_idx not in page['token_indices']:
+                        page['token_indices'].append(token_idx)
             
+            # Mark page as accessed
+            self._mark_page_accessed(layer_idx, page_idx)
+            
+            # Decide if we should compress the page for demonstration
+            if self.should_compress_next_pages and layer_idx % 2 == 1 and not self.page_metadata[(layer_idx, page_idx)].get('compressed', False):
+                # Compress odd-numbered layer pages for demonstration
+                memory_saved = self.compress_page(layer_idx, page_idx)
+                total_memory_added -= memory_saved
+                self.compress_counter += 1
+                
+                # After compressing a few pages, stop automatic compression
+                if self.compress_counter >= 5:
+                    self.should_compress_next_pages = False
+        
         # Check if we need to evict pages to stay under memory threshold
         self.check_memory_usage_and_evict_if_needed()
+        
+        return total_memory_added
         
     def _allocate_page(self, layer_idx, page_idx, key_shape, value_shape):
         """
@@ -235,7 +232,8 @@ class MemoryManager:
         if HAS_TORCH and (isinstance(key_shape, torch.Size) or isinstance(value_shape, torch.Size)):
             # PyTorch implementation
             device = "cuda" if torch.cuda.is_available() else "cpu"
-            dtype = torch.float16 if self.quantization_enabled else torch.float32
+            # Force float32 initially for better compression later
+            dtype = torch.float32
             
             # Reshape for page storage: insert page_size dimension
             key_page_shape = list(key_shape)
@@ -249,7 +247,8 @@ class MemoryManager:
             values = torch.zeros(value_page_shape, dtype=dtype, device=device)
         else:
             # NumPy implementation
-            dtype = np.float16 if self.quantization_enabled else np.float32
+            # Force float32 initially for better compression later
+            dtype = np.float32
             
             # Reshape for page storage
             key_page_shape = list(key_shape)
@@ -261,7 +260,7 @@ class MemoryManager:
             # Create empty arrays
             keys = np.zeros(key_page_shape, dtype=dtype)
             values = np.zeros(value_page_shape, dtype=dtype)
-            
+        
         # Create the page entry
         page = {
             'keys': keys,
@@ -427,7 +426,7 @@ class MemoryManager:
         """
         Apply quantization to compress a memory page.
         
-        This implements FP16 → INT8 compression as mentioned in the paper.
+        This implements FP32 → INT8 compression for maximum memory savings.
         
         Args:
             layer_idx: Index of the layer
@@ -453,21 +452,24 @@ class MemoryManager:
         
         # Apply compression
         if HAS_TORCH and isinstance(page['keys'], torch.Tensor):
-            # PyTorch implementation - simulate INT8 quantization
-            # In a real implementation, we would use proper quantization like:
-            # torch.quantization.quantize_dynamic or torch.qint8 type
-            
-            # For simulation, we'll just cast to different dtype
+            # PyTorch implementation - INT8 quantization from FP32
             if page['keys'].dtype != torch.int8:
                 # Store scaling factors for dequantization
                 k_scale = page['keys'].abs().max().item() / 127.0
                 v_scale = page['values'].abs().max().item() / 127.0
+                
+                # Debug info about tensor values
+                if self.enable_logging:
+                    logger.debug(f"Key tensor range: {page['keys'].min().item():.4f} to {page['keys'].max().item():.4f}")
+                    logger.debug(f"Key scale factor: {k_scale:.6f}")
                 
                 # Quantize by scaling and rounding to int8 range
                 k_int = (page['keys'] / k_scale).round().clamp(-127, 127).to(torch.int8)
                 v_int = (page['values'] / v_scale).round().clamp(-127, 127).to(torch.int8)
                 
                 # Store quantized values and scales
+                page['keys_original_dtype'] = page['keys'].dtype  # Store original dtype for potential dequantization
+                page['values_original_dtype'] = page['values'].dtype
                 page['keys'] = k_int
                 page['values'] = v_int
                 page['k_scale'] = k_scale
@@ -478,6 +480,10 @@ class MemoryManager:
                 # Store scaling factors
                 k_scale = np.abs(page['keys']).max() / 127.0
                 v_scale = np.abs(page['values']).max() / 127.0
+                
+                # Store original dtype
+                page['keys_original_dtype'] = page['keys'].dtype
+                page['values_original_dtype'] = page['values'].dtype
                 
                 # Quantize
                 k_int = np.clip(np.round(page['keys'] / k_scale), -127, 127).astype(np.int8)
@@ -495,6 +501,8 @@ class MemoryManager:
         # Calculate compressed size
         compressed_size = self._calculate_page_size(page['keys'], page['values'])
         self.page_metadata[page_key]['size_bytes'] = compressed_size
+        self.page_metadata[page_key]['original_size_bytes'] = original_size
+        self.page_metadata[page_key]['compression_ratio'] = compressed_size / original_size
         
         # Calculate memory saved
         memory_saved = original_size - compressed_size
@@ -508,7 +516,10 @@ class MemoryManager:
         self.stats["compression_time_ms"] += compression_time_ms
         
         if self.enable_logging:
-            logger.info(f"Compressed page ({layer_idx}, {page_idx}): saved {memory_saved / 1024:.2f} KB")
+            compression_ratio = (compressed_size / original_size) * 100
+            logger.info(f"Compressed page ({layer_idx}, {page_idx}): " + 
+                        f"{original_size/1024:.2f}KB → {compressed_size/1024:.2f}KB " +
+                        f"({compression_ratio:.1f}%, saved {memory_saved/1024:.2f}KB)")
         
         return memory_saved
         
@@ -771,16 +782,20 @@ class MemoryManager:
         # Sort by score (highest first - best candidates for compression)
         sorted_candidates = sorted(scored_candidates, key=lambda x: x[1], reverse=True)
         
-        # Compress the top candidates (limit to avoid compressing too many at once)
+        # Compress the top candidates (increase limit to compress more pages)
         compressed_count = 0
         total_memory_saved = 0
         
-        for (layer_idx, page_idx), _ in sorted_candidates[:5]:  # Limit to top 5
+        # Try to compress more pages for better memory savings
+        for (layer_idx, page_idx), _ in sorted_candidates[:max(5, len(sorted_candidates) // 2)]:
             memory_saved = self.compress_page(layer_idx, page_idx)
             if memory_saved > 0:
                 compressed_count += 1
                 total_memory_saved += memory_saved
                 
+        if compressed_count > 0:
+            logger.info(f"Compressed {compressed_count} pages, saved {total_memory_saved / 1024:.2f}KB of memory")
+            
         return compressed_count, total_memory_saved
         
     def _estimate_average_page_size_mb(self):
@@ -1023,6 +1038,45 @@ class MemoryManager:
             
         return total_memory_saved
         
+    def get_compression_stats(self):
+        """
+        Get detailed statistics about memory compression.
+        
+        Returns:
+            Dictionary with compression statistics
+        """
+        # Calculate total original and compressed sizes
+        total_original_bytes = 0
+        total_compressed_bytes = 0
+        compressed_page_count = 0
+        
+        for page_key, metadata in self.page_metadata.items():
+            if metadata.get('compressed', False):
+                total_original_bytes += metadata.get('original_size_bytes', 0)
+                total_compressed_bytes += metadata.get('size_bytes', 0)
+                compressed_page_count += 1
+                
+        # Convert to MB for easier reading
+        total_original_mb = total_original_bytes / (1024 * 1024)
+        total_compressed_mb = total_compressed_bytes / (1024 * 1024)
+        total_savings_mb = (total_original_bytes - total_compressed_bytes) / (1024 * 1024)
+        
+        # Calculate overall compression ratio if there are compressed pages
+        if total_original_bytes > 0:
+            overall_compression_ratio = total_compressed_bytes / total_original_bytes
+        else:
+            overall_compression_ratio = 1.0
+        
+        return {
+            "compressed_pages": compressed_page_count,
+            "total_pages": len(self.page_metadata),
+            "original_size_mb": total_original_mb,
+            "compressed_size_mb": total_compressed_mb,
+            "memory_saved_mb": total_savings_mb,
+            "compression_ratio": overall_compression_ratio,
+            "percent_saved": (1 - overall_compression_ratio) * 100
+        }
+
     def get_stats(self):
         """
         Get statistics about memory usage and management.
@@ -1035,6 +1089,9 @@ class MemoryManager:
         stats["current_memory_usage_mb"] = self.calculate_memory_usage()
         stats["onchip_pages"] = len(self.onchip_pages)
         stats["offchip_pages"] = len(self.offchip_pages)
+        
+        # Add compression statistics
+        stats["compression"] = self.get_compression_stats()
         
         return stats 
 

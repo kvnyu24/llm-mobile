@@ -1,0 +1,76 @@
+{
+  "tokens_pruned": 0,
+  "tokens_reintroduced": 0,
+  "layers_skipped": 0,
+  "layers_compressed": 0,
+  "cloud_offloaded_layers": 0,
+  "local_processed_layers": 60,
+  "memory_saved_mb": 0,
+  "memory_before_optimization_mb": 3.9455108642578125,
+  "memory_after_optimization_mb": 5.0727996826171875,
+  "total_tokens_processed": 13,
+  "estimated_latency_savings_ms": 0.0,
+  "estimated_energy_savings_percent": 0.0,
+  "step_details": [
+    {
+      "step": 1,
+      "seq_len": 8,
+      "tokens_pruned": 0,
+      "layers_skipped": 0,
+      "layers_compressed": 0,
+      "cloud_offloaded": 0,
+      "memory_usage_mb": 0.5636444091796875,
+      "estimated_latency_ms": 50.0,
+      "energy_savings_percent": 0.0,
+      "actual_processing_time": 0.001422882080078125
+    },
+    {
+      "step": 2,
+      "seq_len": 9,
+      "tokens_pruned": 0,
+      "layers_skipped": 0,
+      "layers_compressed": 0,
+      "cloud_offloaded": 0,
+      "memory_usage_mb": 1.127288818359375,
+      "estimated_latency_ms": 50.0,
+      "energy_savings_percent": 0.0,
+      "actual_processing_time": 0.0013539791107177734
+    },
+    {
+      "step": 3,
+      "seq_len": 10,
+      "tokens_pruned": 0,
+      "layers_skipped": 0,
+      "layers_compressed": 0,
+      "cloud_offloaded": 0,
+      "memory_usage_mb": 1.127288818359375,
+      "estimated_latency_ms": 50.0,
+      "energy_savings_percent": 0.0,
+      "actual_processing_time": 0.0013110637664794922
+    },
+    {
+      "step": 4,
+      "seq_len": 11,
+      "tokens_pruned": 0,
+      "layers_skipped": 0,
+      "layers_compressed": 0,
+      "cloud_offloaded": 0,
+      "memory_usage_mb": 1.127288818359375,
+      "estimated_latency_ms": 50.0,
+      "energy_savings_percent": 0.0,
+      "actual_processing_time": 0.0013818740844726562
+    },
+    {
+      "step": 5,
+      "seq_len": 12,
+      "tokens_pruned": 0,
+      "layers_skipped": 0,
+      "layers_compressed": 0,
+      "cloud_offloaded": 0,
+      "memory_usage_mb": 1.127288818359375,
+      "estimated_latency_ms": 50.0,
+      "energy_savings_percent": 0.0,
+      "actual_processing_time": 0.0015406608581542969
+    }
+  ]
+}
