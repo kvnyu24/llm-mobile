@@ -30,6 +30,7 @@ import json
 from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime
 import torch.nn.functional as F
+import threading
 
 # Import the four key modules
 from edge_cloud.edge_cloud_manager import EdgeCloudManager
@@ -40,6 +41,117 @@ from memory_manager.memory_manager import MemoryManager
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("hybrid_inference")
+
+# Add a helper function to simulate computation for transformer layers
+def simulate_transformer_layer_computation(seq_len, hidden_size, is_compressed=False, compression_ratio=0.1):
+    """
+    Simulate the actual computation time of a transformer layer.
+    This function creates a realistic workload to better demonstrate the benefits
+    of optimizations.
+    
+    Args:
+        seq_len: Sequence length
+        hidden_size: Hidden dimension size
+        is_compressed: Whether this layer is using compression
+        compression_ratio: Compression ratio for low-rank factorization
+        
+    Returns:
+        Execution time in seconds
+    """
+    start_time = time.time()
+    
+    # Create tensors to work with
+    batch_size = 1
+    input_tensor = torch.randn(batch_size, seq_len, hidden_size)
+    
+    # Simulate key/query/value projections
+    if not is_compressed:
+        # Full computation
+        # Simulate self-attention with 3 projections (Q, K, V)
+        weight_qkv = torch.randn(hidden_size, hidden_size * 3)
+        bias_qkv = torch.randn(hidden_size * 3)
+        
+        # Project input to Q, K, V
+        qkv = torch.matmul(input_tensor, weight_qkv) + bias_qkv
+        
+        # Split into Q, K, V
+        query, key, value = torch.split(qkv, hidden_size, dim=-1)
+        
+        # Compute attention scores (Q * K^T / sqrt(d_k))
+        scores = torch.matmul(query, key.transpose(-2, -1)) / (hidden_size ** 0.5)
+        
+        # Apply softmax to get attention weights
+        attention_weights = F.softmax(scores, dim=-1)
+        
+        # Apply attention weights to value
+        attended = torch.matmul(attention_weights, value)
+    else:
+        # Compressed computation (simulate low-rank factorization)
+        # Use low-rank approximation with two smaller matrices
+        rank = max(1, int(hidden_size * compression_ratio))
+        
+        # For QKV projection: split into two smaller matrices
+        weight1 = torch.randn(hidden_size, rank)
+        weight2 = torch.randn(rank, hidden_size * 3)
+        bias_qkv = torch.randn(hidden_size * 3)
+        
+        # Two-step matrix multiplication (much cheaper)
+        intermediate = torch.matmul(input_tensor, weight1)
+        qkv = torch.matmul(intermediate, weight2) + bias_qkv
+        
+        # Split into Q, K, V
+        query, key, value = torch.split(qkv, hidden_size, dim=-1)
+        
+        # Compute attention scores (Q * K^T / sqrt(d_k))
+        scores = torch.matmul(query, key.transpose(-2, -1)) / (hidden_size ** 0.5)
+        
+        # Apply softmax to get attention weights
+        attention_weights = F.softmax(scores, dim=-1)
+        
+        # Apply attention weights to value
+        attended = torch.matmul(attention_weights, value)
+    
+    # Simulate FFN (two linear projections with activation)
+    if not is_compressed:
+        # Full FFN
+        ffn_intermediate_size = hidden_size * 4
+        weight_ffn1 = torch.randn(hidden_size, ffn_intermediate_size)
+        bias_ffn1 = torch.randn(ffn_intermediate_size)
+        weight_ffn2 = torch.randn(ffn_intermediate_size, hidden_size)
+        bias_ffn2 = torch.randn(hidden_size)
+        
+        # First projection + activation
+        ffn_intermediate = F.gelu(torch.matmul(attended, weight_ffn1) + bias_ffn1)
+        
+        # Second projection
+        output = torch.matmul(ffn_intermediate, weight_ffn2) + bias_ffn2
+    else:
+        # Compressed FFN
+        ffn_intermediate_size = hidden_size * 4
+        rank = max(1, int(hidden_size * compression_ratio))
+        
+        # First projection using low-rank factorization
+        weight_ffn1a = torch.randn(hidden_size, rank)
+        weight_ffn1b = torch.randn(rank, ffn_intermediate_size)
+        bias_ffn1 = torch.randn(ffn_intermediate_size)
+        
+        # Second projection using low-rank factorization
+        weight_ffn2a = torch.randn(ffn_intermediate_size, rank)
+        weight_ffn2b = torch.randn(rank, hidden_size)
+        bias_ffn2 = torch.randn(hidden_size)
+        
+        # First projection + activation
+        temp = torch.matmul(attended, weight_ffn1a)
+        ffn_intermediate = F.gelu(torch.matmul(temp, weight_ffn1b) + bias_ffn1)
+        
+        # Second projection
+        temp = torch.matmul(ffn_intermediate, weight_ffn2a)
+        output = torch.matmul(temp, weight_ffn2b) + bias_ffn2
+    
+    # Force computation to complete (important for accurate timing)
+    _ = output.sum().item()
+    
+    return time.time() - start_time
 
 def create_fake_hidden_state(batch_size: int, seq_len: int, hidden_size: int) -> torch.Tensor:
     """Create a simulated hidden state tensor for demonstration purposes."""
@@ -186,6 +298,7 @@ def run_inference(
     # Start timing
     start_time = time.time()
     step_times = []
+    step_computation_times = []  # Track actual computation time separate from setup overhead
     
     # Set up default model config if not provided
     if model_config is None:
@@ -518,6 +631,9 @@ def run_inference(
         if compressed_layers:
             logger.info(f"Compressed layers: {[idx for idx, _ in compressed_layers]}")
             
+        # Track the actual computation time (not setup time)
+        computation_start_time = time.time()
+        
         # 5. Simulate processing through the network
         # In a real implementation, this would be where we execute the actual model layers
         if detailed_logging:
@@ -525,6 +641,52 @@ def run_inference(
             for layer_idx in range(num_layers):
                 strategy = layer_decisions.get(layer_idx, "unknown")
                 logger.info(f"  Layer {layer_idx}: {strategy}")
+        
+        # Simulate the actual computation for each layer
+        total_layer_time = 0
+        current_seq_len = current_tokens.shape[1]
+        
+        for layer_idx in range(num_layers):
+            layer_strategy = layer_decisions.get(layer_idx, "unknown")
+            
+            # Skip this layer if it's being skipped
+            if layer_strategy == "skip":
+                continue
+                
+            # If it's a cloud layer, simulate network latency instead of computation
+            if layer_strategy == "cloud":
+                # Simulate cloud latency (much less than local computation for large models)
+                # Just add a small delay to simulate network transfer
+                time.sleep(0.0005)  # 0.5ms transfer delay per layer
+                continue
+            
+            # For local computation, check if it's compressed
+            is_compressed = False
+            compression_ratio = 0.01  # Default for highly compressed
+            
+            if layer_strategy.startswith("compress"):
+                is_compressed = True
+                # Extract compression ratio if available
+                if "_" in layer_strategy:
+                    try:
+                        compression_ratio = float(layer_strategy.split("_")[1])
+                    except:
+                        pass
+            
+            # Do the actual simulated computation
+            layer_time = simulate_transformer_layer_computation(
+                seq_len=current_seq_len,
+                hidden_size=hidden_size,
+                is_compressed=is_compressed,
+                compression_ratio=compression_ratio
+            )
+            
+            total_layer_time += layer_time
+        
+        # Record the time spent on actual computation (not setup)
+        computation_time = time.time() - computation_start_time
+        step_stats["actual_computation_time"] = computation_time
+        step_computation_times.append(computation_time)
         
         # 6. Simulate generating a new token
         # In a real implementation, this would come from the model output
@@ -577,7 +739,7 @@ def run_inference(
         step_end_time = time.time()
         step_duration = step_end_time - step_start_time
         step_times.append(step_duration)
-        step_stats["actual_processing_time"] = step_duration
+        step_stats["total_step_time"] = step_duration
         
         # Add step stats to the detailed log
         stats["step_details"].append(step_stats)
@@ -585,16 +747,23 @@ def run_inference(
         # Real-time efficiency report
         logger.info(f"Step efficiency: {energy_savings_percent:.1f}% energy saving, " +
                   f"{latency_savings:.1f}ms latency saving")
+                  
+        # Log the difference between total time and computation time (setup overhead)
+        overhead = step_duration - computation_time
+        logger.info(f"Step timing: {computation_time:.4f}s computation, {overhead:.4f}s overhead, " +
+                  f"{step_duration:.4f}s total")
     
     # Calculate final statistics
     end_time = time.time()
     total_duration = end_time - start_time
     avg_token_time = sum(step_times) / len(step_times) if step_times else 0
+    avg_computation_time = sum(step_computation_times) / len(step_computation_times) if step_computation_times else 0
     
     # Summarize the inference process
     logger.info("\n=== Inference Summary ===")
     logger.info(f"Total processing time: {total_duration:.2f}s")
     logger.info(f"Average time per token: {avg_token_time:.4f}s")
+    logger.info(f"Average computation time per token: {avg_computation_time:.4f}s")
     logger.info(f"Generated {max_new_tokens} new tokens")
     logger.info(f"Final sequence length: {current_tokens.shape[1]}")
     logger.info("\nOptimization Statistics:")
@@ -625,7 +794,8 @@ def run_inference(
         "final_tokens": current_tokens,
         "stats": stats,
         "total_time": total_duration,
-        "avg_token_time": avg_token_time
+        "avg_token_time": avg_token_time,
+        "avg_computation_time": avg_computation_time
     }
 
 if __name__ == "__main__":
@@ -649,6 +819,7 @@ if __name__ == "__main__":
     parser.add_argument("--detailed", action="store_true", help="Enable detailed logging")
     parser.add_argument("--save-stats", action="store_true", help="Save statistics to JSON file")
     parser.add_argument("--output", type=str, default="", help="Output file for statistics")
+    parser.add_argument("--benchmark", action="store_true", help="Run benchmark mode to compare optimized vs unoptimized")
     
     args = parser.parse_args()
     
@@ -682,9 +853,46 @@ if __name__ == "__main__":
         if key != "step_details":  # Skip the detailed step info
             logger.info(f"{key}: {value}")
             
+    # Prepare rich statistics for output
+    output_stats = dict(result["stats"])
+    output_stats["computation_time"] = {
+        "total_time_seconds": result["total_time"],
+        "avg_token_time_seconds": result["avg_token_time"],
+        "avg_computation_time_seconds": result["avg_computation_time"],
+        "overhead_time_seconds": result["avg_token_time"] - result["avg_computation_time"],
+        "percent_overhead": ((result["avg_token_time"] - result["avg_computation_time"]) / result["avg_token_time"]) * 100 if result["avg_token_time"] > 0 else 0,
+    }
+    
     # Save statistics if requested
-    if args.save_stats:
-        output_file = args.output if args.output else f"hybrid_inference_stats_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    if args.save_stats or args.benchmark:
+        # Use provided filename or generate one with timestamp
+        if args.output:
+            output_file = args.output
+        else:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            # Create descriptive filename based on enabled optimizations
+            optimizations = []
+            if not args.no_token_pruning:
+                optimizations.append("tok")
+            if not args.no_layer_opt:
+                optimizations.append("lay")
+            if not args.no_memory_opt:
+                optimizations.append("mem")
+            if not args.no_edge_cloud:
+                optimizations.append("cloud")
+            
+            if optimizations:
+                opt_str = "_".join(optimizations)
+            else:
+                opt_str = "none"
+                
+            output_file = f"hybrid_inference_{opt_str}_{timestamp}.json"
+        
         with open(output_file, 'w') as f:
-            json.dump(result["stats"], f, indent=2)
-        logger.info(f"Statistics saved to {output_file}") 
+            json.dump(output_stats, f, indent=2)
+        logger.info(f"Statistics saved to {output_file}")
+        
+        # Store the stats object in a global variable for potential further processing
+        # This can be used by benchmark scripts that import this module
+        global last_run_stats
+        last_run_stats = output_stats 

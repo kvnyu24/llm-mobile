@@ -106,8 +106,9 @@ while [[ $# -gt 0 ]]; do
             ;;
         --benchmark)
             echo "Running benchmark mode..."
-            # Run with all optimizations enabled
             timestamp=$(date +%Y%m%d_%H%M%S)
+            
+            # Run with all optimizations enabled
             echo "1. Running with all optimizations enabled..."
             python src/hybrid_inference.py --tokens "$TOKENS" --seq-len "$SEQ_LEN" --save-stats --output "hybrid_inference_all_enabled_${timestamp}.json"
             
@@ -115,8 +116,78 @@ while [[ $# -gt 0 ]]; do
             echo "2. Running with all optimizations disabled..."
             python src/hybrid_inference.py --tokens "$TOKENS" --seq-len "$SEQ_LEN" --no-token-pruning --no-layer-opt --no-memory-opt --no-edge-cloud --save-stats --output "hybrid_inference_all_disabled_${timestamp}.json"
             
-            # Compare the results
-            echo "Benchmark complete. See the output files for detailed statistics."
+            # Compare the results - create a comparison summary
+            echo ""
+            echo "==================================================="
+            echo "BENCHMARK COMPARISON - OPTIMIZED VS UNOPTIMIZED"
+            echo "==================================================="
+            
+            # Use jq to generate a detailed comparison
+            if command -v jq >/dev/null 2>&1; then
+                # Create a combined JSON file with both results
+                jq -s '{optimized: .[0], unoptimized: .[1]}' "hybrid_inference_all_enabled_${timestamp}.json" "hybrid_inference_all_disabled_${timestamp}.json" > "hybrid_inference_comparison_${timestamp}.json"
+                
+                # Extract computation statistics
+                opt_comp_time=$(jq -r '.optimized.computation_time.avg_computation_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
+                unopt_comp_time=$(jq -r '.unoptimized.computation_time.avg_computation_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
+                
+                # Calculate speedup
+                if (( $(echo "$unopt_comp_time > 0" | bc -l) )); then
+                    speedup=$(echo "scale=2; $unopt_comp_time / $opt_comp_time" | bc)
+                    speedup_percent=$(echo "scale=1; ($speedup - 1) * 100" | bc)
+                else
+                    speedup="N/A"
+                    speedup_percent="N/A"
+                fi
+                
+                # Display comparison
+                echo "Computation Time Comparison:"
+                echo "  Optimized:   ${opt_comp_time}s per token"
+                echo "  Unoptimized: ${unopt_comp_time}s per token"
+                echo "  Speedup:     ${speedup}x (${speedup_percent}%)"
+                echo ""
+                
+                # Memory usage comparison
+                opt_mem_saved=$(jq -r '.optimized.memory_saved_mb' "hybrid_inference_comparison_${timestamp}.json")
+                unopt_mem_saved=$(jq -r '.unoptimized.memory_saved_mb' "hybrid_inference_comparison_${timestamp}.json")
+                mem_diff=$(echo "scale=2; $opt_mem_saved - $unopt_mem_saved" | bc)
+                
+                echo "Memory Usage Comparison:"
+                echo "  Optimized memory saved:   ${opt_mem_saved} MB"
+                echo "  Unoptimized memory saved: ${unopt_mem_saved} MB"
+                echo "  Difference:               ${mem_diff} MB"
+                echo ""
+                
+                # Energy savings
+                opt_energy=$(jq -r '.optimized.estimated_energy_savings_percent' "hybrid_inference_comparison_${timestamp}.json")
+                unopt_energy=$(jq -r '.unoptimized.estimated_energy_savings_percent' "hybrid_inference_comparison_${timestamp}.json")
+                energy_diff=$(echo "scale=1; $opt_energy - $unopt_energy" | bc)
+                
+                echo "Energy Savings Comparison:"
+                echo "  Optimized energy savings:   ${opt_energy}%"
+                echo "  Unoptimized energy savings: ${unopt_energy}%"
+                echo "  Difference:                 ${energy_diff}%"
+                echo ""
+                
+                # Overhead comparison
+                opt_overhead=$(jq -r '.optimized.computation_time.overhead_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
+                unopt_overhead=$(jq -r '.unoptimized.computation_time.overhead_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
+                
+                echo "Setup Overhead Comparison:"
+                echo "  Optimized overhead:   ${opt_overhead}s per token"
+                echo "  Unoptimized overhead: ${unopt_overhead}s per token"
+                echo ""
+                
+                echo "Detailed comparison saved to: hybrid_inference_comparison_${timestamp}.json"
+            else
+                echo "jq command not found. Please install jq to see detailed comparisons."
+                echo "Basic results saved to individual JSON files."
+            fi
+            
+            echo "==================================================="
+            echo "Benchmark complete!"
+            echo "==================================================="
+            
             exit 0
             ;;
         --help)
