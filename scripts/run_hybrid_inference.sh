@@ -11,184 +11,92 @@
 set -e  # Exit on error
 
 # Default settings
-TOKENS=10
-SEQ_LEN=8
-HIDDEN_SIZE=768
-NUM_LAYERS=12
-NUM_HEADS=12
-DISABLE_TOKEN_PRUNING=false
-DISABLE_LAYER_OPT=false
-DISABLE_MEMORY_OPT=false
-DISABLE_EDGE_CLOUD=false
+MODEL_NAME="gpt2"
+PROMPT="Test memory compression, layer skipping, and token pruning with pruning action"
+TOKENS=150 
+DEVICE="auto"
+LOW_MEM_BUDGET=5    # Budget used when forcing quantization
+HIGH_MEM_BUDGET=10000 # Budget used to measure baseline memory without quantizing
+
+# Benchmark comparison mode
+COMPARISON_MODE="all" # Default comparison
+
 DETAILED_LOG=false
-SAVE_STATS=false
-OUTPUT_FILE=""
 
 # Help function
 show_help() {
-    echo "Usage: $0 [options]"
+    echo "Usage: $0 [options] [--compare-mode]"
     echo
-    echo "Demonstrates the multi-pronged optimization approach for efficient LLM inference"
+    echo "Runs comparison benchmarks using hybrid_inference.py"
     echo
-    echo "Options:"
-    echo "  --tokens N              Number of tokens to generate (default: 10)"
-    echo "  --seq-len N             Initial sequence length (default: 8)"
-    echo "  --hidden-size N         Hidden size dimension (default: 768)"
-    echo "  --num-layers N          Number of transformer layers (default: 12)"
-    echo "  --num-heads N           Number of attention heads (default: 12)"
-    echo "  --no-token-pruning      Disable token pruning optimization"
-    echo "  --no-layer-opt          Disable layer compression and skipping"
-    echo "  --no-memory-opt         Disable memory management optimization"
-    echo "  --no-edge-cloud         Disable edge-cloud partitioning"
-    echo "  --detailed              Enable detailed logging"
-    echo "  --save-stats            Save statistics to a JSON file"
-    echo "  --output FILE           Output file for statistics"
-    echo "  --benchmark             Run in benchmark mode (all optimizations on/off)"
-    echo "  --help                  Show this help message and exit"
+    echo "General Options:"
+    echo "  --model-name NAME     Hugging Face model name (default: gpt2)"
+    echo "  --prompt TEXT         Input prompt (default: test sentence)"
+    echo "  --tokens N            Number of tokens to generate (default: 150)"
+    echo "  --device DEV          Device (cpu, cuda, auto) (default: auto)"
+    # echo "  --low-budget MB       Low memory budget for forcing quantization (default: 5)" # Can add later if needed
+    # echo "  --high-budget MB      High memory budget for baseline memory measurement (default: 10000)" # Can add later if needed
+    echo "  --detailed            Enable detailed logging for both runs"
+    echo "  --help                Show this help message and exit"
     echo
-    echo "Examples:"
-    echo "  $0 --tokens 20 --detailed"
-    echo "  $0 --no-token-pruning --no-edge-cloud --save-stats"
-    echo "  $0 --benchmark"
+    echo "Comparison Modes (Choose one):"
+    echo "  --compare-layer-skip          Compare Layer Skipping only vs Baseline (No Optimizations)"
+    echo "  --compare-memory              Compare Memory Quantization (Low Budget) vs Memory Measurement (High Budget)"
+    echo "  --compare-all                 Compare All Enabled (Layer Skip + Mem Quant Low Budget) vs Baseline (No Optimizations) [DEFAULT]"
+    echo "  --compare-mem-overhead        Compare Memory Measurement (High Budget) vs Baseline (No Optimizations)"
+    echo "  --compare-skip-plus-mem-overhead Compare Skip + Memory Measurement (High Budget) vs Baseline (No Optimizations)"
+    echo "  --compare-token-pruning       [Experimental] Compare Token Pruning only vs Baseline (Requires functional Python code)"
     exit 1
 }
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --model-name)
+            MODEL_NAME="$2"
+            shift 2
+            ;;
+        --prompt)
+            PROMPT="$2"
+            shift 2
+            ;;
         --tokens)
             TOKENS="$2"
             shift 2
             ;;
-        --seq-len)
-            SEQ_LEN="$2"
+        --device)
+            DEVICE="$2"
             shift 2
             ;;
-        --hidden-size)
-            HIDDEN_SIZE="$2"
-            shift 2
-            ;;
-        --num-layers)
-            NUM_LAYERS="$2"
-            shift 2
-            ;;
-        --num-heads)
-            NUM_HEADS="$2"
-            shift 2
-            ;;
-        --no-token-pruning)
-            DISABLE_TOKEN_PRUNING=true
-            shift
-            ;;
-        --no-layer-opt)
-            DISABLE_LAYER_OPT=true
-            shift
-            ;;
-        --no-memory-opt)
-            DISABLE_MEMORY_OPT=true
-            shift
-            ;;
-        --no-edge-cloud)
-            DISABLE_EDGE_CLOUD=true
-            shift
-            ;;
+        # --low-budget) LOW_MEM_BUDGET="$2"; shift 2 ;; # Example if budget args are needed
+        # --high-budget) HIGH_MEM_BUDGET="$2"; shift 2 ;;
         --detailed)
             DETAILED_LOG=true
             shift
             ;;
-        --save-stats)
-            SAVE_STATS=true
+        --compare-layer-skip)
+            COMPARISON_MODE="layer_skip"
             shift
             ;;
-        --output)
-            OUTPUT_FILE="$2"
-            shift 2
+        --compare-memory)
+            COMPARISON_MODE="memory"
+            shift
             ;;
-        --benchmark)
-            echo "Running benchmark mode..."
-            timestamp=$(date +%Y%m%d_%H%M%S)
-            
-            # Run with all optimizations enabled
-            echo "1. Running with all optimizations enabled..."
-            python src/hybrid_inference.py --tokens "$TOKENS" --seq-len "$SEQ_LEN" --save-stats --output "hybrid_inference_all_enabled_${timestamp}.json"
-            
-            # Run with all optimizations disabled
-            echo "2. Running with all optimizations disabled..."
-            python src/hybrid_inference.py --tokens "$TOKENS" --seq-len "$SEQ_LEN" --no-token-pruning --no-layer-opt --no-memory-opt --no-edge-cloud --save-stats --output "hybrid_inference_all_disabled_${timestamp}.json"
-            
-            # Compare the results - create a comparison summary
-            echo ""
-            echo "==================================================="
-            echo "BENCHMARK COMPARISON - OPTIMIZED VS UNOPTIMIZED"
-            echo "==================================================="
-            
-            # Use jq to generate a detailed comparison
-            if command -v jq >/dev/null 2>&1; then
-                # Create a combined JSON file with both results
-                jq -s '{optimized: .[0], unoptimized: .[1]}' "hybrid_inference_all_enabled_${timestamp}.json" "hybrid_inference_all_disabled_${timestamp}.json" > "hybrid_inference_comparison_${timestamp}.json"
-                
-                # Extract computation statistics
-                opt_comp_time=$(jq -r '.optimized.computation_time.avg_computation_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
-                unopt_comp_time=$(jq -r '.unoptimized.computation_time.avg_computation_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
-                
-                # Calculate speedup
-                if (( $(echo "$unopt_comp_time > 0" | bc -l) )); then
-                    speedup=$(echo "scale=2; $unopt_comp_time / $opt_comp_time" | bc)
-                    speedup_percent=$(echo "scale=1; ($speedup - 1) * 100" | bc)
-                else
-                    speedup="N/A"
-                    speedup_percent="N/A"
-                fi
-                
-                # Display comparison
-                echo "Computation Time Comparison:"
-                echo "  Optimized:   ${opt_comp_time}s per token"
-                echo "  Unoptimized: ${unopt_comp_time}s per token"
-                echo "  Speedup:     ${speedup}x (${speedup_percent}%)"
-                echo ""
-                
-                # Memory usage comparison
-                opt_mem_saved=$(jq -r '.optimized.memory_saved_mb' "hybrid_inference_comparison_${timestamp}.json")
-                unopt_mem_saved=$(jq -r '.unoptimized.memory_saved_mb' "hybrid_inference_comparison_${timestamp}.json")
-                mem_diff=$(echo "scale=2; $opt_mem_saved - $unopt_mem_saved" | bc)
-                
-                echo "Memory Usage Comparison:"
-                echo "  Optimized memory saved:   ${opt_mem_saved} MB"
-                echo "  Unoptimized memory saved: ${unopt_mem_saved} MB"
-                echo "  Difference:               ${mem_diff} MB"
-                echo ""
-                
-                # Energy savings
-                opt_energy=$(jq -r '.optimized.estimated_energy_savings_percent' "hybrid_inference_comparison_${timestamp}.json")
-                unopt_energy=$(jq -r '.unoptimized.estimated_energy_savings_percent' "hybrid_inference_comparison_${timestamp}.json")
-                energy_diff=$(echo "scale=1; $opt_energy - $unopt_energy" | bc)
-                
-                echo "Energy Savings Comparison:"
-                echo "  Optimized energy savings:   ${opt_energy}%"
-                echo "  Unoptimized energy savings: ${unopt_energy}%"
-                echo "  Difference:                 ${energy_diff}%"
-                echo ""
-                
-                # Overhead comparison
-                opt_overhead=$(jq -r '.optimized.computation_time.overhead_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
-                unopt_overhead=$(jq -r '.unoptimized.computation_time.overhead_time_seconds' "hybrid_inference_comparison_${timestamp}.json")
-                
-                echo "Setup Overhead Comparison:"
-                echo "  Optimized overhead:   ${opt_overhead}s per token"
-                echo "  Unoptimized overhead: ${unopt_overhead}s per token"
-                echo ""
-                
-                echo "Detailed comparison saved to: hybrid_inference_comparison_${timestamp}.json"
-            else
-                echo "jq command not found. Please install jq to see detailed comparisons."
-                echo "Basic results saved to individual JSON files."
-            fi
-            
-            echo "==================================================="
-            echo "Benchmark complete!"
-            echo "==================================================="
-            
-            exit 0
+        --compare-mem-overhead)
+            COMPARISON_MODE="mem_overhead"
+            shift
+            ;;
+        --compare-skip-plus-mem-overhead)
+            COMPARISON_MODE="skip_plus_mem_overhead"
+            shift
+            ;;
+        --compare-token-pruning)
+            COMPARISON_MODE="token_pruning"
+            shift
+            ;;
+        --compare-all)
+            COMPARISON_MODE="all"
+            shift
             ;;
         --help)
             show_help
@@ -200,57 +108,265 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Build the command with appropriate flags
-CMD="python src/hybrid_inference.py --tokens $TOKENS --seq-len $SEQ_LEN --hidden-size $HIDDEN_SIZE --num-layers $NUM_LAYERS --num-heads $NUM_HEADS"
+# --- Set up based on Comparison Mode ---
+OPTIMIZED_FLAGS=""
+BASELINE_FLAGS=""
+COMPARISON_TITLE=""
+JSON_COMPARISON_TYPE=""
+OPTIMIZED_RUN_LABEL=""
+BASELINE_RUN_LABEL=""
+METRICS_TO_COMPARE=() # Array to hold metrics like time, mem, skips, quants
 
-# Add optional flags based on user choices
-if [ "$DISABLE_TOKEN_PRUNING" = true ]; then
-    CMD="$CMD --no-token-pruning"
-fi
+case $COMPARISON_MODE in
+    layer_skip)
+        OPTIMIZED_FLAGS="--layer-opt"
+        BASELINE_FLAGS="" # No opt flags for baseline
+        COMPARISON_TITLE="LAYER SKIP ONLY VS BASELINE"
+        JSON_COMPARISON_TYPE="layer_skip_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Layer Skip Only"
+        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        METRICS_TO_COMPARE=("time" "skips")
+        ;;
+    memory)
+        OPTIMIZED_FLAGS="--memory-opt --mem-budget $LOW_MEM_BUDGET"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="MEMORY QUANTIZATION VS BASELINE MEMORY"
+        JSON_COMPARISON_TYPE="memory_quantization_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Quantized (Low Budget)"
+        BASELINE_RUN_LABEL="Unquantized (High Budget)"
+        METRICS_TO_COMPARE=("time" "mem" "quants")
+        ;;
+    mem_overhead)
+        OPTIMIZED_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        BASELINE_FLAGS="" # No opt flags for baseline
+        COMPARISON_TITLE="MEMORY OVERHEAD VS BASELINE"
+        JSON_COMPARISON_TYPE="mem_overhead_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Memory Measure (High Budget)"
+        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        METRICS_TO_COMPARE=("time" "mem" "quants") # Compare mem even if expected to be same
+        ;;
+    skip_plus_mem_overhead)
+        OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        BASELINE_FLAGS="" # No opt flags for baseline
+        COMPARISON_TITLE="SKIP + MEMORY OVERHEAD VS BASELINE"
+        JSON_COMPARISON_TYPE="skip_plus_mem_overhead_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Skip + Mem Measure (High Budget)"
+        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        METRICS_TO_COMPARE=("time" "mem" "skips" "quants")
+        ;;
+    token_pruning)
+        OPTIMIZED_FLAGS="--token-pruning" # NOTE: Requires Python code to be uncommented!
+        BASELINE_FLAGS=""
+        COMPARISON_TITLE="[EXPERIMENTAL] TOKEN PRUNING VS BASELINE"
+        JSON_COMPARISON_TYPE="token_pruning_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Token Pruning Only"
+        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        METRICS_TO_COMPARE=("time" "pruned") # Need to add extraction for pruned tokens
+        echo "WARNING: --compare-token-pruning requires uncommenting pruning logic in hybrid_inference.py"
+        ;;
+    all | *)
+        # Default to comparing all enabled vs baseline
+        OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $LOW_MEM_BUDGET"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="ALL ENABLED (SKIP+QUANT) VS BASELINE (MEM MEASURE ONLY)"
+        JSON_COMPARISON_TYPE="all_vs_baseline_mem_measure"
+        OPTIMIZED_RUN_LABEL="All Enabled (Skip+Quant)"
+        BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
+        METRICS_TO_COMPARE=("time" "mem" "skips" "quants")
+        COMPARISON_MODE="all" # Ensure mode is set for default case
+        ;;
+esac
 
-if [ "$DISABLE_LAYER_OPT" = true ]; then
-    CMD="$CMD --no-layer-opt"
-fi
-
-if [ "$DISABLE_MEMORY_OPT" = true ]; then
-    CMD="$CMD --no-memory-opt"
-fi
-
-if [ "$DISABLE_EDGE_CLOUD" = true ]; then
-    CMD="$CMD --no-edge-cloud"
-fi
-
+# Common arguments
+# MEM_BUDGET not needed here as flags include specific budgets
+COMMON_ARGS="--model-name $MODEL_NAME --prompt \"$PROMPT\" --tokens $TOKENS --device $DEVICE"
 if [ "$DETAILED_LOG" = true ]; then
-    CMD="$CMD --detailed"
+    COMMON_ARGS="$COMMON_ARGS --detailed"
 fi
 
-if [ "$SAVE_STATS" = true ]; then
-    CMD="$CMD --save-stats"
-    
-    if [ -n "$OUTPUT_FILE" ]; then
-        CMD="$CMD --output $OUTPUT_FILE"
+echo "Running benchmark comparison: $COMPARISON_TITLE"
+timestamp=$(date +%Y%m%d_%H%M%S)
+
+# Create results directory
+mkdir -p results
+
+# Log files and JSON output file names
+OPT_OUT_FILE="optimized_run_${COMPARISON_MODE}_${timestamp}.log"
+BASE_OUT_FILE="baseline_run_${COMPARISON_MODE}_${timestamp}.log"
+JSON_OUT_FILE="results/comparison_${COMPARISON_MODE}_${timestamp}.json"
+
+# --- Run Optimized --- 
+echo "1. Running OPTIMIZED ($OPTIMIZED_RUN_LABEL)..."
+OPTIMIZED_CMD="python src/hybrid_inference.py $COMMON_ARGS $OPTIMIZED_FLAGS"
+echo "   Command: $OPTIMIZED_CMD"
+exec 3>&1 
+OPTIMIZED_EXIT_CODE=0
+eval "$OPTIMIZED_CMD" 2>&1 | tee "$OPT_OUT_FILE" >&3 || OPTIMIZED_EXIT_CODE=$?
+exec 3>&-
+if [ $OPTIMIZED_EXIT_CODE -ne 0 ]; then echo "ERROR: Optimized run failed... Check $OPT_OUT_FILE."; exit 1; fi
+sync 
+echo "   Finished Optimized Run."
+
+# --- Run Baseline --- 
+echo "2. Running BASELINE ($BASELINE_RUN_LABEL)..."
+BASELINE_CMD="python src/hybrid_inference.py $COMMON_ARGS $BASELINE_FLAGS"
+echo "   Command: $BASELINE_CMD"
+exec 3>&1
+BASELINE_EXIT_CODE=0
+eval "$BASELINE_CMD" 2>&1 | tee "$BASE_OUT_FILE" >&3 || BASELINE_EXIT_CODE=$?
+exec 3>&-
+if [ $BASELINE_EXIT_CODE -ne 0 ]; then echo "ERROR: Baseline run failed... Check $BASE_OUT_FILE."; exit 1; fi
+sync 
+echo "   Finished Baseline Run."
+
+
+# --- Extract Metrics --- 
+echo ""
+echo "Extracting metrics for $COMPARISON_MODE comparison..."
+
+# Initialize metric variables with defaults
+OPT_LOOP_TIME=0; OPT_PEAK_MEM=0; OPT_LAYER_SKIPS=0; OPT_QUANT_EVENTS=0
+BASE_LOOP_TIME=0; BASE_PEAK_MEM=0; BASE_LAYER_SKIPS=0; BASE_QUANT_EVENTS=0
+
+# Helper function for robust extraction
+extract_metric() {
+    local file="$1"
+    local pattern="$2"
+    local default="$3"
+
+    # Find the last line matching pattern, remove prefix up to colon+space, remove suffix after number
+    local result=$(grep "$pattern" "$file" | tail -n 1 | sed -e 's/^.*:[[:space:]]*//' -e 's/[^0-9.].*$//' || echo "$default")
+
+    # Final safety check in bash
+    if ! [[ "$result" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+        # Add debug log if validation fails
+        # echo "DEBUG: Validation failed for result='$result', pattern='$pattern', file='$file'" >&2
+        result="$default"
     fi
+    echo "$result"
+}
+
+OPT_LOOP_TIME=$(extract_metric "$OPT_OUT_FILE" "Generation Loop Time:" "0")
+BASE_LOOP_TIME=$(extract_metric "$BASE_OUT_FILE" "Generation Loop Time:" "0")
+echo "   Extracted OPT_LOOP_TIME: '$OPT_LOOP_TIME'"
+echo "   Extracted BASE_LOOP_TIME: '$BASE_LOOP_TIME'"
+
+# Extract other metrics only if needed for the comparison mode
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
+    OPT_PEAK_MEM=$(extract_metric "$OPT_OUT_FILE" "Peak Memory Usage:" "0.0")
+    BASE_PEAK_MEM=$(extract_metric "$BASE_OUT_FILE" "Peak Memory Usage:" "0.0")
+    # Handle cases where memory manager wasn't enabled (grep finds nothing)
+    if ! grep -q "Peak Memory Usage:" "$OPT_OUT_FILE"; then OPT_PEAK_MEM="0.0"; fi
+    if ! grep -q "Peak Memory Usage:" "$BASE_OUT_FILE"; then BASE_PEAK_MEM="0.0"; fi
 fi
+echo "   Extracted OPT_PEAK_MEM: '$OPT_PEAK_MEM'"
+echo "   Extracted BASE_PEAK_MEM: '$BASE_PEAK_MEM'"
 
-# Set Python path
-export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " skips " ]]; then
+    # Layers skipped: Need the integer value
+    OPT_LAYER_SKIPS=$(extract_metric "$OPT_OUT_FILE" "Layers skipped (decision count):" "0")
+    BASE_LAYER_SKIPS=$(extract_metric "$BASE_OUT_FILE" "Layers skipped (decision count):" "0")
+fi
+echo "   Extracted OPT_LAYER_SKIPS: '$OPT_LAYER_SKIPS'"
+echo "   Extracted BASE_LAYER_SKIPS: '$BASE_LAYER_SKIPS'"
 
-# Display configuration
-echo "============================================"
-echo "HYBRID INFERENCE DEMONSTRATION"
-echo "============================================"
-echo "Configuration:"
-echo " - Tokens to generate: $TOKENS"
-echo " - Initial sequence length: $SEQ_LEN"
-echo " - Model dimensions: ${HIDDEN_SIZE}d, ${NUM_LAYERS} layers, ${NUM_HEADS} heads"
-echo " - Token pruning: $([ "$DISABLE_TOKEN_PRUNING" = true ] && echo "disabled" || echo "enabled")"
-echo " - Layer optimization: $([ "$DISABLE_LAYER_OPT" = true ] && echo "disabled" || echo "enabled")"
-echo " - Memory optimization: $([ "$DISABLE_MEMORY_OPT" = true ] && echo "disabled" || echo "enabled")"
-echo " - Edge-Cloud partitioning: $([ "$DISABLE_EDGE_CLOUD" = true ] && echo "disabled" || echo "enabled")"
-echo "============================================"
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " quants " ]]; then
+    # Quantization Events: Need the integer value
+    OPT_QUANT_EVENTS=$(extract_metric "$OPT_OUT_FILE" "Quantization Events:" "0")
+    BASE_QUANT_EVENTS=$(extract_metric "$BASE_OUT_FILE" "Quantization Events:" "0")
+fi
+echo "   Extracted OPT_QUANT_EVENTS: '$OPT_QUANT_EVENTS'"
+echo "   Extracted BASE_QUANT_EVENTS: '$BASE_QUANT_EVENTS'"
 
-# Run the command
-echo "Running: $CMD"
-eval "$CMD"
+# --- Construct and Save JSON --- 
+echo ""
+echo "Saving results to $JSON_OUT_FILE ..."
 
-echo "Hybrid inference complete!" 
+JSON_CONTENT=$(cat <<EOF
+{
+  "timestamp": "$timestamp",
+  "comparison_type": "$JSON_COMPARISON_TYPE",
+  "model_name": "$MODEL_NAME",
+  "prompt": "$PROMPT",
+  "tokens": $TOKENS,
+  "device": "$DEVICE",
+  "optimized_run": {
+    "label": "$OPTIMIZED_RUN_LABEL",
+    "flags": "$OPTIMIZED_FLAGS",
+    "loop_time_s": $OPT_LOOP_TIME,
+    "peak_memory_mb": $OPT_PEAK_MEM,
+    "layers_skipped": $OPT_LAYER_SKIPS,
+    "quant_events": $OPT_QUANT_EVENTS
+  },
+  "baseline_run": {
+    "label": "$BASELINE_RUN_LABEL",
+    "flags": "$BASELINE_FLAGS",
+    "loop_time_s": $BASE_LOOP_TIME,
+    "peak_memory_mb": $BASE_PEAK_MEM,
+    "layers_skipped": $BASE_LAYER_SKIPS,
+    "quant_events": $BASE_QUANT_EVENTS
+  }
+}
+EOF
+)
+
+echo "$JSON_CONTENT" | jq '.' > "$JSON_OUT_FILE" # Use jq for basic validation/pretty-print if available
+if [ $? -ne 0 ]; then echo "ERROR: Failed to write JSON (maybe install jq?). Saving raw."; echo "$JSON_CONTENT" > "$JSON_OUT_FILE"; fi
+echo "   Successfully saved comparison results."
+
+
+# --- Display Comparison Table (Console Output) --- 
+echo ""
+echo "==================================================="
+echo "BENCHMARK COMPARISON - $COMPARISON_TITLE"
+echo "Prompt: $PROMPT"
+echo "Tokens: $TOKENS | Model: $MODEL_NAME | Device: $DEVICE"
+echo "==================================================="
+# Dynamically build header and rows based on METRICS_TO_COMPARE
+HEADER_FMT="%-25s | %-25s | %-25s\n"
+ROW_FMT_S="%-25s | %-25s | %-25s\n"  # Format for strings/integers
+ROW_FMT_F="%-25s | %-25.2f | %-25.2f\n" # Format for floats
+SEPARATOR=$(printf -- '-%.0s' {1..81})
+
+printf "$HEADER_FMT" "Metric" "$OPTIMIZED_RUN_LABEL" "$BASELINE_RUN_LABEL"
+echo "$SEPARATOR"
+
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " time " ]]; then
+    printf "$ROW_FMT_F" "Loop Time (s)" "$OPT_LOOP_TIME" "$BASE_LOOP_TIME"
+fi
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
+    printf "$ROW_FMT_F" "Peak Memory (MB)" "$OPT_PEAK_MEM" "$BASE_PEAK_MEM"
+fi
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " skips " ]]; then
+    printf "$ROW_FMT_S" "Layers Skipped" "$OPT_LAYER_SKIPS" "$BASE_LAYER_SKIPS"
+fi
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " quants " ]]; then
+    printf "$ROW_FMT_S" "Quantization Events" "$OPT_QUANT_EVENTS" "$BASE_QUANT_EVENTS"
+fi
+echo "$SEPARATOR"
+
+# Calculate differences (requires bc or similar)
+echo "Calculation Hints (requires 'bc'):"
+if command -v bc >/dev/null 2>&1; then
+    if [[ " ${METRICS_TO_COMPARE[*]} " =~ " time " ]]; then
+        TIME_SAVED=$(echo "scale=2; $BASE_LOOP_TIME - $OPT_LOOP_TIME" | bc)
+        echo "Time Saved (Baseline - Opt): $TIME_SAVED s"
+        if (( $(echo "$OPT_LOOP_TIME > 0" | bc -l) )); then
+            SPEEDUP=$(echo "scale=2; $BASE_LOOP_TIME / $OPT_LOOP_TIME" | bc)
+            echo "Speedup: ${SPEEDUP}x"
+        fi
+    fi
+    if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
+         MEM_SAVED=$(echo "scale=2; $BASE_PEAK_MEM - $OPT_PEAK_MEM" | bc)
+         echo "Memory Saved (Base - Opt): $MEM_SAVED MB"
+    fi
+else
+    echo " 'bc' command not found. Cannot calculate differences automatically."
+fi
+echo "==================================================="
+
+# Clean up log files
+# <<< COMMENTED OUT: Keep logs for inspection >>>
+# rm "$OPT_OUT_FILE" "$BASE_OUT_FILE"
+
+echo "Benchmark complete! JSON results saved to $JSON_OUT_FILE" 

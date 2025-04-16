@@ -79,10 +79,20 @@ class EdgeCloudManager:
         self.layer_costs = {}  # Cache for layer-wise costs
         self.last_partition = None  # Last partition decision
         
+        # <<< ADDED: Determine num_layers from model >>>
+        self.num_layers = 12 # Default
+        if self.model and hasattr(self.model, 'config'):
+            self.num_layers = getattr(self.model.config, "num_hidden_layers", 
+                                    getattr(self.model.config, "n_layer", self.num_layers))
+        # --------------------------------------------
+        
         # Start device monitoring if device monitor is provided and not already monitoring
         if self.device_monitor is not None and hasattr(self.device_monitor, 'is_monitoring'):
             if not self.device_monitor.is_monitoring():
                 self.device_monitor.start_background_monitoring()
+        
+        # TODO: Initialize network condition estimators, cost models, etc.
+        logger.info(f"EdgeCloudManager initialized for {self.num_layers} layers.")
         
     def measure_network_conditions(self):
         """
@@ -112,13 +122,13 @@ class EdgeCloudManager:
         # Fallback to default values if no device monitor provided
         return {"cpu_usage_percent": 50, "memory": {"available_mb": 1000, "used_percent": 50}}
         
-    def decide_partition(self, input_size, prompt_len=0):
+    def decide_partition(self, current_step: int, **kwargs) -> Dict[str, List[int]]:
         """
-        Decide which layers to run locally vs in the cloud.
+        Decides which layers run locally and which remotely.
         
         Args:
-            input_size: Size of the input tensor
-            prompt_len: Length of the prompt (for autoregressive generation)
+            current_step: The current step in the generation process
+            **kwargs: Additional keyword arguments
             
         Returns:
             A tuple (local_layers, remote_layers) indicating which layers should be run where
@@ -145,31 +155,51 @@ class EdgeCloudManager:
             logger.warning("Network bandwidth too low, forcing local execution")
             return self.determine_full_partition(local_only=True)
         
-        # Estimate costs for different partitioning strategies
-        partitioning_options = self._generate_partitioning_options()
-        lowest_cost = float('inf')
-        best_partition = None
+        # Estimate input size (this would be more accurate in a real implementation)
+        # input_size = 1024 * 1024  # 1MB as a placeholder # <<< This needs to be defined or passed
         
-        for partition in partitioning_options:
-            cost = self._estimate_partition_cost(
-                partition, 
-                network_conditions, 
-                device_load, 
-                input_size
-            )
-            
-            if cost < lowest_cost:
-                lowest_cost = cost
-                best_partition = partition
+        # --- Simple Placeholder Logic --- 
+        # Example: Split layers roughly in half
+        # We use self.num_layers determined during __init__
+        split_point = self.num_layers // 2
+        local_layers = list(range(split_point)) 
+        remote_layers = list(range(split_point, self.num_layers))
+        # --------------------------------
+
+        # --- COMMENTED OUT: Complex placeholder logic causing NameError ---
+        # # Use the decision method
+        # # Estimate costs for different partitioning strategies
+        # partitioning_options = self._generate_partitioning_options()
+        # lowest_cost = float('inf')
+        # best_partition = None
+        # 
+        # for partition in partitioning_options:
+        #     cost = self._estimate_partition_cost(
+        #         partition, 
+        #         network_conditions, 
+        #         device_load, 
+        #         input_size # <<< ERROR: input_size not defined here
+        #     )
+        #     
+        #     if cost < lowest_cost:
+        #         lowest_cost = cost
+        #         best_partition = partition
+        # 
+        # # Convert the partition representation to lists of local and remote layers
+        # local_layers, remote_layers = self._partition_to_layer_lists(best_partition)
+        # ------------------------------------------------------------------
         
-        # Convert the partition representation to lists of local and remote layers
-        local_layers, remote_layers = self._partition_to_layer_lists(best_partition)
-        
-        # Cache this decision
+        # Cache this decision (using the simple split for now)
         self.last_partition = (local_layers, remote_layers)
         
-        logger.info(f"Decided partition: {len(local_layers)} layers local, {len(remote_layers)} layers remote")
-        return local_layers, remote_layers
+        # Logging is now done in hybrid_inference.py based on the returned dict
+        # logger.info(f"Decided partition: {len(local_layers)} layers local, {len(remote_layers)} layers remote")
+
+        # Return the simple split
+        return {
+            "local_layers": local_layers,
+            "remote_layers": remote_layers
+        }
         
     def _estimate_partition_cost(self, partition, network_conditions, device_load, input_size):
         """

@@ -31,6 +31,7 @@ from typing import Dict, List, Tuple, Optional, Any
 from datetime import datetime
 import torch.nn.functional as F
 import threading
+import functools
 
 # Import the four key modules
 from edge_cloud.edge_cloud_manager import EdgeCloudManager
@@ -38,861 +39,786 @@ from token_pruning.token_pruner import TokenPruner
 from layer_compression.layer_compression_skipping import LayerCompressionAndSkipping
 from memory_manager.memory_manager import MemoryManager
 
+# <<< ADDED: Import transformers >>>
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# <<< ADDED: Import PEFT >>>
+from peft import LoraConfig, get_peft_model, TaskType
+
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
+# <<< Adjusted Logging >>>
+log_level = logging.DEBUG if 'args' in locals() and args.detailed else logging.INFO
+logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("hybrid_inference")
+# --------------------
 
-# Add a helper function to simulate computation for transformer layers
-def simulate_transformer_layer_computation(seq_len, hidden_size, is_compressed=False, compression_ratio=0.1):
+# <<< Global skip counter and hook handles >>>
+# Moved stats dictionary inside run_inference
+hook_handles = []
+
+# <<< Define the Pre-Forward Hook for Layer Skipping >>>
+def layer_skip_pre_hook(module, args, layer_idx, layer_handler, stats, detailed_logging):
     """
-    Simulate the actual computation time of a transformer layer.
-    This function creates a realistic workload to better demonstrate the benefits
-    of optimizations.
-    
-    Args:
-        seq_len: Sequence length
-        hidden_size: Hidden dimension size
-        is_compressed: Whether this layer is using compression
-        compression_ratio: Compression ratio for low-rank factorization
-        
-    Returns:
-        Execution time in seconds
+    Pre-forward hook to decide if a layer should be skipped.
+    Sets a flag on the module instance if skipping is decided.
     """
-    start_time = time.time()
+    # global hook_handles # Not strictly needed here, but good practice if modifying
     
-    # Create tensors to work with
-    batch_size = 1
-    input_tensor = torch.randn(batch_size, seq_len, hidden_size)
-    
-    # Simulate key/query/value projections
-    if not is_compressed:
-        # Full computation
-        # Simulate self-attention with 3 projections (Q, K, V)
-        weight_qkv = torch.randn(hidden_size, hidden_size * 3)
-        bias_qkv = torch.randn(hidden_size * 3)
-        
-        # Project input to Q, K, V
-        qkv = torch.matmul(input_tensor, weight_qkv) + bias_qkv
-        
-        # Split into Q, K, V
-        query, key, value = torch.split(qkv, hidden_size, dim=-1)
-        
-        # Compute attention scores (Q * K^T / sqrt(d_k))
-        scores = torch.matmul(query, key.transpose(-2, -1)) / (hidden_size ** 0.5)
-        
-        # Apply softmax to get attention weights
-        attention_weights = F.softmax(scores, dim=-1)
-        
-        # Apply attention weights to value
-        attended = torch.matmul(attention_weights, value)
-    else:
-        # Compressed computation (simulate low-rank factorization)
-        # Use low-rank approximation with two smaller matrices
-        rank = max(1, int(hidden_size * compression_ratio))
-        
-        # For QKV projection: split into two smaller matrices
-        weight1 = torch.randn(hidden_size, rank)
-        weight2 = torch.randn(rank, hidden_size * 3)
-        bias_qkv = torch.randn(hidden_size * 3)
-        
-        # Two-step matrix multiplication (much cheaper)
-        intermediate = torch.matmul(input_tensor, weight1)
-        qkv = torch.matmul(intermediate, weight2) + bias_qkv
-        
-        # Split into Q, K, V
-        query, key, value = torch.split(qkv, hidden_size, dim=-1)
-        
-        # Compute attention scores (Q * K^T / sqrt(d_k))
-        scores = torch.matmul(query, key.transpose(-2, -1)) / (hidden_size ** 0.5)
-        
-        # Apply softmax to get attention weights
-        attention_weights = F.softmax(scores, dim=-1)
-        
-        # Apply attention weights to value
-        attended = torch.matmul(attention_weights, value)
-    
-    # Simulate FFN (two linear projections with activation)
-    if not is_compressed:
-        # Full FFN
-        ffn_intermediate_size = hidden_size * 4
-        weight_ffn1 = torch.randn(hidden_size, ffn_intermediate_size)
-        bias_ffn1 = torch.randn(ffn_intermediate_size)
-        weight_ffn2 = torch.randn(ffn_intermediate_size, hidden_size)
-        bias_ffn2 = torch.randn(hidden_size)
-        
-        # First projection + activation
-        ffn_intermediate = F.gelu(torch.matmul(attended, weight_ffn1) + bias_ffn1)
-        
-        # Second projection
-        output = torch.matmul(ffn_intermediate, weight_ffn2) + bias_ffn2
-    else:
-        # Compressed FFN
-        ffn_intermediate_size = hidden_size * 4
-        rank = max(1, int(hidden_size * compression_ratio))
-        
-        # First projection using low-rank factorization
-        weight_ffn1a = torch.randn(hidden_size, rank)
-        weight_ffn1b = torch.randn(rank, ffn_intermediate_size)
-        bias_ffn1 = torch.randn(ffn_intermediate_size)
-        
-        # Second projection using low-rank factorization
-        weight_ffn2a = torch.randn(ffn_intermediate_size, rank)
-        weight_ffn2b = torch.randn(rank, hidden_size)
-        bias_ffn2 = torch.randn(hidden_size)
-        
-        # First projection + activation
-        temp = torch.matmul(attended, weight_ffn1a)
-        ffn_intermediate = F.gelu(torch.matmul(temp, weight_ffn1b) + bias_ffn1)
-        
-        # Second projection
-        temp = torch.matmul(ffn_intermediate, weight_ffn2a)
-        output = torch.matmul(temp, weight_ffn2b) + bias_ffn2
-    
-    # Force computation to complete (important for accurate timing)
-    _ = output.sum().item()
-    
-    return time.time() - start_time
+    # The primary input to the layer is usually the first argument (hidden_states)
+    hidden_state = args[0] if args else None
+    module._skip_this_forward = False # Default: don't skip
 
-def create_fake_hidden_state(batch_size: int, seq_len: int, hidden_size: int) -> torch.Tensor:
-    """Create a simulated hidden state tensor for demonstration purposes."""
-    return torch.rand(batch_size, seq_len, hidden_size)
+    if layer_handler and hidden_state is not None:
+        # Check if not a hot path layer
+        if layer_idx not in layer_handler.hot_path_indices:
+            try:
+                should_skip_decision = layer_handler.should_skip_layer(layer_idx, hidden_state)
+                if should_skip_decision:
+                    module._skip_this_forward = True
+                    stats["layers_skipped_decision_count"] += 1 # Increment counter here
+                    if detailed_logging:
+                        # Use logger.debug for potentially verbose info
+                        logger.debug(f"--- Hook decision: Skip Layer {layer_idx} ---")
+                # Optional: Log execution decision too
+                # elif detailed_logging:
+                #      logger.debug(f"--- Hook decision: Execute Layer {layer_idx} ---")
 
-def create_fake_hidden_states(batch_size: int, seq_len: int, hidden_size: int) -> torch.Tensor:
-    """Create simulated hidden states for token pruning demonstration."""
-    return torch.randn(batch_size, seq_len, hidden_size)
-
-def create_fake_attention_matrix(seq_len):
-    """Create a simulated attention matrix for token pruning demonstration."""
-    # Create base attention pattern [seq_len, seq_len]
-    attention_matrix = torch.zeros((seq_len, seq_len))
+            except Exception as skip_e:
+                logger.error(f"Error in layer_skip_pre_hook for layer {layer_idx}: {skip_e}", exc_info=True) # Added exc_info
+                module._skip_this_forward = False # Default to not skipping on error
     
-    # Create attention pattern where:
-    # - First few tokens get medium attention (0.5)
-    # - Middle tokens get medium-high attention (0.7)
-    # - Recent tokens get high attention (0.85)
-    # - Latest token gets very high attention (0.95)
-    # - Self-attention is always high (0.9)
-    
-    for i in range(seq_len):
-        for j in range(seq_len):
-            if i == j:  # Self attention
-                attention_matrix[i,j] = 0.9
-            elif j == seq_len - 1:  # Latest token
-                attention_matrix[i,j] = 0.95
-            elif j < 3:  # First few tokens
-                attention_matrix[i,j] = 0.5
-            elif j > seq_len - 4:  # Recent tokens
-                attention_matrix[i,j] = 0.85
-            else:  # Middle tokens
-                attention_matrix[i,j] = 0.7
-                
-    # Normalize each row
-    attention_matrix = F.softmax(attention_matrix * 5.0, dim=-1)  # Lower temperature for less extreme distribution
-    
-    # Expand to [batch=1, heads=12, seq_len, seq_len]
-    attention_matrix = attention_matrix.unsqueeze(0).unsqueeze(0)
-    attention_matrix = attention_matrix.expand(1, 12, seq_len, seq_len)
-    
-    return attention_matrix
-
-def simulate_network_conditions() -> Dict[str, float]:
-    """Simulate varying network conditions for edge-cloud decisions."""
-    # Returns bandwidth in Mbps and latency in ms
-    return {
-        "bandwidth_mbps": random.uniform(0.5, 10.0),
-        "latency_ms": random.uniform(50, 500),
-        "connected": random.random() > 0.1  # 10% chance of no connection
-    }
-
-def simulate_device_load() -> Dict[str, Any]:
-    """Simulate device computational load for edge-cloud decisions."""
-    return {
-        "cpu_usage_percent": random.uniform(10, 90),
-        "memory": {
-            "available_mb": random.uniform(50, 500),
-            "used_percent": random.uniform(30, 80)
-        },
-        "battery_level_percent": random.uniform(20, 100)
-    }
-
-def estimate_latency_savings(
-    base_latency: float, 
-    tokens_pruned: int, 
-    layers_skipped: int, 
-    compressed_layers: int,
-    seq_len: int,
-    num_layers: int
-) -> float:
-    """
-    Estimate the latency savings from our optimizations.
-    
-    Args:
-        base_latency: Base latency for processing a token through all layers
-        tokens_pruned: Number of tokens pruned
-        layers_skipped: Number of layers skipped
-        compressed_layers: Number of compressed layers
-        seq_len: Current sequence length
-        num_layers: Number of layers in the model
-        
-    Returns:
-        Estimated latency savings in ms
-    """
-    # Token pruning savings (quadratic effect on attention operations)
-    token_pruning_factor = 1.0
-    if seq_len > 0:
-        token_reduction_ratio = tokens_pruned / seq_len
-        # Quadratic effect due to attention matrix size reduction
-        token_pruning_factor = (1.0 - token_reduction_ratio) ** 2
-    
-    # Layer skipping savings (linear with number of layers)
-    layer_skip_factor = 1.0 - (layers_skipped / num_layers)
-    
-    # Compression savings (smaller effect than skipping)
-    compression_factor = 1.0 - (0.3 * compressed_layers / num_layers)
-    
-    # Combined effect (multiplicative)
-    total_factor = token_pruning_factor * layer_skip_factor * compression_factor
-    
-    # Calculate savings
-    optimized_latency = base_latency * total_factor
-    savings = base_latency - optimized_latency
-    
-    return savings
+    # This hook doesn't modify the *input* args, just sets a flag on the module
+    return None # Pre-hooks should return None or a tuple of modified args
 
 def run_inference(
+    model_name: str, 
     input_tokens: torch.Tensor, 
+    prompt: str,
     max_new_tokens: int = 20, 
-    model_config: Optional[Dict[str, Any]] = None,
     enable_token_pruning: bool = True,
     enable_layer_optimization: bool = True,
     enable_memory_management: bool = True,
-    enable_edge_cloud: bool = True,
-    detailed_logging: bool = True,
-    simulated_base_latency_ms: float = 50.0  # Fake base latency per token
-) -> Dict[str, Any]:
+    enable_edge_cloud: bool = True, # Keep flag, logic commented
+    max_memory_mb: int = 10,    # <<< Default low budget >>>
+    detailed_logging: bool = False, # <<< Default False >>>
+    device_map: str = "auto"       # <<< Default auto >>>
+) -> Tuple[str, Dict[str, Any]]: # <<< Corrected return type hint >>>
     """
-    Run a simulated inference process using the multi-pronged optimization approach.
-    
-    This function demonstrates how the four key optimization techniques would work
-    together during autoregressive decoding in a transformer-based LLM:
-    
-    1. Edge-Cloud Collaborative Inference
-    2. Runtime Token Pruning
-    3. Layer Compression and Skipping
-    4. Model-Aware Memory Management
-    
-    Args:
-        input_tokens: The input token IDs
-        max_new_tokens: Maximum number of tokens to generate
-        model_config: Optional model configuration
-        enable_token_pruning: Whether to enable token pruning
-        enable_layer_optimization: Whether to enable layer compression/skipping
-        enable_memory_management: Whether to enable memory optimizations
-        enable_edge_cloud: Whether to enable edge-cloud partitioning
-        detailed_logging: Whether to produce detailed logs
-        simulated_base_latency_ms: Fake base latency for a token through all layers
-        
-    Returns:
-        A dictionary with inference statistics and simulated results
+    Run hybrid inference using a real LLM with manual layer loop.
     """
     # Start timing
-    start_time = time.time()
-    step_times = []
-    step_computation_times = []  # Track actual computation time separate from setup overhead
+    start_time_inference = time.time() # More specific name
+    step_times = [] # Still useful for avg token time
     
-    # Set up default model config if not provided
-    if model_config is None:
-        model_config = {
-            "hidden_size": 768,
-            "num_hidden_layers": 12,
-            "num_attention_heads": 12,
-            "batch_size": 1
-        }
+    # Determine device
+    if device_map == "auto":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        device = torch.device(device_map)
     
-    # Extract model dimensions
-    hidden_size = model_config["hidden_size"]
-    num_layers = model_config["num_hidden_layers"]
-    num_heads = model_config["num_attention_heads"]
-    batch_size = model_config["batch_size"]
+    logger.info(f"Using device: {device}")
+    
+    # Load model and tokenizer
+    logger.info(f"Loading model: {model_name}...")
+    try:
+        # Use torch.float16 for potentially smaller memory footprint if GPU available
+        # Use torch.bfloat16 if available and preferred (Ampere+ GPUs)
+        dtype = torch.float32 # Default
+        if device.type == 'cuda':
+            if torch.cuda.is_bf16_supported():
+                dtype = torch.bfloat16 
+                logger.info("Using bfloat16 for model loading on CUDA.")
+            else:
+                dtype = torch.float16
+                logger.info("Using float16 for model loading on CUDA.")
+        else:
+            logger.info("Using float32 for model loading on CPU.")
+            
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=dtype).to(device)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model.eval() # Set model to evaluation mode
+    except Exception as e:
+        logger.error(f"Error loading model {model_name}: {e}", exc_info=True) # Added exc_info
+        raise
+        
+    model_config = model.config # Get config from loaded model
+    
+    # Extract model dimensions (ensure correct attribute names)
+    hidden_size = getattr(model_config, "hidden_size", getattr(model_config, "n_embd", 768))
+    num_layers = getattr(model_config, "num_hidden_layers", getattr(model_config, "n_layer", 12))
+    num_heads = getattr(model_config, "num_attention_heads", getattr(model_config, "n_head", 12))
+    vocab_size = getattr(model_config, "vocab_size", 50257) # Default for GPT-2
+    
+    # Ensure input tokens are on the correct device
+    input_tokens = input_tokens.to(device)
     
     logger.info("=====================================================")
-    logger.info("HYBRID INFERENCE DEMONSTRATION - MULTI-PRONGED APPROACH")
+    logger.info("HYBRID INFERENCE - REAL MODEL EXECUTION")
     logger.info("=====================================================")
+    logger.info(f"Model: {model_name}")
+    logger.info(f"Device: {device}")
     logger.info(f"Model dimensions: {hidden_size}d, {num_layers} layers, {num_heads} attention heads")
+    logger.info(f"Prompt: \"{prompt}\"")
+    logger.info(f"Max New Tokens: {max_new_tokens}")
     logger.info(f"Enabled optimizations:")
-    logger.info(f"  - Token Pruning: {'✅' if enable_token_pruning else '❌'}")
-    logger.info(f"  - Layer Compression/Skipping: {'✅' if enable_layer_optimization else '❌'}")
-    logger.info(f"  - Memory Management: {'✅' if enable_memory_management else '❌'}")
-    logger.info(f"  - Edge-Cloud Partitioning: {'✅' if enable_edge_cloud else '❌'}")
+    logger.info(f"  - Token Pruning: {enable_token_pruning}")
+    logger.info(f"  - Layer Opt (Skip/Compress): {enable_layer_optimization}")
+    logger.info(f"  - Memory Management (Quant): {enable_memory_management}")
+    logger.info(f"  - Edge-Cloud Partitioning: {enable_edge_cloud} (Logic not active)")
     logger.info("=====================================================")
     
-    # Initialize the four components
-    logger.info("Initializing optimization components...")
+    # Initialize Managers
+    memory_manager = None
+    if enable_memory_management:
+        logger.info("Initializing Memory Manager...")
+        try:
+            memory_manager = MemoryManager(
+                max_memory_mb=max_memory_mb,
+                quantization_enabled=True, # If flag is true, enable quantization
+                enable_logging=detailed_logging
+            )
+            memory_manager.initialize_kv_cache(model_config) # <<< CORRECTED method name >>>
+        except Exception as mem_init_e:
+            logger.error(f"Failed to initialize MemoryManager: {mem_init_e}", exc_info=True)
+            memory_manager = None # Ensure it's None on error
+
+    token_pruner = None
+    if enable_token_pruning:
+        logger.info("Initializing Token Pruner...")
+        try:
+            token_pruner = TokenPruner(
+                pruning_threshold=0.01, # <<< Drastically LOWERED threshold >>>
+            )
+        except Exception as pruner_init_e:
+            logger.error(f"Failed to initialize TokenPruner: {pruner_init_e}", exc_info=True)
+            token_pruner = None
+
+    layer_handler = None
+    if enable_layer_optimization:
+        logger.info("Initializing Layer Compression/Skipping Manager...")
+        # Define hot path layers (e.g., first, last, maybe middle)
+        hot_path_layers = [0, 1, num_layers - 1] if num_layers > 2 else list(range(num_layers)) # Example
+        try:
+            layer_handler = LayerCompressionAndSkipping(
+                model=model,
+                compression_rank=-1, # Not used for skipping currently
+                hot_path_indices=hot_path_layers,
+                skip_threshold=0.5 # <<< INCREASED threshold to encourage skipping >>>
+            )
+            # Apply offline compression if desired (can be separated later)
+            # logger.info("Applying offline layer compression (SVD)...")
+            # layer_handler.apply_low_rank_factorization() # <-- KEEP COMMENTED
+            # logger.info("Offline compression finished.")
+        except Exception as layer_init_e:
+            logger.error(f"Failed to initialize LayerCompressionAndSkipping: {layer_init_e}", exc_info=True)
+            layer_handler = None # Ensure it's None on error
+
+    # edge_cloud_manager = EdgeCloudManager(...) # Keep commented
     
-    # Memory Manager for KV cache
-    memory_manager = MemoryManager(
-        max_memory_mb=100,  # Simulated max memory
-        page_size=8,        # Tokens per page
-        quantization_enabled=enable_memory_management,
-        memory_threshold_percent=90,
-        offloading_enabled=enable_memory_management,
-        enable_logging=detailed_logging
-    )
+    # <<< ADDED: Initialize EdgeCloudManager >>>
+    edge_manager = None
+    if enable_edge_cloud:
+        logger.info("Initializing Edge-Cloud Manager...")
+        try:
+            # Import necessary class
+            from edge_cloud.edge_cloud_manager import EdgeCloudManager 
+            # <<< FIXED: Pass arguments expected by EdgeCloudManager __init__ >>>
+            edge_manager = EdgeCloudManager(model=model) # Pass model, add others later if needed
+            # Provide necessary config like num_layers
+        except Exception as edge_init_e:
+            logger.error(f"Failed to initialize EdgeCloudManager: {edge_init_e}", exc_info=True)
+            edge_manager = None
+    # -------------------------------------
     
-    # Edge-Cloud Manager for layer partitioning
-    edge_cloud_manager = EdgeCloudManager(
-        model=None,  # We're not using an actual model here
-        device_monitor=None,  # Would be a real device monitor in practice
-        cloud_client=None,    # Would be a real cloud client in practice
-        mini_llm=None,        # Would be a real mini-LLM handler in practice
-        privacy_protection=None,  # Would be real privacy protection in practice
-        energy_weight=0.3,
-        latency_weight=0.4,
-        memory_weight=0.3
-    )
-    
-    # Token Pruner
-    token_pruner = TokenPruner(
-        pruning_threshold=0.3,  # Less aggressive pruning threshold
-        max_shadow_size=100      # Maximum number of tokens to keep in shadow set
-    )
-    
-    # Layer Compression and Skipping
-    layer_handler = LayerCompressionAndSkipping(
-        model=None,  # In a real implementation, this would be the actual model
-        compression_rank=8,
-        hot_path_indices=[0, 1, num_layers-1],  # First, second, and last layers are critical
-        skip_threshold=0.3
-    )
-    
-    # Prepare for autoregressive generation
-    current_tokens = input_tokens.clone()
-    seq_len = current_tokens.shape[1]
-    
-    # Create statistics to track
+    # Initialize stats dictionary
     stats = {
-        "tokens_pruned": 0,
-        "tokens_reintroduced": 0,
-        "layers_skipped": 0,
-        "layers_compressed": 0,
-        "cloud_offloaded_layers": 0,
-        "local_processed_layers": 0,
-        "memory_saved_mb": 0,
-        "memory_before_optimization_mb": 0,
-        "memory_after_optimization_mb": 0,
-        "total_tokens_processed": seq_len,
-        "estimated_latency_savings_ms": 0.0,
-        "estimated_energy_savings_percent": 0.0,
+        "total_tokens_processed": input_tokens.shape[1],
+        "generated_tokens": 0,
+        "layers_skipped_decision_count": 0, # Counter incremented by hook
+        "tokens_pruned_count": 0, # <<< ADDED for pruning >>>
         "step_details": []
     }
+    global hook_handles # Declare we might modify the global list
+    hook_handles = [] # Clear any previous handles
     
-    # Pre-compress some layers when initializing
-    # In a real implementation, this would actually compress the model
-    # For simulation, we'll just track which layers would be compressed
-    if enable_layer_optimization:
-        # Create a record of compressed layer weights for simulation
-        for idx in range(num_layers):
-            if idx not in layer_handler.hot_path_indices or idx == layer_handler.hot_path_indices[-1]:
-                # Track this layer as compressed in our simulator
-                layer_handler.compressed_layers[idx] = {
-                    'original_shape': (hidden_size, hidden_size * 4),  # typical MLP expansion
-                    'compressed': True,
-                    'rank': layer_handler.compression_rank,
-                    'compression_ratio': layer_handler.compression_rank * (hidden_size + hidden_size * 4) / (hidden_size * hidden_size * 4)
-                }
-                stats["layers_compressed"] += 1
-                
-        # Initialize layer temperatures to simulate different layer importances
-        for layer_idx in range(num_layers):
-            # Hot path layers get high temperature
-            if layer_idx in layer_handler.hot_path_indices:
-                temp = 0.9
-            # Earlier and later layers tend to be more important than middle ones
-            elif layer_idx < num_layers * 0.3:
-                temp = 0.7 - 0.3 * (layer_idx / (num_layers * 0.3))
-            elif layer_idx > num_layers * 0.7:
-                temp = 0.4 + 0.3 * ((layer_idx - num_layers * 0.7) / (num_layers * 0.3))
-            else:
-                # Middle layers get lower temperatures - more likely to be skipped
-                temp = 0.2 + 0.1 * random.random()
-                
-            layer_handler.layer_temperatures[layer_idx] = temp
-    
-    logger.info(f"Starting inference with input sequence length: {seq_len}")
-    
-    # Main autoregressive generation loop
-    for i in range(max_new_tokens):
-        step_start_time = time.time()
-        logger.info(f"\n--- Generation step {i+1}/{max_new_tokens} ---")
-        
-        # Statistics for this step
-        step_stats = {
-            "step": i+1,
-            "seq_len": current_tokens.shape[1],
-            "tokens_pruned": 0,
-            "layers_skipped": 0,
-            "layers_compressed": 0,
-            "cloud_offloaded": 0,
-            "memory_usage_mb": 0,
-            "estimated_latency_ms": simulated_base_latency_ms
-        }
-        
-        # 1. Memory Management: Update KV cache
-        current_seq_len = current_tokens.shape[1]
-        key_value_tensors = {
-            "key": create_fake_hidden_state(batch_size, current_seq_len, hidden_size),
-            "value": create_fake_hidden_state(batch_size, current_seq_len, hidden_size)
-        }
-        
-        # Track memory usage before optimizations
-        pre_mem_usage = memory_manager.calculate_memory_usage()
-        stats["memory_before_optimization_mb"] += pre_mem_usage
-        
-        # Add the token positions to the KV cache
-        token_indices = list(range(current_seq_len))
-        # Process each layer (in a real implementation, we'd have per-layer KV states)
-        for layer_idx in range(num_layers):
-            memory_manager.add_to_kv_cache(
-                layer_idx,
-                key_value_tensors["key"],
-                key_value_tensors["value"],
-                token_indices
-            )
-        
-        # Force compression of pages every other step
-        if i % 2 == 0 and enable_memory_management:
-            logger.info("Forcing memory compression for demonstration...")
-            # Get candidate pages for compression
-            candidates = []
-            for page_key in memory_manager.onchip_pages:
-                if not memory_manager.page_metadata[page_key].get('compressed', False):
-                    candidates.append(page_key)
-            
-            # Compress up to 5 pages
-            compressed_count = 0
-            total_memory_saved = 0
-            for layer_idx, page_idx in candidates[:5]:
-                memory_saved = memory_manager.compress_page(layer_idx, page_idx)
-                if memory_saved > 0:
-                    compressed_count += 1
-                    total_memory_saved += memory_saved
-            
-            if compressed_count > 0:
-                logger.info(f"Compressed {compressed_count} pages, saved {total_memory_saved/1024:.2f}KB")
+    # --- Find Model Layers and Embeddings --- (Consolidated)
+    layers = None
+    embedding_layer = None
+    pos_embedding_layer = None
+    final_norm = None
+    lm_head = None
+    is_gpt2_style = hasattr(model, 'transformer') and hasattr(model.transformer, 'h')
+    is_opt_style = hasattr(model, 'model') and hasattr(model.model, 'decoder') and hasattr(model.model.decoder, 'layers')
 
-        mem_usage = memory_manager.calculate_memory_usage()
-        step_stats["memory_usage_mb"] = mem_usage
-        stats["memory_after_optimization_mb"] += mem_usage
-        
-        # Calculate memory saved in this step
-        memory_saved = max(0, pre_mem_usage - mem_usage)
-        stats["memory_saved_mb"] += memory_saved
-        
-        total_pages = len(memory_manager.onchip_pages) + len(memory_manager.offchip_pages)
-        logger.info(f"Memory usage: {mem_usage:.2f}MB, Total pages: {total_pages}")
-        
-        # Get detailed compression stats
-        if enable_memory_management:
-            compression_stats = memory_manager.get_compression_stats()
-            if compression_stats["compressed_pages"] > 0:
-                logger.info(f"Memory compression: {compression_stats['original_size_mb']:.2f}MB → "
-                           f"{compression_stats['compressed_size_mb']:.2f}MB "
-                           f"({compression_stats['percent_saved']:.1f}% saved)")
-                step_stats["compression_ratio"] = compression_stats["compression_ratio"]
-                step_stats["memory_saved_from_compression_mb"] = compression_stats["memory_saved_mb"]
-                # Update overall memory savings
-                stats["memory_saved_mb"] += compression_stats["memory_saved_mb"] / max_new_tokens
-        
-        # 1. Token Pruning
-        pruned_indices = []
-        if enable_token_pruning:
-            # Create attention matrix and hidden states for token scoring
-            attention_matrix = create_fake_attention_matrix(current_seq_len)
-            hidden_states = create_fake_hidden_states(batch_size, current_seq_len, hidden_size)
-            
-            token_scores = token_pruner.score_tokens(attention_matrix, list(range(current_seq_len))) 
-            pruned_indices = token_pruner.identify_prunable_tokens()
-            
-            if pruned_indices:
-                # Create boolean mask for tokens to keep
-                mask = torch.ones(current_seq_len, dtype=torch.bool)
-                mask[pruned_indices] = False
-                
-                # Apply mask to attention matrix (both dimensions)
-                attention_matrix = attention_matrix[:, :, ~mask][:, :, :, ~mask]
-                
-                # Update hidden states
-                if isinstance(hidden_states, torch.Tensor):
-                    hidden_states = hidden_states[:, ~mask]
-                elif isinstance(hidden_states, tuple):
-                    hidden_states = tuple(h[:, ~mask] for h in hidden_states)
-                
-                # Update sequence length
-                current_seq_len = int((~mask).sum())
-                
-                # Log pruning results
-                print(f"Pruned {len(pruned_indices)} tokens, new sequence length: {current_seq_len}")
-                
-                # Update token indices for memory manager
-                token_indices = np.array(token_indices)
-                token_indices = token_indices[~mask.cpu().numpy()]
-                token_indices = token_indices.tolist()
-                
-                # Update statistics
-                stats["tokens_pruned"] += len(pruned_indices)
-                step_stats["tokens_pruned"] = len(pruned_indices)
-            else:
-                logger.info("No tokens pruned in this step")
-        
-        # 3. Edge-Cloud Layer Partitioning: Simulate network and device conditions
-        network_conditions = simulate_network_conditions()
-        device_load = simulate_device_load()
-        
-        # Determine layer partitioning (which layers run where)
-        local_layers, remote_layers = [], []
-        if enable_edge_cloud:
-            # For demonstration purposes, we'll force some layers to run locally
-            # so we can test layer skipping
-            
-            # Normally this would come from edge_cloud_manager
-            # local_layers, remote_layers = edge_cloud_manager.determine_full_partition()
-            
-            # Force certain layers to run locally based on step number
-            # This simulates changing network conditions
-            if i % 2 == 0:  # On even steps, run more layers locally
-                # Run 1/3 of layers locally
-                local_layers = list(range(0, num_layers, 3))
-                remote_layers = [i for i in range(num_layers) if i not in local_layers]
-            else:  # On odd steps, run fewer layers locally
-                # Run every 4th layer locally
-                local_layers = list(range(0, num_layers, 4))
-                remote_layers = [i for i in range(num_layers) if i not in local_layers]
-            
-            # Log the decision
-            logger.info(f"Decided partition: {len(local_layers)} layers local, {len(remote_layers)} layers remote")
+    try: # Wrap identification in try/except
+        if is_gpt2_style:
+            logger.debug("Identified GPT-2 style model structure.")
+            layers = model.transformer.h
+            embedding_layer = model.transformer.wte
+            pos_embedding_layer = model.transformer.wpe
+            final_norm = model.transformer.ln_f
+            lm_head = model.lm_head
+        elif is_opt_style:
+            logger.debug("Identified OPT style model structure.")
+            layers = model.model.decoder.layers
+            embedding_layer = model.model.decoder.embed_tokens
+            pos_embedding_layer = model.model.decoder.embed_positions
+            final_norm = model.model.decoder.final_layer_norm
+            lm_head = model.lm_head
         else:
-            # If edge-cloud is disabled, run everything locally
-            local_layers = list(range(num_layers))
-        
-        # Update statistics
-        stats["local_processed_layers"] += len(local_layers)
-        stats["cloud_offloaded_layers"] += len(remote_layers)
-        step_stats["cloud_offloaded"] = len(remote_layers)
-        
-        # Log partitioning decision
-        logger.info(f"Network bandwidth: {network_conditions['bandwidth_mbps']:.2f} Mbps")
-        logger.info(f"Processing {len(local_layers)} layers locally, {len(remote_layers)} layers in cloud")
-        
-        # 4. Layer Compression and Skipping: Decide which layers to compress or skip
-        compressed_layers = []
-        skipped_layers = []
-        layer_decisions = {}
-        
-        if enable_layer_optimization:
-            # Process each layer based on if it's local or remote
-            for layer_idx in range(num_layers):
-                if layer_idx in remote_layers:
-                    # For cloud layers, we don't need to compress/skip
-                    layer_decisions[layer_idx] = "cloud"
-                else:
-                    # For local layers, decide compression/skipping strategy
-                    # Create a fake hidden state for the gating function
-                    fake_hidden_state = create_fake_hidden_state(batch_size, current_seq_len, hidden_size)
-                    
-                    # Check if we should skip this layer
-                    should_skip = layer_handler.should_skip_layer(layer_idx, fake_hidden_state)
-                    
-                    if should_skip:
-                        skipped_layers.append(layer_idx)
-                        stats["layers_skipped"] += 1
-                        step_stats["layers_skipped"] += 1
-                        layer_decisions[layer_idx] = "skip"
-                    else:
-                        # If not skipping, see if we should compress
-                        is_compressed = layer_idx in layer_handler.compressed_layers
-                        if is_compressed:
-                            compression_rate = layer_handler.compressed_layers[layer_idx].get('compression_ratio', 0.25)
-                            compressed_layers.append((layer_idx, compression_rate))
-                            step_stats["layers_compressed"] += 1
-                            layer_decisions[layer_idx] = f"compress_{compression_rate:.2f}"
-                        else:
-                            layer_decisions[layer_idx] = "full"
-        else:
-            # If layer optimization is disabled, process all local layers fully
-            for layer_idx in range(num_layers):
-                if layer_idx in remote_layers:
-                    layer_decisions[layer_idx] = "cloud"
-                else:
-                    layer_decisions[layer_idx] = "full"
-        
-        # Log layer handling decisions
-        if skipped_layers:
-            logger.info(f"Skipped layers: {skipped_layers}")
-        if compressed_layers:
-            logger.info(f"Compressed layers: {[idx for idx, _ in compressed_layers]}")
+             # If not known structure, manual loop cannot proceed
+             logger.error("Model architecture not recognized for manual loop.")
+             # Return empty results or raise error
+             return "", stats # Or raise NotImplementedError
+             
+        # Verify all components were found
+        if not all([layers is not None, embedding_layer is not None, 
+                   pos_embedding_layer is not None, final_norm is not None, 
+                   lm_head is not None]):
+            raise ValueError("Could not identify all required model components (layers, embeddings, norm, head).")
             
-        # Track the actual computation time (not setup time)
-        computation_start_time = time.time()
-        
-        # 5. Simulate processing through the network
-        # In a real implementation, this would be where we execute the actual model layers
-        if detailed_logging:
-            logger.info("Processing layers with the following strategies:")
-            for layer_idx in range(num_layers):
-                strategy = layer_decisions.get(layer_idx, "unknown")
-                logger.info(f"  Layer {layer_idx}: {strategy}")
-        
-        # Simulate the actual computation for each layer
-        total_layer_time = 0
-        current_seq_len = current_tokens.shape[1]
-        
-        for layer_idx in range(num_layers):
-            layer_strategy = layer_decisions.get(layer_idx, "unknown")
-            
-            # Skip this layer if it's being skipped
-            if layer_strategy == "skip":
-                continue
-                
-            # If it's a cloud layer, simulate network latency instead of computation
-            if layer_strategy == "cloud":
-                # Simulate cloud latency (much less than local computation for large models)
-                # Just add a small delay to simulate network transfer
-                time.sleep(0.0005)  # 0.5ms transfer delay per layer
-                continue
-            
-            # For local computation, check if it's compressed
-            is_compressed = False
-            compression_ratio = 0.01  # Default for highly compressed
-            
-            if layer_strategy.startswith("compress"):
-                is_compressed = True
-                # Extract compression ratio if available
-                if "_" in layer_strategy:
+    except Exception as e:
+        logger.error(f"Error identifying model components: {e}", exc_info=True)
+        return "", stats # Return empty results on error
+
+    # --- Register Hooks (if layer optimization is enabled) ---
+    if enable_layer_optimization and layer_handler and layers:
+        logger.info(f"Registering pre-forward hooks for layer skipping on {len(layers)} layers...")
+        for i, layer_module in enumerate(layers):
+            # Use functools.partial to pass extra arguments (layer_idx, handler, stats) to the hook
+            partial_hook = functools.partial(
+                layer_skip_pre_hook, 
+                layer_idx=i, 
+                layer_handler=layer_handler,
+                stats=stats, # Pass stats dict to the hook
+                detailed_logging=detailed_logging 
+            )
+            try:
+                handle = layer_module.register_forward_pre_hook(partial_hook)
+                hook_handles.append(handle)
+            except Exception as hook_reg_e:
+                logger.error(f"Failed to register hook for layer {i}: {hook_reg_e}")
+        logger.info(f"Successfully registered {len(hook_handles)} hooks.")
+    # --------------------------------------------------------
+
+    # <<< Preparation for Manual Loop >>>
+    current_tokens = input_tokens
+    generated_token_ids = []
+    past_key_values = None
+    # Attention mask starts with shape [batch_size, input_len]
+    attention_mask = torch.ones(current_tokens.shape, dtype=torch.long, device=device)
+
+    logger.info(f"Starting inference loop for {max_new_tokens} tokens...")
+    start_loop_time = time.time() # Time just the loop
+
+    # <<< Manual layer-by-layer generation loop >>>
+    try: # Wrap the main loop in try/except
+        with torch.no_grad():
+            # Configure output flags
+            output_attentions_flag = enable_token_pruning and token_pruner # <<< Enable only if needed >>>
+            output_hidden_states_flag = False
+            # ---------------------------
+
+            for i in range(max_new_tokens):
+                step_start_time = time.time()
+                current_seq_len_before_step = attention_mask.shape[1]
+                if detailed_logging:
+                    logger.debug(f"\n--- Gen Step {i+1}/{max_new_tokens} --- Seq Len: {current_seq_len_before_step} ---")
+
+                # <<< ADDED: Edge-Cloud Partition Decision >>>
+                local_layers = list(range(num_layers)) # Default: all local
+                remote_layers = []
+                if enable_edge_cloud and edge_manager:
                     try:
-                        compression_ratio = float(layer_strategy.split("_")[1])
-                    except:
-                        pass
-            
-            # Do the actual simulated computation
-            layer_time = simulate_transformer_layer_computation(
-                seq_len=current_seq_len,
-                hidden_size=hidden_size,
-                is_compressed=is_compressed,
-                compression_ratio=compression_ratio
-            )
-            
-            total_layer_time += layer_time
-        
-        # Record the time spent on actual computation (not setup)
-        computation_time = time.time() - computation_start_time
-        step_stats["actual_computation_time"] = computation_time
-        step_computation_times.append(computation_time)
-        
-        # 6. Simulate generating a new token
-        # In a real implementation, this would come from the model output
-        new_token = torch.tensor([[random.randint(0, 50000)]])
-        current_tokens = torch.cat([current_tokens, new_token], dim=1)
-        
-        # Update the total token count
-        stats["total_tokens_processed"] += 1
-        
-        # 7. Periodically reintroduce pruned tokens (token reuse)
-        if enable_token_pruning and i % 3 == 0 and token_pruner.shadow_set:
-            # In a real implementation we'd pass current tokens and states
-            # Here we'll just pass the number of tokens we want to reintroduce
-            reintroduced = token_pruner.reintroduce_tokens(current_tokens.tolist(), None)
-            if reintroduced:
-                stats["tokens_reintroduced"] += len(reintroduced)
-                logger.info(f"Reintroduced {len(reintroduced)} tokens from the shadow set")
-        
-        # 8. Estimate performance benefits
-        latency_savings = estimate_latency_savings(
-            simulated_base_latency_ms,
-            step_stats["tokens_pruned"],
-            step_stats["layers_skipped"],
-            step_stats["layers_compressed"],
-            current_seq_len,
-            num_layers
-        )
-        
-        stats["estimated_latency_savings_ms"] += latency_savings
-        step_stats["estimated_latency_ms"] = simulated_base_latency_ms - latency_savings
-        
-        # Calculate approximate energy savings (very rough estimate)
-        energy_savings_percent = 0.0
-        if current_seq_len > 0:
-            token_pruning_factor = min(0.5, step_stats["tokens_pruned"] / current_seq_len) * 0.4
-        else:
-            token_pruning_factor = 0.0
-            
-        layer_skip_factor = (step_stats["layers_skipped"] / max(1, num_layers)) * 0.3
-        layer_compress_factor = (step_stats["layers_compressed"] / max(1, num_layers)) * 0.2
-        cloud_factor = (step_stats["cloud_offloaded"] / max(1, num_layers)) * 0.5
-        
-        energy_savings_percent = (token_pruning_factor + layer_skip_factor + 
-                                 layer_compress_factor + cloud_factor) * 100
-        
-        step_stats["energy_savings_percent"] = energy_savings_percent
-        stats["estimated_energy_savings_percent"] += energy_savings_percent / max_new_tokens
-        
-        # Record step completion time
-        step_end_time = time.time()
-        step_duration = step_end_time - step_start_time
-        step_times.append(step_duration)
-        step_stats["total_step_time"] = step_duration
-        
-        # Add step stats to the detailed log
-        stats["step_details"].append(step_stats)
-        
-        # Real-time efficiency report
-        logger.info(f"Step efficiency: {energy_savings_percent:.1f}% energy saving, " +
-                  f"{latency_savings:.1f}ms latency saving")
-                  
-        # Log the difference between total time and computation time (setup overhead)
-        overhead = step_duration - computation_time
-        logger.info(f"Step timing: {computation_time:.4f}s computation, {overhead:.4f}s overhead, " +
-                  f"{step_duration:.4f}s total")
-    
-    # Calculate final statistics
-    end_time = time.time()
-    total_duration = end_time - start_time
-    avg_token_time = sum(step_times) / len(step_times) if step_times else 0
-    avg_computation_time = sum(step_computation_times) / len(step_computation_times) if step_computation_times else 0
-    
-    # Summarize the inference process
-    logger.info("\n=== Inference Summary ===")
-    logger.info(f"Total processing time: {total_duration:.2f}s")
-    logger.info(f"Average time per token: {avg_token_time:.4f}s")
-    logger.info(f"Average computation time per token: {avg_computation_time:.4f}s")
-    logger.info(f"Generated {max_new_tokens} new tokens")
-    logger.info(f"Final sequence length: {current_tokens.shape[1]}")
-    logger.info("\nOptimization Statistics:")
-    logger.info(f"• Tokens pruned: {stats['tokens_pruned']} ({stats['tokens_pruned']/stats['total_tokens_processed']*100:.1f}% of total)")
-    logger.info(f"• Tokens reintroduced: {stats['tokens_reintroduced']}")
-    logger.info(f"• Layers skipped: {stats['layers_skipped']}")
-    logger.info(f"• Layers compressed: {stats['layers_compressed']}")
-    logger.info(f"• Layers processed locally: {stats['local_processed_layers']}")
-    logger.info(f"• Layers offloaded to cloud: {stats['cloud_offloaded_layers']}")
+                        # Example: Pass minimal state for now
+                        partition_decision = edge_manager.decide_partition(current_step=i)
+                        local_layers = partition_decision.get("local_layers", local_layers)
+                        remote_layers = partition_decision.get("remote_layers", remote_layers)
+                        if detailed_logging:
+                             logger.debug(f"  Edge Partition Decision: Local={local_layers}, Remote={remote_layers}")
+                    except Exception as part_e:
+                        logger.error(f"Error getting partition decision: {part_e}", exc_info=True)
+                # -----------------------------------------
 
-    # Memory optimization summary
-    if enable_memory_management:
-        # Get final compression stats
-        final_compression_stats = memory_manager.get_compression_stats()
-        avg_mem_before = stats["memory_before_optimization_mb"] / max_new_tokens if max_new_tokens > 0 else 0
-        avg_mem_after = stats["memory_after_optimization_mb"] / max_new_tokens if max_new_tokens > 0 else 0
-        logger.info(f"• Memory usage: {avg_mem_before:.2f}MB → {avg_mem_after:.2f}MB (avg per step)")
-        logger.info(f"• Memory savings from compression: {final_compression_stats['memory_saved_mb']:.2f}MB " +
-                   f"({final_compression_stats['percent_saved']:.1f}% compression ratio)")
-        logger.info(f"• Total memory saved: {stats['memory_saved_mb']:.2f}MB")
-    else:
-        logger.info(f"• Estimated memory saved: {stats['memory_saved_mb']:.2f} MB")
+                # --- Prepare inputs for this step --- 
+                inputs_embeds = embedding_layer(current_tokens)
+                
+                # Calculate position IDs for the *new* token(s)
+                past_kv_len = past_key_values[0][0].shape[-2] if past_key_values else 0 # Key dim is length
+                current_input_len = current_tokens.shape[1] # Usually 1 after first step
+                position_ids = torch.arange(past_kv_len, past_kv_len + current_input_len, dtype=torch.long, device=device).unsqueeze(0)
+                
+                position_embeds = pos_embedding_layer(position_ids)
+                hidden_state = inputs_embeds + position_embeds
+                # -----------------------------------
+                
+                # --- Layer Loop --- 
+                new_past_key_values_list = [] # Store KV states for the *next* step
+                all_layer_attentions = [] if output_attentions_flag else None # <<< Collect attentions >>>
+                
+                for layer_idx, layer in enumerate(layers):
+                    layer_past = past_key_values[layer_idx] if past_key_values else None
+                    layer_input_hidden_state = hidden_state
+                    present_key_value = None # Initialize for the current layer
 
-    logger.info(f"• Estimated latency savings: {stats['estimated_latency_savings_ms']:.2f} ms")
-    logger.info(f"• Estimated energy savings: {stats['estimated_energy_savings_percent']:.1f}%")
-    
-    return {
-        "final_tokens": current_tokens,
-        "stats": stats,
-        "total_time": total_duration,
-        "avg_token_time": avg_token_time,
-        "avg_computation_time": avg_computation_time
-    }
+                    # --- Decide Local vs Remote Execution --- 
+                    if layer_idx in local_layers:
+                        # --- Execute Layer Locally --- 
+                        if detailed_logging:
+                             logger.debug(f"    Executing Layer {layer_idx} Locally...")
+                             
+                        # Per-Layer Dequantize Call (if needed)
+                        if enable_memory_management and memory_manager:
+                            memory_manager._dequantize_layer(layer_idx) 
+                        
+                        # Check skip flag set by hook (if hooks are active)
+                        execute_layer_normally = True 
+                        if enable_layer_optimization and hasattr(layer, '_skip_this_forward') and layer._skip_this_forward:
+                            execute_layer_normally = False
+                            layer._skip_this_forward = False # Reset flag
+                            
+                            # Handle Skip (within local execution)
+                            hidden_state = layer_input_hidden_state # Pass hidden state through
+                            present_key_value = layer_past # Preserve the past KV state
+                            # Logging is done in hook
 
+                        if execute_layer_normally:
+                            # Execute Layer Normally
+                            layer_outputs = layer(
+                                layer_input_hidden_state,
+                                layer_past=layer_past,
+                                attention_mask=None, # Pass None, let layer handle causal mask
+                                use_cache=True,
+                                output_attentions=output_attentions_flag, 
+                            )
+                            
+                            # Extract outputs
+                            layer_attentions = None 
+                            if isinstance(layer_outputs, tuple):
+                                hidden_state = layer_outputs[0]
+                                present_key_value = layer_outputs[1] if len(layer_outputs) > 1 else None
+                                if output_attentions_flag and len(layer_outputs) > 2:
+                                    layer_attentions = layer_outputs[2]
+                            else: # Handle BaseMo...Output objects
+                                hidden_state = layer_outputs.last_hidden_state
+                                present_key_value = layer_outputs.past_key_value
+                                if output_attentions_flag:
+                                    layer_attentions = layer_outputs.attentions
+                                    
+                        if output_attentions_flag and layer_attentions is not None:
+                             all_layer_attentions.append(layer_attentions) # Store attention for locally executed layers
+                             
+                    elif layer_idx in remote_layers:
+                        # --- Simulate Remote Execution Placeholder --- 
+                        if detailed_logging:
+                             logger.debug(f"    Simulating Remote Execution for Layer {layer_idx}...")
+                        
+                        # Placeholder: Assume instantaneous, perfect execution
+                        # Hidden state passes through unchanged for now
+                        hidden_state = layer_input_hidden_state 
+                        
+                        # Carry forward the previous KV state
+                        present_key_value = layer_past 
+                        
+                        # TODO: Implement actual remote call / simulation
+                        # 1. Serialize layer_input_hidden_state & maybe layer_past?
+                        # 2. Send data (simulate network delay)
+                        # 3. Receive results (simulate network delay + cloud compute delay)
+                        # 4. Deserialize results into hidden_state and present_key_value
+                        # --------------------------------------------
+                    else:
+                        # This case should not happen if partition covers all layers
+                        logger.warning(f"Layer {layer_idx} not found in local or remote lists. Skipping.")
+                        hidden_state = layer_input_hidden_state
+                        present_key_value = layer_past
+
+                    # <<< ADDED: Log shape of KV state being carried forward >>>
+                    if detailed_logging:
+                         kv_shape_log = (present_key_value[0].shape, present_key_value[1].shape) if present_key_value else None
+                         run_location = "Local" if layer_idx in local_layers else "Remote (Sim)" if layer_idx in remote_layers else "ERROR"
+                         skipped_flag = (not execute_layer_normally) if layer_idx in local_layers else False # Only log skip if local
+                         logger.debug(f"    Layer {layer_idx} OUT: Carry KV Shape: {kv_shape_log} (Location: {run_location}, Skipped: {skipped_flag})")
+                    # --------------------------------------------------------
+                    new_past_key_values_list.append(present_key_value)
+                
+                # <<< RESTORED: Update past_key_values for the next iteration >>>
+                past_key_values = tuple(new_past_key_values_list)
+                # --------------------------------------------------------------
+
+                # --- Final Processing After All Layers --- 
+                hidden_state_before_norm = hidden_state # Keep for potential pruning scoring
+                hidden_state = final_norm(hidden_state_before_norm)
+                logits = lm_head(hidden_state)
+                # -------------------------------------------
+                
+                # <<< UNCOMMENTED AGAIN: Re-enable pruning to diagnose KV inconsistency >>>
+                # # <<< COMMENTED OUT AGAIN: Disable pruning due to KV inconsistency warnings and quality issues >>>
+                # <<< ADDED: Token Pruning Decision Logic >>>
+                pruned_indices_this_step = []
+                if enable_token_pruning and token_pruner:
+                    if detailed_logging:
+                        logger.debug("Scoring tokens for pruning...")
+                    try:
+                        token_pruner.token_scores.clear()
+                        # Pass attention scores if available
+                        if output_attentions_flag and all_layer_attentions:
+                             last_layer_attentions = all_layer_attentions[-1]
+                             if past_key_values is not None and past_key_values[0] is not None and past_key_values[0][0] is not None:
+                                 kv_len_for_scoring = past_key_values[0][0].shape[-2]
+                             else:
+                                 kv_len_for_scoring = 0
+                             current_token_indices = list(range(kv_len_for_scoring)) 
+                             token_scores = token_pruner.score_tokens(
+                                 attention_scores=last_layer_attentions, 
+                                 token_indices=current_token_indices
+                             ) 
+                        else:
+                             logger.warning("Token pruning enabled but no attention scores captured.")
+                             token_scores = None
+                        
+                        if token_scores is not None:
+                            pruned_indices_this_step = token_pruner.identify_prunable_tokens()
+                            if pruned_indices_this_step:
+                                stats["tokens_pruned_count"] += len(pruned_indices_this_step)
+                                # Check and potentially reconstruct attention_mask before pruning
+                                expected_mask_len = kv_len_for_scoring + 1
+                                if attention_mask.shape[-1] != expected_mask_len:
+                                     logger.warning(f"Attention mask length mismatch before prune! Expected {expected_mask_len}, got {attention_mask.shape[-1]}. Reconstructing.")
+                                     mask_to_pass = torch.ones((1, expected_mask_len), dtype=torch.long, device=device)
+                                else:
+                                     mask_to_pass = attention_mask
+                                logger.info(f"Attempting to prune {len(pruned_indices_this_step)} tokens at indices: {pruned_indices_this_step}")
+                                pruned_past_key_values, pruned_attention_mask = token_pruner.prune_state(
+                                    past_key_values,
+                                    mask_to_pass, 
+                                    pruned_indices_this_step
+                                )
+                                # Update the loop variables only if pruning was successful (returned non-None)
+                                if pruned_past_key_values is not None and pruned_attention_mask is not None:
+                                     past_key_values = pruned_past_key_values
+                                     attention_mask = pruned_attention_mask
+                        else:
+                            if detailed_logging:
+                                logger.debug("Token scoring returned None.")
+                    except Exception as prune_e:
+                        logger.error(f"Error during token pruning decision: {prune_e}", exc_info=True)
+                # --------------------------------------------
+
+                # --- Token Selection --- (Focus on the last token position)
+                next_token_logits = logits[:, -1, :] # Shape: [batch_size, vocab_size]
+                
+                # Sampling parameters
+                temperature = 0.7 
+                top_k = 50       
+                no_repeat_ngram_size = 2 # <<< ADDED >>>
+                
+                if temperature > 0:
+                    # Apply temperature
+                    scaled_logits = next_token_logits / temperature
+                    probs = torch.softmax(scaled_logits, dim=-1)
+                    
+                    # Apply Top-K filtering
+                    if top_k > 0:
+                        top_k = min(top_k, probs.size(-1)) 
+                        top_k_probs, top_k_indices = torch.topk(probs, k=top_k, dim=-1)
+                        filter_mask = torch.zeros_like(probs)
+                        filter_mask.scatter_(dim=-1, index=top_k_indices, src=torch.ones_like(top_k_probs))
+                        filtered_probs = probs * filter_mask
+                        # Use filtered_probs for further processing
+                        sampling_probs = filtered_probs / torch.sum(filtered_probs, dim=-1, keepdim=True)
+                    else:
+                        # If no top_k, use original probs
+                        sampling_probs = probs
+
+                    # <<< ADDED: No Repeat N-Gram Logic >>>
+                    if no_repeat_ngram_size > 0 and len(generated_token_ids) >= no_repeat_ngram_size - 1:
+                        # Get the n-1 tokens preceding the current position
+                        # Assuming batch size is 1 for generation
+                        prefix_tokens = generated_token_ids[-(no_repeat_ngram_size - 1):]
+                        # Find potential banned tokens
+                        banned_tokens = []
+                        # Iterate through possible next tokens (can optimize this later)
+                        # For now, consider all tokens. Could restrict to top_k indices?
+                        for token_id in range(vocab_size):
+                            potential_ngram = prefix_tokens + [token_id]
+                            # Check if this ngram has occurred before in the sequence
+                            # Convert generated_token_ids to a list of ngrams
+                            # This check is inefficient for long sequences, should be optimized if needed
+                            for j in range(len(generated_token_ids) - no_repeat_ngram_size + 1):
+                                existing_ngram = generated_token_ids[j : j + no_repeat_ngram_size]
+                                if potential_ngram == existing_ngram:
+                                    banned_tokens.append(token_id)
+                                    break # No need to check further for this token_id
+                                    
+                        if banned_tokens:
+                             # Set probability of banned tokens to 0
+                             # Ensure banned_tokens are valid indices
+                             banned_indices = torch.tensor(banned_tokens, dtype=torch.long, device=device)
+                             # Clamp indices to be within vocab size just in case
+                             banned_indices = torch.clamp(banned_indices, 0, vocab_size - 1)
+                             sampling_probs.scatter_(dim=-1, index=banned_indices.unsqueeze(0), value=0.0) # Use unsqueeze for batch dim
+                             
+                             # Renormalize probabilities after banning tokens
+                             renorm_sum = torch.sum(sampling_probs, dim=-1, keepdim=True)
+                             if renorm_sum > 1e-9: # Avoid division by zero if all tokens banned
+                                 sampling_probs = sampling_probs / renorm_sum
+                             else:
+                                 # If all likely tokens were banned, maybe fall back or raise warning?
+                                 logger.warning("All probable tokens banned by no_repeat_ngram_size. Sampling might be random.")
+                                 # Fallback: uniform distribution over all tokens? Or keep original filtered probs?
+                                 # For now, let it sample from the zero distribution (will likely pick 0)
+                                 pass 
+                    # -------------------------------------
+
+                    # Sample from the (potentially filtered and renormalized) distribution
+                    next_token_id = torch.multinomial(sampling_probs, num_samples=1)
+                    
+                else:
+                    # Fallback to argmax if temperature is 0
+                    next_token_id = torch.argmax(next_token_logits, dim=-1).unsqueeze(-1)
+                # -----------------------
+                
+                # --- Update state for next iteration --- 
+                generated_token_ids.append(next_token_id.item()) # Store ID
+                current_tokens = next_token_id # Next input is the just generated token
+                # Append a mask token for the token just generated
+                attention_mask = torch.cat([attention_mask, torch.ones((attention_mask.shape[0], 1), dtype=torch.long, device=device)], dim=1)
+                # -------------------------------------
+
+                # Call Memory Manager Update (after state is updated)
+                if enable_memory_management and memory_manager:
+                    # <<< ADDED: Call update_state to track real KV cache >>>
+                    # Pass the loop's *current* past_key_values, which might have been pruned (but pruning is disabled now)
+                    memory_manager.update_state(past_key_values, attention_mask.shape[1])
+                    # ---------------------------------------------------------
+                    memory_manager.check_memory_usage_and_trigger_actions()
+                
+                # Record step timing & stats
+                step_end_time = time.time()
+                step_duration = step_end_time - step_start_time
+                step_times.append(step_duration)
+                stats["generated_tokens"] += 1
+                stats["total_tokens_processed"] += 1 # Increment total processed count
+                current_mem_usage = 0.0
+                if memory_manager:
+                    # Fetch potentially updated stats after actions
+                    current_mem_usage = memory_manager.get_stats().get("current_memory_usage_mb", 0.0)
+                stats["step_details"].append({
+                    "step": i + 1,
+                    "token_id": next_token_id.item(),
+                    "token_text": tokenizer.decode(next_token_id.squeeze()),
+                    "time_ms": step_duration * 1000,
+                    "memory_usage_mb": current_mem_usage, 
+                })
+                
+                if detailed_logging:
+                    token_text = tokenizer.decode(next_token_id.squeeze())
+                    logger.debug(f"  Generated token {i+1}: ID={next_token_id.item()}, Text=\"{token_text}\" | Time: {step_duration:.4f}s")
+                    if memory_manager:
+                        logger.debug(f"    Memory after step: {current_mem_usage:.4f} MB")
+                         
+                # Check for EOS token
+                if next_token_id.item() == tokenizer.eos_token_id:
+                    logger.info(f"EOS token generated. Stopping inference at step {i+1}.")
+                    break
+                    
+    except Exception as loop_e:
+        logger.error(f"Error occurred during generation loop: {loop_e}", exc_info=True)
+        # Loop might terminate early, results may be partial
+        
+    finally:
+        # <<< ADDED: Remove hooks after generation (in finally block) >>>
+        if hook_handles:
+            logger.info(f"Removing {len(hook_handles)} hooks...")
+            for handle in hook_handles:
+                try:
+                    handle.remove()
+                except Exception as hook_remove_e:
+                     logger.warning(f"Error removing hook: {hook_remove_e}")
+            hook_handles = [] # Clear the list
+            logger.info("Hooks removed.")
+        # -------------------------------------------------------------
+
+    end_loop_time = time.time()
+    total_loop_time = end_loop_time - start_loop_time
+    total_inference_time = end_loop_time - start_time_inference
+
+    # Decode generated tokens
+    generated_text = tokenizer.decode(generated_token_ids, skip_special_tokens=True)
+    full_text = tokenizer.decode(input_tokens[0].tolist() + generated_token_ids, skip_special_tokens=True)
+
+    # --- Output Summary ---
+    logger.info("\n=====================================================")
+    logger.info("Inference Summary (Manual Loop with Hooks)")
+    logger.info("=====================================================")
+    logger.info(f"Total Inference Time: {total_inference_time:.2f}s")
+    logger.info(f"Generation Loop Time: {total_loop_time:.2f}s")
+    if stats['generated_tokens'] > 0 and len(step_times) > 0:
+        avg_token_time = sum(step_times) / len(step_times)
+        logger.info(f"Average time per generated token: {avg_token_time:.4f}s ({1/avg_token_time:.2f} tokens/s)")
+    logger.info(f"Generated {stats['generated_tokens']} new tokens")
+    logger.info(f"Layers skipped (decision count): {stats['layers_skipped_decision_count']}") 
+    logger.info(f"Tokens pruned (decision count): {stats['tokens_pruned_count']}") # <<< ADDED stat log >>>
+    logger.info(f"Final sequence length: {attention_mask.shape[1]}")
+
+    if memory_manager:
+        logger.info("--- Memory Manager Stats ---")
+        try:
+            mem_stats = memory_manager.get_stats()
+            # <<< ADDED: Log the received dictionary >>>
+            logger.debug(f"Stats dict received by hybrid_inference summary block: {mem_stats}")
+            # ---------------------------------------
+            
+            # <<< ADDED: Debug before Peak Memory log >>>
+            peak_mem_val = mem_stats.get('peak_memory_usage_mb', 0.0)
+            logger.debug(f"Value for Peak Memory Usage: {peak_mem_val} (Type: {type(peak_mem_val)})")
+            # -----------------------------------------
+            logger.info(f"Peak Memory Usage: {peak_mem_val:.2f} MB")
+            
+            # <<< ADDED: Debug before Quant Events log >>>
+            quant_events_val = mem_stats.get('quantization_events', 0)
+            logger.debug(f"Value for Quantization Events: {quant_events_val} (Type: {type(quant_events_val)})")
+            # -------------------------------------------
+            logger.info(f"Quantization Events: {quant_events_val}")
+            
+            # <<< ADDED: Debug before Quant Layers log >>>
+            quant_layers_val = mem_stats.get('quantized_layers', set())
+            quant_layers_list = sorted(list(quant_layers_val))
+            logger.debug(f"Value for Quantized Layers: {quant_layers_list} (Type: {type(quant_layers_val)} -> {type(quant_layers_list)})")
+            # -------------------------------------------
+            logger.info(f"Layers Quantized ({len(quant_layers_list)}): {quant_layers_list}")
+            
+            # <<< ADDED: Debug before Dequant Events log >>>
+            dequant_events_val = mem_stats.get('dequantization_events', 0)
+            logger.debug(f"Value for Dequantization Events: {dequant_events_val} (Type: {type(dequant_events_val)})")
+            # --------------------------------------------
+            logger.info(f"Dequantization Events: {dequant_events_val}")
+        except Exception as stats_e:
+             logger.error(f"Error retrieving/displaying memory stats: {stats_e}")
+
+    if layer_handler and enable_layer_optimization:
+        logger.info("--- Layer Optimization Stats ---")
+        try:
+            layer_stats = layer_handler.get_metrics()
+            # Use .get() for safety
+            logger.info(f"Compression Ratio (Handler): {layer_stats.get('compression_ratio', 'N/A')}")
+            logger.info(f"Total Layers Evaluated for Skipping (Handler): {layer_stats.get('total_layers_evaluated', 0)}")
+            logger.info(f"Total Layers Skipped (Handler): {layer_stats.get('layers_skipped', 0)}") 
+            logger.info(f"Skipping Efficiency (Handler): {layer_stats.get('skipping_efficiency', 0.0):.4f}")
+        except Exception as stats_e:
+             logger.error(f"Error retrieving/displaying layer stats: {stats_e}")
+
+    logger.info("--- Generated Text ---")
+    logger.info(f"Prompt: {prompt}")
+    logger.info(f"Generated: {generated_text}")
+    # logger.info(f"Full Text: {full_text}") # Can be verbose
+    logger.info("=====================================================")
+
+    return generated_text, stats
+
+# === Main Execution Block ===
 if __name__ == "__main__":
     import argparse
     
-    # Set up command line argument parsing
-    parser = argparse.ArgumentParser(description="Run hybrid inference demonstration")
-    parser.add_argument("--tokens", type=int, default=10, help="Number of tokens to generate")
-    parser.add_argument("--seq-len", type=int, default=5, help="Initial sequence length")
-    parser.add_argument("--hidden-size", type=int, default=768, help="Hidden size dimension")
-    parser.add_argument("--num-layers", type=int, default=12, help="Number of transformer layers")
-    parser.add_argument("--num-heads", type=int, default=12, help="Number of attention heads")
+    parser = argparse.ArgumentParser(description="Run Hybrid LLM Inference")
     
-    # Optimization flags
-    parser.add_argument("--no-token-pruning", action="store_true", help="Disable token pruning")
-    parser.add_argument("--no-layer-opt", action="store_true", help="Disable layer optimization")
-    parser.add_argument("--no-memory-opt", action="store_true", help="Disable memory optimization")
-    parser.add_argument("--no-edge-cloud", action="store_true", help="Disable edge-cloud partitioning")
+    # Model and Generation Parameters
+    parser.add_argument("--model-name", type=str, default="gpt2", help="Name of the Hugging Face model to use (e.g., gpt2, gpt2-medium)")
+    parser.add_argument("--prompt", type=str, default="Hello, world!", help="Input prompt for the model")
+    parser.add_argument("--tokens", type=int, default=50, help="Number of new tokens to generate")
+    parser.add_argument("--device", type=str, default="auto", help="Device to run on (e.g., cpu, cuda, cuda:0, auto)")
+
+    # Optimization Flags (Defaults changed to False to enable step-by-step activation)
+    parser.add_argument("--token-pruning", action="store_true", help="Enable runtime token pruning")
+    parser.add_argument("--layer-opt", action="store_true", help="Enable layer compression/skipping")
+    parser.add_argument("--memory-opt", action="store_true", help="Enable memory management (quantization)")
+    parser.add_argument("--edge-cloud", action="store_true", help="Enable edge-cloud partition decision logic (no execution)")
     
-    # Output options
-    parser.add_argument("--detailed", action="store_true", help="Enable detailed logging")
-    parser.add_argument("--save-stats", action="store_true", help="Save statistics to JSON file")
-    parser.add_argument("--output", type=str, default="", help="Output file for statistics")
-    parser.add_argument("--benchmark", action="store_true", help="Run benchmark mode to compare optimized vs unoptimized")
+    # Memory Manager Specific
+    parser.add_argument("--mem-budget", type=int, default=100, help="Memory budget in MB for Memory Manager") # Increased default
+    
+    # Other arguments
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
+    parser.add_argument("--detailed", action="store_true", help="Enable detailed DEBUG logging")
+    parser.add_argument("--output", type=str, default=None, help="Optional JSON file to save results and stats")
     
     args = parser.parse_args()
     
-    # Create a simple test case with the specified sequence length
-    input_ids = torch.tensor([[101] + [2000 + i for i in range(args.seq_len - 1)]])
-    
-    # Configure model dimensions
-    model_config = {
-        "hidden_size": args.hidden_size,
-        "num_hidden_layers": args.num_layers,
-        "num_attention_heads": args.num_heads,
-        "batch_size": 1
-    }
-    
-    # Run the simulated inference
-    logger.info("Starting hybrid inference demonstration...")
-    result = run_inference(
-        input_ids, 
+    # Set Seed for reproducibility
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
+    torch.manual_seed(args.seed)
+
+    # Adjust Log Level based on --detailed flag
+    log_level = logging.DEBUG if args.detailed else logging.INFO
+    # Update root logger level
+    logging.getLogger().setLevel(log_level) 
+    logger.setLevel(log_level) # Ensure our specific logger respects the level
+    # Reconfigure basicConfig if needed (might be redundant if done earlier)
+    # logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', force=True)
+    logger.info(f"Log level set to: {logging.getLevelName(logger.getEffectiveLevel())}")
+
+    # --- Prepare Inputs --- 
+    # Load tokenizer separately for input prep if run_inference raises early error
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+        # Add padding token if missing (like GPT-2)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            logger.info("Set pad_token to eos_token for tokenizer.")
+            
+        input_ids = tokenizer.encode(args.prompt, return_tensors="pt")
+    except Exception as tokenizer_e:
+        logger.error(f"Failed to load tokenizer or encode prompt: {tokenizer_e}", exc_info=True)
+        exit(1) # Exit if basic input prep fails
+    # ---------------------
+
+    # --- Run Inference --- 
+    generated_text, stats = run_inference(
+        model_name=args.model_name,
+        input_tokens=input_ids,
+        prompt=args.prompt, 
         max_new_tokens=args.tokens,
-        model_config=model_config,
-        enable_token_pruning=not args.no_token_pruning,
-        enable_layer_optimization=not args.no_layer_opt,
-        enable_memory_management=not args.no_memory_opt,
-        enable_edge_cloud=not args.no_edge_cloud,
-        detailed_logging=args.detailed
+        enable_token_pruning=args.token_pruning,
+        enable_layer_optimization=args.layer_opt,
+        enable_memory_management=args.memory_opt,
+        enable_edge_cloud=args.edge_cloud, 
+        max_memory_mb=args.mem_budget,
+        detailed_logging=args.detailed,
+        device_map=args.device
     )
-    
-    # Display final statistics
-    logger.info("\nFinal Statistics Summary:")
-    for key, value in result["stats"].items():
-        if key != "step_details":  # Skip the detailed step info
-            logger.info(f"{key}: {value}")
-            
-    # Prepare rich statistics for output
-    output_stats = dict(result["stats"])
-    output_stats["computation_time"] = {
-        "total_time_seconds": result["total_time"],
-        "avg_token_time_seconds": result["avg_token_time"],
-        "avg_computation_time_seconds": result["avg_computation_time"],
-        "overhead_time_seconds": result["avg_token_time"] - result["avg_computation_time"],
-        "percent_overhead": ((result["avg_token_time"] - result["avg_computation_time"]) / result["avg_token_time"]) * 100 if result["avg_token_time"] > 0 else 0,
-    }
-    
-    # Save statistics if requested
-    if args.save_stats or args.benchmark:
-        # Use provided filename or generate one with timestamp
-        if args.output:
-            output_file = args.output
-        else:
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            # Create descriptive filename based on enabled optimizations
-            optimizations = []
-            if not args.no_token_pruning:
-                optimizations.append("tok")
-            if not args.no_layer_opt:
-                optimizations.append("lay")
-            if not args.no_memory_opt:
-                optimizations.append("mem")
-            if not args.no_edge_cloud:
-                optimizations.append("cloud")
-            
-            if optimizations:
-                opt_str = "_".join(optimizations)
-            else:
-                opt_str = "none"
+    # --------------------
+
+    # --- Save Results (Optional) --- 
+    if args.output:
+        logger.info(f"Saving results to {args.output}...")
+        results_data = {
+            "args": vars(args),
+            "generated_text": generated_text,
+            "stats": stats
+        }
+        try:
+            with open(args.output, 'w') as f:
+                # Use helper function for potentially non-serializable items in stats
+                def default_serializer(obj):
+                    if isinstance(obj, set):
+                        return sorted(list(obj))
+                    if isinstance(obj, torch.Tensor):
+                        return obj.tolist() # Or some representation
+                    # Add other types as needed
+                    try:
+                         # Try standard JSON serialization first
+                         return json.JSONEncoder().encode(obj)
+                    except TypeError:
+                         return str(obj) # Fallback to string representation
                 
-            output_file = f"hybrid_inference_{opt_str}_{timestamp}.json"
-        
-        with open(output_file, 'w') as f:
-            json.dump(output_stats, f, indent=2)
-        logger.info(f"Statistics saved to {output_file}")
-        
-        # Store the stats object in a global variable for potential further processing
-        # This can be used by benchmark scripts that import this module
-        global last_run_stats
-        last_run_stats = output_stats 
+                json.dump(results_data, f, indent=2, default=default_serializer)
+            logger.info("Results saved successfully.")
+        except Exception as save_e:
+            logger.error(f"Failed to save results to {args.output}: {save_e}", exc_info=True)
+    # -----------------------------
+
+    logger.info("Hybrid inference script finished.") 

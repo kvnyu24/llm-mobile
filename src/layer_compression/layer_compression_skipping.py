@@ -1,3 +1,20 @@
+import numpy as np
+import time
+from typing import Dict, List, Tuple, Any, Optional, Union
+
+# <<< MOVED Import torch to the top >>>
+import torch
+
+# Check if torch is available (still useful for conditional logic)
+HAS_TORCH = False
+try:
+    # Ensure torch was imported successfully
+    if torch.__version__:
+        HAS_TORCH = True
+except (NameError, AttributeError):
+    # torch might not be imported or might not have __version__
+    HAS_TORCH = False
+
 class LayerCompressionAndSkipping:
     """
     Layer Compression and Skipping Manager
@@ -332,108 +349,84 @@ class LayerCompressionAndSkipping:
                 
         return self.model
         
-    def compute_layer_temperatures(self, inputs, hidden_states):
+    def _compute_layer_temperature(self, layer_idx: int, current_hidden_state: torch.Tensor) -> float:
         """
-        Compute the "temperature" (importance) of each layer for the current input.
-        
-        The temperature is a measure of how important a layer is for the current input.
-        Higher temperature means the layer is more critical for accurate prediction.
+        Compute the "temperature" (importance) for a specific layer based on its input.
         
         Args:
-            inputs: The input tokens or embeddings
-            hidden_states: Current hidden states of the model
+            layer_idx: The index of the layer.
+            current_hidden_state: The hidden state input to this specific layer.
             
         Returns:
-            Dictionary mapping layer indices to temperature scores
+            Temperature score (float between 0 and 1).
         """
-        import numpy as np
-        
-        try:
-            import torch
-            has_torch = True
-        except ImportError:
-            has_torch = False
-            
-        # Get number of layers
-        if hasattr(self.model, 'config') and hasattr(self.model.config, 'num_hidden_layers'):
-            num_layers = self.model.config.num_hidden_layers
-        else:
-            num_layers = 12  # Default assumption
-            
-        # Reset temperatures
-        self.layer_temperatures = {}
-        
-        if hidden_states is not None:
-            if has_torch and isinstance(hidden_states, torch.Tensor):
-                # Use torch operations for PyTorch tensors
-                for layer_idx in range(num_layers):
-                    # Calculate layer importance based on multiple factors:
-                    
-                    # 1. Activation magnitude (higher magnitude = more important)
-                    activation_magnitude = torch.mean(torch.abs(hidden_states)).item()
-                    
-                    # 2. Activation variance (higher variance = more diverse features)
-                    activation_variance = torch.var(hidden_states).item()
-                    
-                    # 3. Layer position importance (earlier and later layers are more important)
-                    position_factor = 1.0 - abs(layer_idx - num_layers/2) / (num_layers/2)
-                    
-                    # 4. Hot path bonus
-                    hot_path_bonus = 0.2 if layer_idx in self.hot_path_indices else 0.0
-                    
-                    # Combine factors to compute temperature
-                    # Normalize each component to [0,1] range
-                    magnitude_norm = min(1.0, activation_magnitude)
-                    variance_norm = min(1.0, activation_variance)
-                    
-                    # Weighted combination of factors
-                    layer_temp = (
-                        0.4 * magnitude_norm +      # Activation magnitude
-                        0.3 * variance_norm +       # Activation variance
-                        0.2 * position_factor +     # Layer position
-                        0.1 * hot_path_bonus        # Hot path bonus
-                    )
-                    
-                    # Ensure temperature is in [0,1] range
-                    layer_temp = max(0.0, min(1.0, layer_temp))
-                    
-                    # Add small random variation for exploration
-                    variation = 0.05 * np.random.random()
-                    layer_temp = max(0.0, min(1.0, layer_temp + variation))
-                    
-                    self.layer_temperatures[layer_idx] = layer_temp
-                    
-                    # Log temperature calculation for debugging
-                    print(f"Layer {layer_idx} temperature: {layer_temp:.3f}")
-                    print(f"  - Activation magnitude: {magnitude_norm:.3f}")
-                    print(f"  - Activation variance: {variance_norm:.3f}")
-                    print(f"  - Position factor: {position_factor:.3f}")
-                    print(f"  - Hot path bonus: {hot_path_bonus:.3f}")
+        if not (HAS_TORCH and isinstance(current_hidden_state, torch.Tensor)):
+            # Fallback for non-torch or missing input
+            if layer_idx in self.hot_path_indices:
+                return 0.9 # Default high for hot path
             else:
-                # Numpy fallback for non-torch tensors
-                for layer_idx in range(num_layers):
-                    # Mock temperature calculation with similar factors
-                    base_temp = 0.5  # Base temperature
-                    
-                    # Make hot path layers always have high temperature
-                    if layer_idx in self.hot_path_indices:
-                        layer_temp = 0.9
-                    else:
-                        # Add some randomness for demo purposes
-                        variation = 0.4 * np.random.random() - 0.1
-                        layer_temp = max(0.1, min(0.9, base_temp + variation))
-                        
-                    self.layer_temperatures[layer_idx] = layer_temp
-        else:
-            # If no hidden states, generate mock temperatures
-            for layer_idx in range(num_layers):
-                if layer_idx in self.hot_path_indices:
-                    self.layer_temperatures[layer_idx] = 0.9  # Hot path layers have high temperature
-                else:
-                    # Random temperature between 0.1 and 0.7
-                    self.layer_temperatures[layer_idx] = 0.1 + 0.6 * np.random.random()
-                    
-        return self.layer_temperatures
+                # Simple random baseline if no tensor input
+                return 0.1 + 0.6 * np.random.random()
+
+        try:
+            # Get number of layers if not already stored
+            # This assumes self.model and self.model.config are available
+            # It might be better to pass num_layers during init or store it more reliably
+            if hasattr(self, 'num_layers') and self.num_layers > 0:
+                num_layers = self.num_layers
+            elif hasattr(self.model, 'config') and hasattr(self.model.config, 'num_hidden_layers'):
+                num_layers = self.model.config.num_hidden_layers
+                self.num_layers = num_layers # Cache it
+            else:
+                num_layers = 12  # Default assumption if config unavailable
+                self.num_layers = num_layers # Cache it
+
+            # 1. Activation magnitude (using the specific input to this layer)
+            activation_magnitude = torch.mean(torch.abs(current_hidden_state)).item()
+            
+            # 2. Activation variance
+            activation_variance = torch.var(current_hidden_state).item()
+            
+            # 3. Layer position importance (earlier and later layers are more important)
+            # Avoid division by zero if num_layers is 1
+            position_factor = 1.0
+            if num_layers > 1:
+                 position_factor = 1.0 - abs(layer_idx - (num_layers - 1) / 2.0) / ((num_layers - 1) / 2.0)
+            
+            # 4. Hot path bonus (should ideally not be needed here as should_skip_layer handles it)
+            # hot_path_bonus = 0.2 if layer_idx in self.hot_path_indices else 0.0
+            
+            # Combine factors
+            # Normalize components (simple clipping for demo)
+            magnitude_norm = min(1.0, activation_magnitude / 10.0) # Assuming avg magnitude rarely exceeds 10?
+            variance_norm = min(1.0, activation_variance / 1.0)    # Assuming variance rarely exceeds 1?
+            
+            # Weighted combination (Adjust weights as needed)
+            layer_temp = (
+                0.5 * magnitude_norm +      # Activation magnitude
+                0.3 * variance_norm +       # Activation variance
+                0.2 * position_factor       # Layer position
+            )
+            
+            # Ensure temperature is in [0, 1] range
+            layer_temp_clamped = max(0.0, min(1.0, layer_temp))
+            
+            # <<< ADDED: Detailed logging for temperature calculation >>>
+            # Note: This logging might become very verbose
+            # Use a logger if available, otherwise print
+            try:
+                 # Basic print for now, assuming no logger is easily passed here
+                 print(f"[DEBUG Temp Layer {layer_idx}] Raw Temp: {layer_temp:.4f} | Clamped: {layer_temp_clamped:.4f} | MagNorm: {magnitude_norm:.4f} (AvgMag: {activation_magnitude:.4f}) | VarNorm: {variance_norm:.4f} (Var: {activation_variance:.4f}) | PosF: {position_factor:.4f}")
+            except Exception as log_e:
+                 print(f"[DEBUG Temp Layer {layer_idx}] Logging error: {log_e}")
+            # ----------------------------------------------------------
+
+            return float(layer_temp_clamped) # Return the clamped value
+
+        except Exception as e:
+            print(f"Error computing temperature for layer {layer_idx}: {e}")
+            # Return a default safe value (e.g., high temp to avoid skipping)
+            return 0.9 
         
     def should_skip_layer(self, layer_idx, hidden_state):
         """
@@ -450,15 +443,12 @@ class LayerCompressionAndSkipping:
         Returns:
             Boolean indicating whether to skip the layer
         """
-        # Hot path layers are never skipped
+        # Hot path layers are never skipped (Checked by caller now, but double-check here)
         if layer_idx in self.hot_path_indices:
             return False
             
-        # Get layer temperature (computing if not already available)
-        if layer_idx not in self.layer_temperatures:
-            self.compute_layer_temperatures(None, hidden_state)
-            
-        temperature = self.layer_temperatures.get(layer_idx, 0.5)
+        # Calculate temperature dynamically for this layer
+        temperature = self._compute_layer_temperature(layer_idx, hidden_state)
         
         # Update metrics
         self.metrics["total_layers_evaluated"] += 1
@@ -467,7 +457,9 @@ class LayerCompressionAndSkipping:
         if temperature < self.skip_threshold:
             # This layer will be skipped
             self.metrics["layers_skipped"] += 1
-            self.metrics["skipping_efficiency"] = self.metrics["layers_skipped"] / max(1, self.metrics["total_layers_evaluated"])
+            # Avoid division by zero if no layers evaluated yet
+            if self.metrics["total_layers_evaluated"] > 0:
+                self.metrics["skipping_efficiency"] = self.metrics["layers_skipped"] / self.metrics["total_layers_evaluated"]
             return True
         else:
             return False

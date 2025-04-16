@@ -8,12 +8,15 @@ during autoregressive decoding in transformer-based language models.
 import numpy as np
 import time
 from typing import Dict, List, Tuple, Any, Optional, Union
+import logging
 
 try:
     import torch
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
+
+logger = logging.getLogger(__name__)
 
 class TokenPruner:
     """
@@ -60,58 +63,61 @@ class TokenPruner:
         """
         Compute importance scores for tokens based on attention patterns.
         
-        As described in the paper, we derive importance scores Sⱼ from 
-        attention weights αᵢⱼ for each token.
+        Calculates scores based on the attention received by each past token (key) 
+        from the current query token.
         
         Args:
-            attention_scores: Attention matrices from the model [batch, heads, seq_len, seq_len]
-            token_indices: Indices of the tokens to score
+            attention_scores: Attention matrices from the model 
+                              [batch_size, num_heads, query_length, key_length].
+                              Expected query_length=1 for generation.
+            token_indices: Indices of the past tokens (keys) to score.
             
         Returns:
-            Dictionary mapping token indices to importance scores
+            Dictionary mapping token indices to importance scores.
         """
         start_time = time.time()
-        
-        # If attention_scores is a tensor (e.g., PyTorch), convert to numpy
-        if HAS_TORCH and isinstance(attention_scores, torch.Tensor):
-            attention_scores = attention_scores.detach().cpu().numpy()
-            
-        # Get dimensions
-        n_heads = attention_scores.shape[1]
-        seq_len = attention_scores.shape[2]
-        
-        # Calculate importance score for each token (averaged across heads)
-        # Using both maximum attention received and attention paid by each token
-        scores = {}
-        
-        # For each token position
-        for idx in token_indices:
-            if idx >= seq_len:
-                continue
-            
-            # Get attention received by token idx from all other tokens across all heads
-            attn_to_token = attention_scores[0, :, :, idx]  # Shape: [heads, seq_len]
-            
-            # Get attention paid by token idx to all other tokens
-            attn_from_token = attention_scores[0, :, idx, :]  # Shape: [heads, seq_len]
-            
-            # Calculate maximum attention score for each head (both received and paid)
-            max_attns_received = np.max(attn_to_token, axis=1)  # Shape: [heads]
-            max_attns_paid = np.max(attn_from_token, axis=1)  # Shape: [heads]
-            
-            # Combine both metrics (average of max attention received and paid)
-            combined_scores = (max_attns_received + max_attns_paid) / 2
-            
-            # Average across heads as the importance score
-            score = np.mean(combined_scores)
-            scores[idx] = float(score)
-        
-        # Update token scores dictionary
-        self.token_scores.update(scores)
-        
-        # Update metrics
-        self.metrics["score_time"] += time.time() - start_time
         self.metrics["score_calls"] += 1
+        scores = {}
+
+        if not (HAS_TORCH and isinstance(attention_scores, torch.Tensor)):
+            logger.warning("Cannot score tokens: Attention scores are not a valid PyTorch tensor.")
+            return scores # Return empty scores
+            
+        try:
+            # Ensure tensor is on CPU and convert to numpy for easier processing
+            attention_scores_np = attention_scores.detach().cpu().numpy()
+                
+            # Get dimensions - B=batch, H=heads, Q=query_len, K=key_len
+            B, H, Q, K = attention_scores_np.shape
+            
+            if Q != 1:
+                logger.warning(f"Expected query length (Q) of 1 for scoring, but got {Q}. Using only the first query position.")
+
+            # Calculate importance score for each token index provided
+            for idx in token_indices:
+                if idx < 0 or idx >= K:
+                    # logger.warning(f"Token index {idx} out of bounds for key length {K}. Skipping.")
+                    continue # Skip invalid indices
+                
+                # Get attention received by token idx (key) from the current query (query pos 0)
+                # Shape: [batch_size, num_heads]
+                attn_received = attention_scores_np[:, :, 0, idx] 
+                
+                # Calculate score: Mean attention received across heads for the first batch item
+                # Could use max or other aggregation. Mean is simple.
+                score = np.mean(attn_received[0, :]) # Use first batch item
+                scores[idx] = float(score)
+            
+            # Update token scores dictionary held by the instance
+            self.token_scores.update(scores)
+        
+        except Exception as e:
+            logger.error(f"Error during token scoring: {e}", exc_info=True)
+            # Return potentially partial scores calculated so far
+            return scores
+
+        # Update timing metric
+        self.metrics["score_time"] += (time.time() - start_time) * 1000 # Store time in ms
         
         return scores
         
@@ -128,35 +134,44 @@ class TokenPruner:
         prunable_tokens = []
         
         # First few tokens (e.g., 0, 1, 2) are often special tokens that should not be pruned
-        protected_tokens = 3  
+        protected_tokens = 15  
         
         # Sort tokens by score to ensure we prune the lowest scoring ones first
         sorted_tokens = sorted(self.token_scores.items(), key=lambda x: x[1])
         
         # Print all token scores for debugging
-        print("\nToken Scores:")
-        for idx, score in sorted_tokens:
-            print(f"Token {idx}: {score:.4f}")
+        # logger.debug("\nToken Scores:")
+        # for idx, score in sorted_tokens:
+        #     logger.debug(f"Token {idx}: {score:.4f}")
+
+        current_seq_len = len(self.token_scores) # Number of tokens actually scored
         
         for idx, score in sorted_tokens:
             # Skip protected tokens at the beginning of the sequence
             if idx < protected_tokens:
                 continue
-            
+                
+            # <<< FIXED: Never prune the very last token in the current sequence >>>
+            if idx == current_seq_len - 1:
+                # logger.debug(f"Skipping pruning check for last token index {idx}")
+                continue
+            # ------------------------------------------------------------------
+
             # If score is below threshold, mark for pruning
             if score < self.pruning_threshold:
                 prunable_tokens.append(idx)
-                print(f"Token {idx} marked for pruning with score {score:.4f} (below threshold {self.pruning_threshold})")
+                # logger.debug(f"Token {idx} marked for pruning with score {score:.4f} (below threshold {self.pruning_threshold})")
         
-        if not prunable_tokens:
-            print("No tokens identified for pruning - all scores above threshold")
-        else:
-            print(f"Identified {len(prunable_tokens)} tokens for pruning")
+        # if not prunable_tokens:
+            # logger.debug("No tokens identified for pruning - all scores above threshold or protected")
+        # else:
+            # logger.debug(f"Identified {len(prunable_tokens)} tokens for pruning")
         
         return prunable_tokens
         
     def prune_tokens(self, tokens, hidden_states):
         """
+        [OBSOLETE - Use prune_state for KV cache]
         Remove low-impact tokens from the active sequence.
         
         As described in the paper, we physically remove pruned tokens from 
@@ -169,48 +184,148 @@ class TokenPruner:
         Returns:
             Pruned token sequence and updated hidden states
         """
-        start_time = time.time()
+        logger.warning("prune_tokens is likely obsolete. Use prune_state for KV cache.")
+        # ... (keep existing implementation for reference or potential other uses)
+        # ...
         
-        # Identify tokens to prune
-        prunable_indices = self.identify_prunable_tokens()
-        
-        if not prunable_indices:
-            return tokens, hidden_states
+    def prune_state(self, 
+                    past_key_values: Optional[Tuple[Tuple[torch.Tensor, torch.Tensor], ...]], 
+                    attention_mask: torch.Tensor, 
+                    token_indices_to_prune: List[int]
+                   ) -> Tuple[Optional[Tuple[Tuple[torch.Tensor, torch.Tensor], ...]], torch.Tensor]:
+        """
+        Prunes the KV cache (past_key_values) and attention mask based on provided token indices.
+
+        Args:
+            past_key_values: The current KV cache tuple from the model.
+            attention_mask: The current attention mask.
+            token_indices_to_prune: List of sequence indices to remove.
+
+        Returns:
+            A tuple containing the pruned past_key_values and pruned attention_mask.
+        """
+        if not token_indices_to_prune:
+            # logger.debug("No indices provided to prune_state.")
+            return past_key_values, attention_mask
+
+        if past_key_values is None:
+             logger.warning("Cannot prune state: past_key_values is None.")
+             return None, attention_mask
+             
+        # <<< ADDED: Log shapes of all incoming layer KVs >>>
+        if logger.isEnabledFor(logging.DEBUG):
+             logger.debug("--- prune_state: Received KV Cache Shapes ---")
+             for layer_idx, (k, v) in enumerate(past_key_values):
+                  k_shape = k.shape if k is not None else None
+                  v_shape = v.shape if v is not None else None
+                  logger.debug(f"  Layer {layer_idx}: Key={k_shape}, Value={v_shape}")
+             logger.debug("---------------------------------------------")
+        # -----------------------------------------------------
+
+        try:
+            start_time = time.time()
+            # 1. Get KV Cache Length (from first layer)
+            if past_key_values[0] is None or past_key_values[0][0] is None:
+                 logger.error("Cannot prune state: First layer KV cache is None.")
+                 return past_key_values, attention_mask
+            kv_cache_seq_len = past_key_len = past_key_values[0][0].shape[-2]
+            # original_seq_len = attention_mask.shape[-1] # Length from mask is one step ahead
+            # --------------------------------------------------
+            device = attention_mask.device
+
+            # Create a set for efficient lookup
+            prune_set = set(token_indices_to_prune)
+
+            # Determine indices to keep *within the KV cache length*
+            keep_indices = [i for i in range(kv_cache_seq_len) if i not in prune_set]
+            if not keep_indices: 
+                logger.warning("Pruning resulted in zero keep_indices for KV cache. Returning original state.")
+                return past_key_values, attention_mask
+            keep_indices_tensor = torch.tensor(keep_indices, dtype=torch.long, device=device)
             
-        # Convert to set for faster lookups
-        prunable_set = set(prunable_indices)
-        
-        # Determine which tokens to keep
-        keep_indices = [i for i in range(len(tokens)) if i not in prunable_set]
-        
-        # Save pruned tokens to shadow set
-        self._add_to_shadow_set(tokens, hidden_states, prunable_indices)
-        
-        # Create pruned token list
-        pruned_tokens = [tokens[i] for i in keep_indices]
-        
-        # Prune hidden states
-        if hidden_states is not None:
-            # If hidden_states is a tensor (e.g., PyTorch)
-            if HAS_TORCH and isinstance(hidden_states, torch.Tensor):
-                device = hidden_states.device
-                keep_indices_tensor = torch.tensor(keep_indices, device=device)
-                pruned_hidden_states = torch.index_select(hidden_states, 1, keep_indices_tensor)
+            # <<< ADDED: Detailed logging before mask pruning >>>
+            mask_dim_size = attention_mask.shape[-1]
+            logger.debug(f"--- prune_state: Before Mask Pruning --- ")
+            logger.debug(f"  Input token_indices_to_prune: {token_indices_to_prune}")
+            logger.debug(f"  Input attention_mask.shape: {attention_mask.shape}")
+            logger.debug(f"  Calculated kv_cache_seq_len: {kv_cache_seq_len}")
+            logger.debug(f"  Calculated keep_indices (list): {keep_indices}")
+            logger.debug(f"  Calculated keep_indices_tensor: {keep_indices_tensor}")
+            if len(keep_indices_tensor) > 0:
+                 min_idx = torch.min(keep_indices_tensor).item()
+                 max_idx = torch.max(keep_indices_tensor).item()
+                 logger.debug(f"  keep_indices_tensor Min: {min_idx}, Max: {max_idx}")
             else:
-                # Assume numpy array or similar
-                pruned_hidden_states = np.take(hidden_states, keep_indices, axis=1)
-        else:
-            pruned_hidden_states = None
+                 logger.debug("  keep_indices_tensor is empty")
+            logger.debug(f"  Target mask_dim_size: {mask_dim_size}")
+            # -------------------------------------------------
             
-        # Update pruning statistics
-        self.pruning_count += len(prunable_indices)
-        self.metrics["tokens_pruned"] += len(prunable_indices)
-        self.metrics["tokens_seen"] += len(tokens)
-        self.metrics["pruning_time"] += time.time() - start_time
-        self.metrics["pruning_calls"] += 1
-        
-        return pruned_tokens, pruned_hidden_states
-        
+            if len(keep_indices) == kv_cache_seq_len:
+                 logger.debug("Prune indices provided resulted in no change to KV cache length.")
+                 return past_key_values, attention_mask
+
+            # Prune the attention mask carefully - REVISED APPROACH
+            original_mask_len = attention_mask.shape[-1]
+            num_kept = len(keep_indices)
+            num_trailing_mask_tokens = original_mask_len - kv_cache_seq_len
+            new_mask_len = num_kept + num_trailing_mask_tokens
+            batch_size = attention_mask.shape[0]
+            
+            # Create a new mask based on kept indices + trailing tokens
+            new_mask = torch.zeros((batch_size, new_mask_len), dtype=torch.long, device=device)
+            # Set the kept indices part to 1
+            new_mask[:, :num_kept] = 1 
+            # The trailing part is already 1 in the original mask, so this logic is correct if trailing > 0
+            # If trailing=0, new_mask[:, num_kept:] is an empty slice.
+            
+            # Assign the newly constructed mask
+            pruned_attention_mask = new_mask
+            logger.debug(f"    Reconstructed pruned_attention_mask shape: {pruned_attention_mask.shape}")
+
+            # Prune the past_key_values tuple (list of tuples of tensors)
+            # Each tensor is typically [batch_size, num_heads, seq_len, head_dim]
+            new_past_key_values = []
+            for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                if layer_keys is None or layer_values is None:
+                    new_past_key_values.append((layer_keys, layer_values))
+                    continue
+                
+                # Handle potential seq len inconsistency due to layer skipping
+                current_layer_len = layer_keys.shape[-2]
+                # <<< REMOVED: Check and warning for mismatched length >>>
+                # if current_layer_len != kv_cache_seq_len:
+                #      logger.warning(f"Layer {layer_idx} has unexpected seq len {current_layer_len}, expected {kv_cache_seq_len}. Skipping prune for this layer.")
+                #      new_past_key_values.append((layer_keys, layer_values))
+                #      continue
+                     
+                # <<< ADDED: Clamp indices for this specific layer's length >>>
+                clamped_indices = torch.clamp(keep_indices_tensor, max=current_layer_len - 1)
+                # Ensure indices are unique after clamping, as duplicates can cause issues
+                unique_clamped_indices = torch.unique(clamped_indices) 
+                # -----------------------------------------------------------
+                
+                # Use the layer-specific clamped indices for pruning this layer
+                pruned_keys = torch.index_select(layer_keys, dim=-2, index=unique_clamped_indices)
+                pruned_values = torch.index_select(layer_values, dim=-2, index=unique_clamped_indices)
+                new_past_key_values.append((pruned_keys, pruned_values))
+            
+            pruned_past_key_values_tuple = tuple(new_past_key_values)
+            # Calculate num_pruned based on change in KV cache length
+            num_pruned = kv_cache_seq_len - len(keep_indices)
+            
+            # Update internal metrics if desired (adjust existing metrics or add new ones)
+            self.metrics["tokens_pruned"] += num_pruned # Assuming this counts active pruning
+            self.metrics["pruning_time"] += (time.time() - start_time) * 1000
+            self.metrics["pruning_calls"] += 1
+
+            logger.info(f"Pruned {num_pruned} tokens. New seq len: {len(keep_indices)}")
+            return pruned_past_key_values_tuple, pruned_attention_mask
+            
+        except Exception as e:
+            logger.error(f"Error during state pruning: {e}", exc_info=True)
+            # Return original state on error to avoid crashing generation
+            return past_key_values, attention_mask
+
     def _add_to_shadow_set(self, tokens, hidden_states, token_indices):
         """
         Add pruned tokens to the shadow set for potential later reintroduction.
