@@ -1,0 +1,1580 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 100
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: True
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): True
+INFO:hybrid_inference:  - Memory Management (Quant): True
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: True (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Memory Manager...
+INFO:memory_manager:Memory Manager initialized with 5MB budget, threshold 90%, Quantization: True
+INFO:hybrid_inference:Initializing Token Pruner...
+INFO:hybrid_inference:Initializing Layer Compression/Skipping Manager...
+INFO:hybrid_inference:Initializing Edge-Cloud Manager...
+INFO:edge_cloud_manager:EdgeCloudManager initialized for 12 layers.
+INFO:hybrid_inference:Registering pre-forward hooks for layer skipping on 12 layers...
+INFO:hybrid_inference:Successfully registered 12 hooks.
+INFO:hybrid_inference:Starting inference loop for 100 tokens...
+INFO:hybrid_inference:  Step 1 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+`torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to eager attention. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+WARNING:token_pruning.token_pruner:Expected query length (Q) of 1 for scoring, but got 15. Using only the first query position.
+INFO:hybrid_inference:  Step 2 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 3 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 4 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 5 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 6 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 7 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 8 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 9 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 10 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 11 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 12 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 13 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 14 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 15 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 16 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 17 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 18 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 19 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 20 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 21 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 22 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 23 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 24 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 25 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 26 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 27 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 28 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 29 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 30 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 31 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 32 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 33 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 34 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 35 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 36 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 37 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 38 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 39 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 40 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 41 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 42 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 43 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 44 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 45 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 46 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 47 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 48 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 49 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 50 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 51 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 52 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 53 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 54 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 55 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 56 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 57 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 58 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 59 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 60 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 61 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 62 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 63 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 64 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 65 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+[DEBUG Temp Layer 2] Raw Temp: 0.4356 | Clamped: 0.4356 | MagNorm: 0.1257 (AvgMag: 1.2570) | VarNorm: 1.0000 (Var: 37.7082) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4886 | Clamped: 0.4886 | MagNorm: 0.1590 (AvgMag: 1.5903) | VarNorm: 1.0000 (Var: 580.7483) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5338 | Clamped: 0.5338 | MagNorm: 0.1766 (AvgMag: 1.7661) | VarNorm: 1.0000 (Var: 661.8407) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5785 | Clamped: 0.5785 | MagNorm: 0.1934 (AvgMag: 1.9344) | VarNorm: 1.0000 (Var: 734.1968) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4902 | Clamped: 0.4902 | MagNorm: 0.0896 (AvgMag: 0.8956) | VarNorm: 1.0000 (Var: 3.9703) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5317 | Clamped: 0.5317 | MagNorm: 0.0999 (AvgMag: 0.9986) | VarNorm: 1.0000 (Var: 3.7093) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4410 | Clamped: 0.4410 | MagNorm: 0.1365 (AvgMag: 1.3650) | VarNorm: 1.0000 (Var: 5.1746) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4828 | Clamped: 0.4828 | MagNorm: 0.1475 (AvgMag: 1.4746) | VarNorm: 1.0000 (Var: 5.7988) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5599 | Clamped: 0.5599 | MagNorm: 0.1561 (AvgMag: 1.5610) | VarNorm: 1.0000 (Var: 6.4412) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5058 | Clamped: 0.5058 | MagNorm: 0.1206 (AvgMag: 1.2059) | VarNorm: 1.0000 (Var: 4.1942) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5463 | Clamped: 0.5463 | MagNorm: 0.1289 (AvgMag: 1.2887) | VarNorm: 1.0000 (Var: 4.3879) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4309 | Clamped: 0.4309 | MagNorm: 0.1163 (AvgMag: 1.1629) | VarNorm: 1.0000 (Var: 4.2447) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4759 | Clamped: 0.4759 | MagNorm: 0.1336 (AvgMag: 1.3357) | VarNorm: 1.0000 (Var: 5.0113) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5208 | Clamped: 0.5208 | MagNorm: 0.1507 (AvgMag: 1.5067) | VarNorm: 1.0000 (Var: 5.7169) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5642 | Clamped: 0.5642 | MagNorm: 0.1647 (AvgMag: 1.6467) | VarNorm: 1.0000 (Var: 6.4977) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5072 | Clamped: 0.5072 | MagNorm: 0.1234 (AvgMag: 1.2345) | VarNorm: 1.0000 (Var: 4.2169) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5492 | Clamped: 0.5492 | MagNorm: 0.1348 (AvgMag: 1.3479) | VarNorm: 1.0000 (Var: 4.9653) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4325 | Clamped: 0.4325 | MagNorm: 0.1195 (AvgMag: 1.1955) | VarNorm: 1.0000 (Var: 4.2223) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4743 | Clamped: 0.4743 | MagNorm: 0.1304 (AvgMag: 1.3043) | VarNorm: 1.0000 (Var: 4.7417) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5215 | Clamped: 0.5215 | MagNorm: 0.1522 (AvgMag: 1.5215) | VarNorm: 1.0000 (Var: 6.1458) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5645 | Clamped: 0.5645 | MagNorm: 0.1653 (AvgMag: 1.6534) | VarNorm: 1.0000 (Var: 7.1862) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4934 | Clamped: 0.4934 | MagNorm: 0.0959 (AvgMag: 0.9594) | VarNorm: 1.0000 (Var: 3.9911) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5357 | Clamped: 0.5357 | MagNorm: 0.1078 (AvgMag: 1.0779) | VarNorm: 1.0000 (Var: 3.9761) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4343 | Clamped: 0.4343 | MagNorm: 0.1231 (AvgMag: 1.2310) | VarNorm: 1.0000 (Var: 5.1796) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4754 | Clamped: 0.4754 | MagNorm: 0.1326 (AvgMag: 1.3258) | VarNorm: 1.0000 (Var: 5.6059) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5541 | Clamped: 0.5541 | MagNorm: 0.1445 (AvgMag: 1.4449) | VarNorm: 1.0000 (Var: 5.7077) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4853 | Clamped: 0.4853 | MagNorm: 0.0796 (AvgMag: 0.7960) | VarNorm: 1.0000 (Var: 3.9367) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5232 | Clamped: 0.5232 | MagNorm: 0.0827 (AvgMag: 0.8271) | VarNorm: 1.0000 (Var: 3.3416) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4382 | Clamped: 0.4382 | MagNorm: 0.1309 (AvgMag: 1.3085) | VarNorm: 1.0000 (Var: 4.4015) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4811 | Clamped: 0.4811 | MagNorm: 0.1441 (AvgMag: 1.4409) | VarNorm: 1.0000 (Var: 4.9552) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5599 | Clamped: 0.5599 | MagNorm: 0.1563 (AvgMag: 1.5625) | VarNorm: 1.0000 (Var: 5.3740) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5141 | Clamped: 0.5141 | MagNorm: 0.1372 (AvgMag: 1.3723) | VarNorm: 1.0000 (Var: 5.0779) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5504 | Clamped: 0.5504 | MagNorm: 0.1372 (AvgMag: 1.3725) | VarNorm: 1.0000 (Var: 4.9647) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4289 | Clamped: 0.4289 | MagNorm: 0.1123 (AvgMag: 1.1231) | VarNorm: 1.0000 (Var: 4.2658) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4752 | Clamped: 0.4752 | MagNorm: 0.1323 (AvgMag: 1.3227) | VarNorm: 1.0000 (Var: 5.5137) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5181 | Clamped: 0.5181 | MagNorm: 0.1453 (AvgMag: 1.4526) | VarNorm: 1.0000 (Var: 6.3180) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5570 | Clamped: 0.5570 | MagNorm: 0.1504 (AvgMag: 1.5044) | VarNorm: 1.0000 (Var: 6.3513) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4994 | Clamped: 0.4994 | MagNorm: 0.1079 (AvgMag: 1.0785) | VarNorm: 1.0000 (Var: 4.2974) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5392 | Clamped: 0.5392 | MagNorm: 0.1148 (AvgMag: 1.1484) | VarNorm: 1.0000 (Var: 4.3589) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4144 | Clamped: 0.4144 | MagNorm: 0.0833 (AvgMag: 0.8325) | VarNorm: 1.0000 (Var: 3.9759) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4615 | Clamped: 0.4615 | MagNorm: 0.1047 (AvgMag: 1.0472) | VarNorm: 1.0000 (Var: 4.7688) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5406 | Clamped: 0.5406 | MagNorm: 0.1175 (AvgMag: 1.1750) | VarNorm: 1.0000 (Var: 5.2884) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4999 | Clamped: 0.4999 | MagNorm: 0.1089 (AvgMag: 1.0893) | VarNorm: 1.0000 (Var: 4.0478) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5406 | Clamped: 0.5406 | MagNorm: 0.1176 (AvgMag: 1.1758) | VarNorm: 1.0000 (Var: 4.1213) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4308 | Clamped: 0.4308 | MagNorm: 0.1162 (AvgMag: 1.1621) | VarNorm: 1.0000 (Var: 4.5730) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4724 | Clamped: 0.4724 | MagNorm: 0.1267 (AvgMag: 1.2670) | VarNorm: 1.0000 (Var: 5.0373) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5512 | Clamped: 0.5512 | MagNorm: 0.1387 (AvgMag: 1.3868) | VarNorm: 1.0000 (Var: 5.9424) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4864 | Clamped: 0.4864 | MagNorm: 0.0819 (AvgMag: 0.8188) | VarNorm: 1.0000 (Var: 4.0723) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5266 | Clamped: 0.5266 | MagNorm: 0.0895 (AvgMag: 0.8951) | VarNorm: 1.0000 (Var: 3.6677) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4317 | Clamped: 0.4317 | MagNorm: 0.1179 (AvgMag: 1.1790) | VarNorm: 1.0000 (Var: 4.3139) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4757 | Clamped: 0.4757 | MagNorm: 0.1331 (AvgMag: 1.3312) | VarNorm: 1.0000 (Var: 5.1368) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5542 | Clamped: 0.5542 | MagNorm: 0.1448 (AvgMag: 1.4479) | VarNorm: 1.0000 (Var: 5.6357) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5098 | Clamped: 0.5098 | MagNorm: 0.1286 (AvgMag: 1.2863) | VarNorm: 1.0000 (Var: 4.5540) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5486 | Clamped: 0.5486 | MagNorm: 0.1335 (AvgMag: 1.3349) | VarNorm: 1.0000 (Var: 4.7621) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4347 | Clamped: 0.4347 | MagNorm: 0.1240 (AvgMag: 1.2400) | VarNorm: 1.0000 (Var: 4.5406) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4751 | Clamped: 0.4751 | MagNorm: 0.1320 (AvgMag: 1.3196) | VarNorm: 1.0000 (Var: 4.6670) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5222 | Clamped: 0.5222 | MagNorm: 0.1536 (AvgMag: 1.5358) | VarNorm: 1.0000 (Var: 5.7080) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5650 | Clamped: 0.5650 | MagNorm: 0.1663 (AvgMag: 1.6631) | VarNorm: 1.0000 (Var: 6.8207) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4819 | Clamped: 0.4819 | MagNorm: 0.0730 (AvgMag: 0.7296) | VarNorm: 1.0000 (Var: 3.9484) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5224 | Clamped: 0.5224 | MagNorm: 0.0812 (AvgMag: 0.8121) | VarNorm: 1.0000 (Var: 3.5077) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4324 | Clamped: 0.4324 | MagNorm: 0.1193 (AvgMag: 1.1926) | VarNorm: 1.0000 (Var: 4.5649) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4778 | Clamped: 0.4778 | MagNorm: 0.1374 (AvgMag: 1.3738) | VarNorm: 1.0000 (Var: 4.8471) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5552 | Clamped: 0.5552 | MagNorm: 0.1467 (AvgMag: 1.4667) | VarNorm: 1.0000 (Var: 5.1646) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4991 | Clamped: 0.4991 | MagNorm: 0.1072 (AvgMag: 1.0722) | VarNorm: 1.0000 (Var: 4.1196) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5382 | Clamped: 0.5382 | MagNorm: 0.1127 (AvgMag: 1.1270) | VarNorm: 1.0000 (Var: 4.0792) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4245 | Clamped: 0.4245 | MagNorm: 0.1036 (AvgMag: 1.0360) | VarNorm: 1.0000 (Var: 4.2072) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4672 | Clamped: 0.4672 | MagNorm: 0.1162 (AvgMag: 1.1621) | VarNorm: 1.0000 (Var: 4.5807) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5451 | Clamped: 0.5451 | MagNorm: 0.1266 (AvgMag: 1.2660) | VarNorm: 1.0000 (Var: 5.5124) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4997 | Clamped: 0.4997 | MagNorm: 0.1085 (AvgMag: 1.0848) | VarNorm: 1.0000 (Var: 4.1572) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5382 | Clamped: 0.5382 | MagNorm: 0.1127 (AvgMag: 1.1269) | VarNorm: 1.0000 (Var: 3.9745) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4225 | Clamped: 0.4225 | MagNorm: 0.0995 (AvgMag: 0.9950) | VarNorm: 1.0000 (Var: 3.4536) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4666 | Clamped: 0.4666 | MagNorm: 0.1150 (AvgMag: 1.1503) | VarNorm: 1.0000 (Var: 4.0092) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5483 | Clamped: 0.5483 | MagNorm: 0.1330 (AvgMag: 1.3304) | VarNorm: 1.0000 (Var: 4.6383) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5061 | Clamped: 0.5061 | MagNorm: 0.1212 (AvgMag: 1.2120) | VarNorm: 1.0000 (Var: 4.6054) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5457 | Clamped: 0.5457 | MagNorm: 0.1279 (AvgMag: 1.2785) | VarNorm: 1.0000 (Var: 4.6225) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4317 | Clamped: 0.4317 | MagNorm: 0.1179 (AvgMag: 1.1792) | VarNorm: 1.0000 (Var: 4.6152) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4753 | Clamped: 0.4753 | MagNorm: 0.1325 (AvgMag: 1.3245) | VarNorm: 1.0000 (Var: 5.3143) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5175 | Clamped: 0.5175 | MagNorm: 0.1440 (AvgMag: 1.4401) | VarNorm: 1.0000 (Var: 5.8827) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5597 | Clamped: 0.5597 | MagNorm: 0.1558 (AvgMag: 1.5582) | VarNorm: 1.0000 (Var: 6.0789) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4982 | Clamped: 0.4982 | MagNorm: 0.1054 (AvgMag: 1.0543) | VarNorm: 1.0000 (Var: 3.7891) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5390 | Clamped: 0.5390 | MagNorm: 0.1143 (AvgMag: 1.1434) | VarNorm: 1.0000 (Var: 3.8451) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4275 | Clamped: 0.4275 | MagNorm: 0.1096 (AvgMag: 1.0959) | VarNorm: 1.0000 (Var: 3.8326) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4738 | Clamped: 0.4738 | MagNorm: 0.1295 (AvgMag: 1.2946) | VarNorm: 1.0000 (Var: 4.6953) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5548 | Clamped: 0.5548 | MagNorm: 0.1461 (AvgMag: 1.4605) | VarNorm: 1.0000 (Var: 5.2533) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4944 | Clamped: 0.4944 | MagNorm: 0.0979 (AvgMag: 0.9793) | VarNorm: 1.0000 (Var: 3.5743) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5342 | Clamped: 0.5342 | MagNorm: 0.1047 (AvgMag: 1.0468) | VarNorm: 1.0000 (Var: 3.5582) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4323 | Clamped: 0.4323 | MagNorm: 0.1192 (AvgMag: 1.1918) | VarNorm: 1.0000 (Var: 4.5486) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4792 | Clamped: 0.4792 | MagNorm: 0.1403 (AvgMag: 1.4029) | VarNorm: 1.0000 (Var: 6.0969) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5581 | Clamped: 0.5581 | MagNorm: 0.1526 (AvgMag: 1.5262) | VarNorm: 1.0000 (Var: 6.3534) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4903 | Clamped: 0.4903 | MagNorm: 0.0896 (AvgMag: 0.8964) | VarNorm: 1.0000 (Var: 3.6801) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5292 | Clamped: 0.5292 | MagNorm: 0.0947 (AvgMag: 0.9474) | VarNorm: 1.0000 (Var: 3.5084) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4137 | Clamped: 0.4137 | MagNorm: 0.0820 (AvgMag: 0.8200) | VarNorm: 1.0000 (Var: 3.9193) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4558 | Clamped: 0.4558 | MagNorm: 0.0933 (AvgMag: 0.9333) | VarNorm: 1.0000 (Var: 4.3884) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5340 | Clamped: 0.5340 | MagNorm: 0.1043 (AvgMag: 1.0433) | VarNorm: 1.0000 (Var: 4.5383) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5089 | Clamped: 0.5089 | MagNorm: 0.1269 (AvgMag: 1.2691) | VarNorm: 1.0000 (Var: 5.1941) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5483 | Clamped: 0.5483 | MagNorm: 0.1330 (AvgMag: 1.3297) | VarNorm: 1.0000 (Var: 5.0852) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4252 | Clamped: 0.4252 | MagNorm: 0.1049 (AvgMag: 1.0487) | VarNorm: 1.0000 (Var: 3.6109) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4729 | Clamped: 0.4729 | MagNorm: 0.1276 (AvgMag: 1.2763) | VarNorm: 1.0000 (Var: 4.3330) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5215 | Clamped: 0.5215 | MagNorm: 0.1521 (AvgMag: 1.5207) | VarNorm: 1.0000 (Var: 5.1400) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5630 | Clamped: 0.5630 | MagNorm: 0.1624 (AvgMag: 1.6236) | VarNorm: 1.0000 (Var: 5.9105) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5062 | Clamped: 0.5062 | MagNorm: 0.1215 (AvgMag: 1.2152) | VarNorm: 1.0000 (Var: 5.3049) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5468 | Clamped: 0.5468 | MagNorm: 0.1300 (AvgMag: 1.2998) | VarNorm: 1.0000 (Var: 5.2221) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4336 | Clamped: 0.4336 | MagNorm: 0.1217 (AvgMag: 1.2170) | VarNorm: 1.0000 (Var: 4.7816) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4777 | Clamped: 0.4777 | MagNorm: 0.1372 (AvgMag: 1.3716) | VarNorm: 1.0000 (Var: 5.3838) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5240 | Clamped: 0.5240 | MagNorm: 0.1572 (AvgMag: 1.5716) | VarNorm: 1.0000 (Var: 6.5223) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5669 | Clamped: 0.5669 | MagNorm: 0.1702 (AvgMag: 1.7017) | VarNorm: 1.0000 (Var: 7.1810) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4841 | Clamped: 0.4841 | MagNorm: 0.0773 (AvgMag: 0.7726) | VarNorm: 1.0000 (Var: 3.8494) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5253 | Clamped: 0.5253 | MagNorm: 0.0869 (AvgMag: 0.8694) | VarNorm: 1.0000 (Var: 3.5330) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4322 | Clamped: 0.4322 | MagNorm: 0.1189 (AvgMag: 1.1891) | VarNorm: 1.0000 (Var: 4.2921) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4768 | Clamped: 0.4768 | MagNorm: 0.1354 (AvgMag: 1.3541) | VarNorm: 1.0000 (Var: 4.9775) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5580 | Clamped: 0.5580 | MagNorm: 0.1524 (AvgMag: 1.5239) | VarNorm: 1.0000 (Var: 5.9890) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5069 | Clamped: 0.5069 | MagNorm: 0.1229 (AvgMag: 1.2290) | VarNorm: 1.0000 (Var: 4.5247) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5451 | Clamped: 0.5451 | MagNorm: 0.1266 (AvgMag: 1.2663) | VarNorm: 1.0000 (Var: 5.0299) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4302 | Clamped: 0.4302 | MagNorm: 0.1150 (AvgMag: 1.1502) | VarNorm: 1.0000 (Var: 3.9488) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4767 | Clamped: 0.4767 | MagNorm: 0.1352 (AvgMag: 1.3518) | VarNorm: 1.0000 (Var: 4.8651) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5244 | Clamped: 0.5244 | MagNorm: 0.1580 (AvgMag: 1.5799) | VarNorm: 1.0000 (Var: 6.2590) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5683 | Clamped: 0.5683 | MagNorm: 0.1729 (AvgMag: 1.7293) | VarNorm: 1.0000 (Var: 7.1737) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5044 | Clamped: 0.5044 | MagNorm: 0.1178 (AvgMag: 1.1784) | VarNorm: 1.0000 (Var: 4.1524) | PosF: 0.7273
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 66 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 67 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 68 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 69 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 70 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 71 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 72 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 73 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 74 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 75 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 76 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 77 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 78 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 79 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 80 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 81 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 82 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 83 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 84 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 85 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 86 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 87 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 88 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 89 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 90 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 91 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 92 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 93 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 94 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 95 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 96 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 97 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 98 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 99 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:  Step 100 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+ERROR:token_pruning.token_pruner:Error during state pruning: cannot unpack non-iterable NoneType object
+Traceback (most recent call last):
+  File "/Users/kevinyu/Projects/llm-mobile/src/token_pruning/token_pruner.py", line 288, in prune_state
+    for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot unpack non-iterable NoneType object
+INFO:hybrid_inference:Removing 12 hooks...
+INFO:hybrid_inference:Hooks removed.
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 21.77s
+INFO:hybrid_inference:Generation Loop Time: 20.64s
+INFO:hybrid_inference:Average time per generated token: 0.2063s (4.85 tokens/s)
+INFO:hybrid_inference:Generated 100 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 122
+INFO:hybrid_inference:Tokens Pruned: 0
+INFO:hybrid_inference:Layers Offloaded: 600
+INFO:hybrid_inference:Final sequence length: 115
+INFO:hybrid_inference:--- Memory Manager Stats ---
+INFO:hybrid_inference:Peak Memory Usage: 3.30 MB
+INFO:hybrid_inference:Quantization Events: 0
+INFO:hybrid_inference:Layers Quantized (0): []
+INFO:hybrid_inference:Dequantization Events: 0
+INFO:hybrid_inference:--- Layer Optimization Stats ---
+INFO:hybrid_inference:Compression Ratio (Handler): 0.0
+INFO:hybrid_inference:Total Layers Evaluated for Skipping (Handler): 279
+INFO:hybrid_inference:Total Layers Skipped (Handler): 122
+INFO:hybrid_inference:Skipping Efficiency (Handler): 0.4388
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action on behalf side sidewisewise (including the same exact amount amount of workflows and thereforeforthforth. Howevercherscherscherrystalstalickelsystems in conjunctionally altered versions of both sidessidewardswardswardwards. Thereforeforthwardnessinessinessy=falseFalse False False guiIcon guiIcon =================*/DATADATACARouselouselviewportfolios.html.completed_packaging/etcetc etc..etc.... etc etc., etcetericheritage.exe
+INFO:hybrid_inference:Newly Generated Text: on behalf side sidewisewise (including the same exact amount amount of workflows and thereforeforthforth. Howevercherscherscherrystalstalickelsystems in conjunctionally altered versions of both sidessidewardswardswardwards. Thereforeforthwardnessinessinessy=falseFalse False False guiIcon guiIcon =================*/DATADATACARouselouselviewportfolios.html.completed_packaging/etcetc etc..etc.... etc etc., etcetericheritage.exe
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.
+INFO:hybrid_inference:Hybrid inference script finished.
+[DEBUG Temp Layer 5] Raw Temp: 0.5446 | Clamped: 0.5446 | MagNorm: 0.1257 (AvgMag: 1.2565) | VarNorm: 1.0000 (Var: 4.3884) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4293 | Clamped: 0.4293 | MagNorm: 0.1131 (AvgMag: 1.1306) | VarNorm: 1.0000 (Var: 4.0217) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4732 | Clamped: 0.4732 | MagNorm: 0.1283 (AvgMag: 1.2826) | VarNorm: 1.0000 (Var: 4.6859) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5190 | Clamped: 0.5190 | MagNorm: 0.1472 (AvgMag: 1.4718) | VarNorm: 1.0000 (Var: 5.5708) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5611 | Clamped: 0.5611 | MagNorm: 0.1586 (AvgMag: 1.5860) | VarNorm: 1.0000 (Var: 6.5789) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5041 | Clamped: 0.5041 | MagNorm: 0.1172 (AvgMag: 1.1721) | VarNorm: 1.0000 (Var: 4.1103) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5440 | Clamped: 0.5440 | MagNorm: 0.1243 (AvgMag: 1.2429) | VarNorm: 1.0000 (Var: 4.3723) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4279 | Clamped: 0.4279 | MagNorm: 0.1103 (AvgMag: 1.1032) | VarNorm: 1.0000 (Var: 4.0172) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4721 | Clamped: 0.4721 | MagNorm: 0.1259 (AvgMag: 1.2595) | VarNorm: 1.0000 (Var: 4.6810) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5212 | Clamped: 0.5212 | MagNorm: 0.1515 (AvgMag: 1.5152) | VarNorm: 1.0000 (Var: 6.0641) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5608 | Clamped: 0.5608 | MagNorm: 0.1579 (AvgMag: 1.5791) | VarNorm: 1.0000 (Var: 6.3824) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4802 | Clamped: 0.4802 | MagNorm: 0.0694 (AvgMag: 0.6939) | VarNorm: 1.0000 (Var: 3.7788) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5212 | Clamped: 0.5212 | MagNorm: 0.0787 (AvgMag: 0.7872) | VarNorm: 1.0000 (Var: 3.2348) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4332 | Clamped: 0.4332 | MagNorm: 0.1209 (AvgMag: 1.2086) | VarNorm: 1.0000 (Var: 4.8062) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4750 | Clamped: 0.4750 | MagNorm: 0.1317 (AvgMag: 1.3174) | VarNorm: 1.0000 (Var: 5.1445) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5560 | Clamped: 0.5560 | MagNorm: 0.1484 (AvgMag: 1.4844) | VarNorm: 1.0000 (Var: 5.9811) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5077 | Clamped: 0.5077 | MagNorm: 0.1245 (AvgMag: 1.2455) | VarNorm: 1.0000 (Var: 4.8863) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5441 | Clamped: 0.5441 | MagNorm: 0.1245 (AvgMag: 1.2453) | VarNorm: 1.0000 (Var: 4.5814) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4306 | Clamped: 0.4306 | MagNorm: 0.1158 (AvgMag: 1.1577) | VarNorm: 1.0000 (Var: 4.1852) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4698 | Clamped: 0.4698 | MagNorm: 0.1215 (AvgMag: 1.2147) | VarNorm: 1.0000 (Var: 4.5744) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5133 | Clamped: 0.5133 | MagNorm: 0.1357 (AvgMag: 1.3572) | VarNorm: 1.0000 (Var: 5.2266) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5535 | Clamped: 0.5535 | MagNorm: 0.1434 (AvgMag: 1.4341) | VarNorm: 1.0000 (Var: 5.7547) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5009 | Clamped: 0.5009 | MagNorm: 0.1109 (AvgMag: 1.1087) | VarNorm: 1.0000 (Var: 4.3061) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5400 | Clamped: 0.5400 | MagNorm: 0.1163 (AvgMag: 1.1629) | VarNorm: 1.0000 (Var: 4.4402) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4263 | Clamped: 0.4263 | MagNorm: 0.1072 (AvgMag: 1.0723) | VarNorm: 1.0000 (Var: 4.2436) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4715 | Clamped: 0.4715 | MagNorm: 0.1248 (AvgMag: 1.2475) | VarNorm: 1.0000 (Var: 5.0566) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5166 | Clamped: 0.5166 | MagNorm: 0.1422 (AvgMag: 1.4222) | VarNorm: 1.0000 (Var: 6.7727) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5573 | Clamped: 0.5573 | MagNorm: 0.1511 (AvgMag: 1.5106) | VarNorm: 1.0000 (Var: 6.8587) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4985 | Clamped: 0.4985 | MagNorm: 0.1060 (AvgMag: 1.0605) | VarNorm: 1.0000 (Var: 4.3764) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5373 | Clamped: 0.5373 | MagNorm: 0.1110 (AvgMag: 1.1097) | VarNorm: 1.0000 (Var: 4.2436) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4209 | Clamped: 0.4209 | MagNorm: 0.0963 (AvgMag: 0.9629) | VarNorm: 1.0000 (Var: 3.4795) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4638 | Clamped: 0.4638 | MagNorm: 0.1094 (AvgMag: 1.0942) | VarNorm: 1.0000 (Var: 3.7361) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5433 | Clamped: 0.5433 | MagNorm: 0.1230 (AvgMag: 1.2304) | VarNorm: 1.0000 (Var: 4.2133) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5029 | Clamped: 0.5029 | MagNorm: 0.1150 (AvgMag: 1.1498) | VarNorm: 1.0000 (Var: 4.3885) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5424 | Clamped: 0.5424 | MagNorm: 0.1212 (AvgMag: 1.2116) | VarNorm: 1.0000 (Var: 4.5732) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4397 | Clamped: 0.4397 | MagNorm: 0.1339 (AvgMag: 1.3392) | VarNorm: 1.0000 (Var: 5.0779) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4823 | Clamped: 0.4823 | MagNorm: 0.1464 (AvgMag: 1.4644) | VarNorm: 1.0000 (Var: 6.0209) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5245 | Clamped: 0.5245 | MagNorm: 0.1581 (AvgMag: 1.5811) | VarNorm: 1.0000 (Var: 6.1267) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5700 | Clamped: 0.5700 | MagNorm: 0.1763 (AvgMag: 1.7631) | VarNorm: 1.0000 (Var: 7.1990) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5128 | Clamped: 0.5128 | MagNorm: 0.1346 (AvgMag: 1.3460) | VarNorm: 1.0000 (Var: 5.2710) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5531 | Clamped: 0.5531 | MagNorm: 0.1426 (AvgMag: 1.4258) | VarNorm: 1.0000 (Var: 5.3295) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4411 | Clamped: 0.4411 | MagNorm: 0.1368 (AvgMag: 1.3675) | VarNorm: 1.0000 (Var: 5.3177) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4863 | Clamped: 0.4863 | MagNorm: 0.1545 (AvgMag: 1.5449) | VarNorm: 1.0000 (Var: 6.5176) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5263 | Clamped: 0.5263 | MagNorm: 0.1617 (AvgMag: 1.6174) | VarNorm: 1.0000 (Var: 6.4719) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5699 | Clamped: 0.5699 | MagNorm: 0.1761 (AvgMag: 1.7613) | VarNorm: 1.0000 (Var: 7.4622) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5130 | Clamped: 0.5130 | MagNorm: 0.1352 (AvgMag: 1.3517) | VarNorm: 1.0000 (Var: 5.3478) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5537 | Clamped: 0.5537 | MagNorm: 0.1437 (AvgMag: 1.4373) | VarNorm: 1.0000 (Var: 5.4401) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4508 | Clamped: 0.4508 | MagNorm: 0.1561 (AvgMag: 1.5606) | VarNorm: 1.0000 (Var: 6.5094) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4925 | Clamped: 0.4925 | MagNorm: 0.1668 (AvgMag: 1.6683) | VarNorm: 1.0000 (Var: 7.4377) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5350 | Clamped: 0.5350 | MagNorm: 0.1790 (AvgMag: 1.7901) | VarNorm: 1.0000 (Var: 7.5841) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5796 | Clamped: 0.5796 | MagNorm: 0.1955 (AvgMag: 1.9551) | VarNorm: 1.0000 (Var: 8.5910) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5213 | Clamped: 0.5213 | MagNorm: 0.1517 (AvgMag: 1.5174) | VarNorm: 1.0000 (Var: 6.2626) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5622 | Clamped: 0.5622 | MagNorm: 0.1607 (AvgMag: 1.6068) | VarNorm: 1.0000 (Var: 6.4572) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4250 | Clamped: 0.4250 | MagNorm: 0.1046 (AvgMag: 1.0459) | VarNorm: 1.0000 (Var: 4.2421) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4715 | Clamped: 0.4715 | MagNorm: 0.1248 (AvgMag: 1.2479) | VarNorm: 1.0000 (Var: 5.0401) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5160 | Clamped: 0.5160 | MagNorm: 0.1412 (AvgMag: 1.4116) | VarNorm: 1.0000 (Var: 5.6376) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5604 | Clamped: 0.5604 | MagNorm: 0.1571 (AvgMag: 1.5711) | VarNorm: 1.0000 (Var: 6.7484) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5236 | Clamped: 0.5236 | MagNorm: 0.1563 (AvgMag: 1.5626) | VarNorm: 1.0000 (Var: 6.0951) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5668 | Clamped: 0.5668 | MagNorm: 0.1700 (AvgMag: 1.6996) | VarNorm: 1.0000 (Var: 7.2799) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4294 | Clamped: 0.4294 | MagNorm: 0.1133 (AvgMag: 1.1333) | VarNorm: 1.0000 (Var: 4.3105) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4747 | Clamped: 0.4747 | MagNorm: 0.1313 (AvgMag: 1.3131) | VarNorm: 1.0000 (Var: 4.9713) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5213 | Clamped: 0.5213 | MagNorm: 0.1516 (AvgMag: 1.5161) | VarNorm: 1.0000 (Var: 6.0401) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5647 | Clamped: 0.5647 | MagNorm: 0.1657 (AvgMag: 1.6574) | VarNorm: 1.0000 (Var: 6.8474) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4992 | Clamped: 0.4992 | MagNorm: 0.1075 (AvgMag: 1.0749) | VarNorm: 1.0000 (Var: 4.1050) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5413 | Clamped: 0.5413 | MagNorm: 0.1190 (AvgMag: 1.1895) | VarNorm: 1.0000 (Var: 4.3475) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4376 | Clamped: 0.4376 | MagNorm: 0.1297 (AvgMag: 1.2975) | VarNorm: 1.0000 (Var: 4.6446) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4849 | Clamped: 0.4849 | MagNorm: 0.1517 (AvgMag: 1.5166) | VarNorm: 1.0000 (Var: 5.7482) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5652 | Clamped: 0.5652 | MagNorm: 0.1667 (AvgMag: 1.6670) | VarNorm: 1.0000 (Var: 6.3916) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5122 | Clamped: 0.5122 | MagNorm: 0.1334 (AvgMag: 1.3340) | VarNorm: 1.0000 (Var: 5.1389) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5553 | Clamped: 0.5553 | MagNorm: 0.1470 (AvgMag: 1.4696) | VarNorm: 1.0000 (Var: 6.1290) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4390 | Clamped: 0.4390 | MagNorm: 0.1326 (AvgMag: 1.3257) | VarNorm: 1.0000 (Var: 5.2351) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4837 | Clamped: 0.4837 | MagNorm: 0.1492 (AvgMag: 1.4924) | VarNorm: 1.0000 (Var: 6.4461) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5256 | Clamped: 0.5256 | MagNorm: 0.1604 (AvgMag: 1.6035) | VarNorm: 1.0000 (Var: 6.9247) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5676 | Clamped: 0.5676 | MagNorm: 0.1715 (AvgMag: 1.7150) | VarNorm: 1.0000 (Var: 7.9048) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5157 | Clamped: 0.5157 | MagNorm: 0.1404 (AvgMag: 1.4042) | VarNorm: 1.0000 (Var: 5.2941) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5583 | Clamped: 0.5583 | MagNorm: 0.1529 (AvgMag: 1.5290) | VarNorm: 1.0000 (Var: 6.3653) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4441 | Clamped: 0.4441 | MagNorm: 0.1427 (AvgMag: 1.4268) | VarNorm: 1.0000 (Var: 6.1605) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4905 | Clamped: 0.4905 | MagNorm: 0.1628 (AvgMag: 1.6276) | VarNorm: 1.0000 (Var: 7.9916) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5341 | Clamped: 0.5341 | MagNorm: 0.1773 (AvgMag: 1.7726) | VarNorm: 1.0000 (Var: 8.7911) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5764 | Clamped: 0.5764 | MagNorm: 0.1891 (AvgMag: 1.8907) | VarNorm: 1.0000 (Var: 9.4944) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5144 | Clamped: 0.5144 | MagNorm: 0.1379 (AvgMag: 1.3789) | VarNorm: 1.0000 (Var: 6.0490) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5548 | Clamped: 0.5548 | MagNorm: 0.1459 (AvgMag: 1.4591) | VarNorm: 1.0000 (Var: 6.4603) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4330 | Clamped: 0.4330 | MagNorm: 0.1206 (AvgMag: 1.2061) | VarNorm: 1.0000 (Var: 4.7681) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4802 | Clamped: 0.4802 | MagNorm: 0.1421 (AvgMag: 1.4213) | VarNorm: 1.0000 (Var: 6.4560) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5256 | Clamped: 0.5256 | MagNorm: 0.1603 (AvgMag: 1.6034) | VarNorm: 1.0000 (Var: 7.3795) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5676 | Clamped: 0.5676 | MagNorm: 0.1715 (AvgMag: 1.7151) | VarNorm: 1.0000 (Var: 8.1991) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5049 | Clamped: 0.5049 | MagNorm: 0.1188 (AvgMag: 1.1881) | VarNorm: 1.0000 (Var: 4.4249) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5464 | Clamped: 0.5464 | MagNorm: 0.1292 (AvgMag: 1.2919) | VarNorm: 1.0000 (Var: 4.9962) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4401 | Clamped: 0.4401 | MagNorm: 0.1348 (AvgMag: 1.3478) | VarNorm: 1.0000 (Var: 6.1681) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4857 | Clamped: 0.4857 | MagNorm: 0.1531 (AvgMag: 1.5313) | VarNorm: 1.0000 (Var: 7.7293) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5289 | Clamped: 0.5289 | MagNorm: 0.1669 (AvgMag: 1.6693) | VarNorm: 1.0000 (Var: 8.8743) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5725 | Clamped: 0.5725 | MagNorm: 0.1814 (AvgMag: 1.8144) | VarNorm: 1.0000 (Var: 9.3721) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4830 | Clamped: 0.4830 | MagNorm: 0.0750 (AvgMag: 0.7501) | VarNorm: 1.0000 (Var: 3.8074) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5260 | Clamped: 0.5260 | MagNorm: 0.0884 (AvgMag: 0.8841) | VarNorm: 1.0000 (Var: 3.7299) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4333 | Clamped: 0.4333 | MagNorm: 0.1212 (AvgMag: 1.2122) | VarNorm: 1.0000 (Var: 4.5385) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4795 | Clamped: 0.4795 | MagNorm: 0.1408 (AvgMag: 1.4076) | VarNorm: 1.0000 (Var: 5.9772) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5609 | Clamped: 0.5609 | MagNorm: 0.1581 (AvgMag: 1.5814) | VarNorm: 1.0000 (Var: 6.3410) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4823 | Clamped: 0.4823 | MagNorm: 0.0737 (AvgMag: 0.7372) | VarNorm: 1.0000 (Var: 3.5383) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5247 | Clamped: 0.5247 | MagNorm: 0.0858 (AvgMag: 0.8575) | VarNorm: 1.0000 (Var: 3.4178) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4365 | Clamped: 0.4365 | MagNorm: 0.1275 (AvgMag: 1.2748) | VarNorm: 1.0000 (Var: 4.4137) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4785 | Clamped: 0.4785 | MagNorm: 0.1388 (AvgMag: 1.3885) | VarNorm: 1.0000 (Var: 4.9948) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5560 | Clamped: 0.5560 | MagNorm: 0.1483 (AvgMag: 1.4829) | VarNorm: 1.0000 (Var: 5.3004) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5082 | Clamped: 0.5082 | MagNorm: 0.1254 (AvgMag: 1.2541) | VarNorm: 1.0000 (Var: 5.2415) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5478 | Clamped: 0.5478 | MagNorm: 0.1320 (AvgMag: 1.3204) | VarNorm: 1.0000 (Var: 5.6630) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4263 | Clamped: 0.4263 | MagNorm: 0.1072 (AvgMag: 1.0719) | VarNorm: 1.0000 (Var: 4.1270) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4709 | Clamped: 0.4709 | MagNorm: 0.1236 (AvgMag: 1.2363) | VarNorm: 1.0000 (Var: 4.6281) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5138 | Clamped: 0.5138 | MagNorm: 0.1366 (AvgMag: 1.3665) | VarNorm: 1.0000 (Var: 5.0801) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5572 | Clamped: 0.5572 | MagNorm: 0.1508 (AvgMag: 1.5084) | VarNorm: 1.0000 (Var: 5.8637) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5078 | Clamped: 0.5078 | MagNorm: 0.1247 (AvgMag: 1.2474) | VarNorm: 1.0000 (Var: 4.5910) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5533 | Clamped: 0.5533 | MagNorm: 0.1430 (AvgMag: 1.4297) | VarNorm: 1.0000 (Var: 5.4111) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4226 | Clamped: 0.4226 | MagNorm: 0.0998 (AvgMag: 0.9979) | VarNorm: 1.0000 (Var: 4.0148) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4622 | Clamped: 0.4622 | MagNorm: 0.1062 (AvgMag: 1.0621) | VarNorm: 1.0000 (Var: 4.0668) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5083 | Clamped: 0.5083 | MagNorm: 0.1258 (AvgMag: 1.2577) | VarNorm: 1.0000 (Var: 4.9328) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5543 | Clamped: 0.5543 | MagNorm: 0.1450 (AvgMag: 1.4497) | VarNorm: 1.0000 (Var: 6.2856) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4941 | Clamped: 0.4941 | MagNorm: 0.0973 (AvgMag: 0.9734) | VarNorm: 1.0000 (Var: 3.6855) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5354 | Clamped: 0.5354 | MagNorm: 0.1071 (AvgMag: 1.0714) | VarNorm: 1.0000 (Var: 3.7955) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4423 | Clamped: 0.4423 | MagNorm: 0.1392 (AvgMag: 1.3923) | VarNorm: 1.0000 (Var: 5.0672) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4866 | Clamped: 0.4866 | MagNorm: 0.1550 (AvgMag: 1.5504) | VarNorm: 1.0000 (Var: 5.7238) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5652 | Clamped: 0.5652 | MagNorm: 0.1668 (AvgMag: 1.6678) | VarNorm: 1.0000 (Var: 6.4333) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5122 | Clamped: 0.5122 | MagNorm: 0.1334 (AvgMag: 1.3342) | VarNorm: 1.0000 (Var: 4.9454) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5511 | Clamped: 0.5511 | MagNorm: 0.1386 (AvgMag: 1.3864) | VarNorm: 1.0000 (Var: 5.0088) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4322 | Clamped: 0.4322 | MagNorm: 0.1189 (AvgMag: 1.1893) | VarNorm: 1.0000 (Var: 4.2136) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4782 | Clamped: 0.4782 | MagNorm: 0.1383 (AvgMag: 1.3827) | VarNorm: 1.0000 (Var: 5.0001) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5230 | Clamped: 0.5230 | MagNorm: 0.1551 (AvgMag: 1.5509) | VarNorm: 1.0000 (Var: 6.1722) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5637 | Clamped: 0.5637 | MagNorm: 0.1637 (AvgMag: 1.6368) | VarNorm: 1.0000 (Var: 6.4852) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5016 | Clamped: 0.5016 | MagNorm: 0.1123 (AvgMag: 1.1230) | VarNorm: 1.0000 (Var: 4.1601) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5421 | Clamped: 0.5421 | MagNorm: 0.1206 (AvgMag: 1.2058) | VarNorm: 1.0000 (Var: 4.1670) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4384 | Clamped: 0.4384 | MagNorm: 0.1313 (AvgMag: 1.3135) | VarNorm: 1.0000 (Var: 4.9822) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4818 | Clamped: 0.4818 | MagNorm: 0.1453 (AvgMag: 1.4534) | VarNorm: 1.0000 (Var: 5.5073) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5261 | Clamped: 0.5261 | MagNorm: 0.1614 (AvgMag: 1.6139) | VarNorm: 1.0000 (Var: 6.2037) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5671 | Clamped: 0.5671 | MagNorm: 0.1706 (AvgMag: 1.7062) | VarNorm: 1.0000 (Var: 7.0429) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4991 | Clamped: 0.4991 | MagNorm: 0.1074 (AvgMag: 1.0737) | VarNorm: 1.0000 (Var: 4.0656) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5403 | Clamped: 0.5403 | MagNorm: 0.1170 (AvgMag: 1.1702) | VarNorm: 1.0000 (Var: 4.0875) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4254 | Clamped: 0.4254 | MagNorm: 0.1053 (AvgMag: 1.0534) | VarNorm: 1.0000 (Var: 4.0387) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4702 | Clamped: 0.4702 | MagNorm: 0.1221 (AvgMag: 1.2214) | VarNorm: 1.0000 (Var: 4.7830) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5499 | Clamped: 0.5499 | MagNorm: 0.1361 (AvgMag: 1.3608) | VarNorm: 1.0000 (Var: 5.0161) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5053 | Clamped: 0.5053 | MagNorm: 0.1197 (AvgMag: 1.1974) | VarNorm: 1.0000 (Var: 4.4415) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5423 | Clamped: 0.5423 | MagNorm: 0.1210 (AvgMag: 1.2100) | VarNorm: 1.0000 (Var: 4.2731) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4323 | Clamped: 0.4323 | MagNorm: 0.1191 (AvgMag: 1.1911) | VarNorm: 1.0000 (Var: 4.4644) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4761 | Clamped: 0.4761 | MagNorm: 0.1339 (AvgMag: 1.3395) | VarNorm: 1.0000 (Var: 5.2246) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5206 | Clamped: 0.5206 | MagNorm: 0.1502 (AvgMag: 1.5021) | VarNorm: 1.0000 (Var: 6.0813) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5621 | Clamped: 0.5621 | MagNorm: 0.1606 (AvgMag: 1.6059) | VarNorm: 1.0000 (Var: 6.5214) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4943 | Clamped: 0.4943 | MagNorm: 0.0977 (AvgMag: 0.9770) | VarNorm: 1.0000 (Var: 3.9549) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5356 | Clamped: 0.5356 | MagNorm: 0.1075 (AvgMag: 1.0749) | VarNorm: 1.0000 (Var: 3.9424) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4338 | Clamped: 0.4338 | MagNorm: 0.1221 (AvgMag: 1.2211) | VarNorm: 1.0000 (Var: 4.5897) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4774 | Clamped: 0.4774 | MagNorm: 0.1367 (AvgMag: 1.3671) | VarNorm: 1.0000 (Var: 5.3300) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5585 | Clamped: 0.5585 | MagNorm: 0.1533 (AvgMag: 1.5332) | VarNorm: 1.0000 (Var: 6.1907) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5026 | Clamped: 0.5026 | MagNorm: 0.1143 (AvgMag: 1.1426) | VarNorm: 1.0000 (Var: 3.7702) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5419 | Clamped: 0.5419 | MagNorm: 0.1203 (AvgMag: 1.2025) | VarNorm: 1.0000 (Var: 3.7746) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4263 | Clamped: 0.4263 | MagNorm: 0.1071 (AvgMag: 1.0714) | VarNorm: 1.0000 (Var: 3.7269) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4708 | Clamped: 0.4708 | MagNorm: 0.1235 (AvgMag: 1.2351) | VarNorm: 1.0000 (Var: 4.1543) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5135 | Clamped: 0.5135 | MagNorm: 0.1361 (AvgMag: 1.3606) | VarNorm: 1.0000 (Var: 4.6174) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5588 | Clamped: 0.5588 | MagNorm: 0.1540 (AvgMag: 1.5404) | VarNorm: 1.0000 (Var: 5.7215) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5016 | Clamped: 0.5016 | MagNorm: 0.1123 (AvgMag: 1.1230) | VarNorm: 1.0000 (Var: 3.7849) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5435 | Clamped: 0.5435 | MagNorm: 0.1233 (AvgMag: 1.2327) | VarNorm: 1.0000 (Var: 4.0544) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4385 | Clamped: 0.4385 | MagNorm: 0.1316 (AvgMag: 1.3158) | VarNorm: 1.0000 (Var: 5.5313) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4812 | Clamped: 0.4812 | MagNorm: 0.1441 (AvgMag: 1.4414) | VarNorm: 1.0000 (Var: 6.5655) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5248 | Clamped: 0.5248 | MagNorm: 0.1588 (AvgMag: 1.5878) | VarNorm: 1.0000 (Var: 7.1170) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5680 | Clamped: 0.5680 | MagNorm: 0.1724 (AvgMag: 1.7243) | VarNorm: 1.0000 (Var: 8.3678) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4805 | Clamped: 0.4805 | MagNorm: 0.0702 (AvgMag: 0.7017) | VarNorm: 1.0000 (Var: 3.4861) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5238 | Clamped: 0.5238 | MagNorm: 0.0839 (AvgMag: 0.8390) | VarNorm: 1.0000 (Var: 3.2061) | PosF: 0.9091

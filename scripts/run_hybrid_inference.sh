@@ -46,6 +46,7 @@ show_help() {
     echo "  --compare-mem-overhead        Compare Memory Measurement (High Budget) vs Baseline (No Optimizations)"
     echo "  --compare-skip-plus-mem-overhead Compare Skip + Memory Measurement (High Budget) vs Baseline (No Optimizations)"
     echo "  --compare-token-pruning       [Experimental] Compare Token Pruning only vs Baseline (Requires functional Python code)"
+    echo "  --compare-edge-cloud          Compare Edge-Cloud only vs Baseline (No Optimizations)"
     exit 1
 }
 
@@ -92,6 +93,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --compare-token-pruning)
             COMPARISON_MODE="token_pruning"
+            shift
+            ;;
+        --compare-edge-cloud)
+            COMPARISON_MODE="edge_cloud"
             shift
             ;;
         --compare-all)
@@ -155,24 +160,33 @@ case $COMPARISON_MODE in
         METRICS_TO_COMPARE=("time" "mem" "skips" "quants")
         ;;
     token_pruning)
-        OPTIMIZED_FLAGS="--token-pruning" # NOTE: Requires Python code to be uncommented!
+        OPTIMIZED_FLAGS="--token-pruning"
         BASELINE_FLAGS=""
         COMPARISON_TITLE="[EXPERIMENTAL] TOKEN PRUNING VS BASELINE"
         JSON_COMPARISON_TYPE="token_pruning_vs_baseline"
         OPTIMIZED_RUN_LABEL="Token Pruning Only"
         BASELINE_RUN_LABEL="Baseline (No Opts)"
-        METRICS_TO_COMPARE=("time" "pruned") # Need to add extraction for pruned tokens
-        echo "WARNING: --compare-token-pruning requires uncommenting pruning logic in hybrid_inference.py"
+        METRICS_TO_COMPARE=("time" "pruned")
+        echo "WARNING: --compare-token-pruning assumes pruning logic in Python is functional and uncommented."
+        ;;
+    edge_cloud)
+        OPTIMIZED_FLAGS="--edge-cloud"
+        BASELINE_FLAGS="" # No opt flags for baseline
+        COMPARISON_TITLE="EDGE-CLOUD ONLY VS BASELINE"
+        JSON_COMPARISON_TYPE="edge_cloud_vs_baseline"
+        OPTIMIZED_RUN_LABEL="Edge-Cloud Only"
+        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        METRICS_TO_COMPARE=("time" "offloaded") # Add offloaded metric
         ;;
     all | *)
         # Default to comparing all enabled vs baseline
-        OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $LOW_MEM_BUDGET"
+        OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $LOW_MEM_BUDGET --edge-cloud --token-pruning"
         BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
-        COMPARISON_TITLE="ALL ENABLED (SKIP+QUANT) VS BASELINE (MEM MEASURE ONLY)"
-        JSON_COMPARISON_TYPE="all_vs_baseline_mem_measure"
-        OPTIMIZED_RUN_LABEL="All Enabled (Skip+Quant)"
+        COMPARISON_TITLE="ALL ENABLED (SKIP+QUANT+EDGE+PRUNE) VS BASELINE (MEM MEASURE ONLY)"
+        JSON_COMPARISON_TYPE="all_vs_baseline_mem_measure_edge_prune"
+        OPTIMIZED_RUN_LABEL="All Enabled (Skip+Quant+Edge+Prune)"
         BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
-        METRICS_TO_COMPARE=("time" "mem" "skips" "quants")
+        METRICS_TO_COMPARE=("time" "mem" "skips" "quants" "offloaded" "pruned")
         COMPARISON_MODE="all" # Ensure mode is set for default case
         ;;
 esac
@@ -225,8 +239,8 @@ echo ""
 echo "Extracting metrics for $COMPARISON_MODE comparison..."
 
 # Initialize metric variables with defaults
-OPT_LOOP_TIME=0; OPT_PEAK_MEM=0; OPT_LAYER_SKIPS=0; OPT_QUANT_EVENTS=0
-BASE_LOOP_TIME=0; BASE_PEAK_MEM=0; BASE_LAYER_SKIPS=0; BASE_QUANT_EVENTS=0
+OPT_LOOP_TIME=0; OPT_PEAK_MEM=0; OPT_LAYER_SKIPS=0; OPT_QUANT_EVENTS=0; OPT_LAYERS_OFFLOADED=0; OPT_TOKENS_PRUNED=0
+BASE_LOOP_TIME=0; BASE_PEAK_MEM=0; BASE_LAYER_SKIPS=0; BASE_QUANT_EVENTS=0; BASE_LAYERS_OFFLOADED=0; BASE_TOKENS_PRUNED=0
 
 # Helper function for robust extraction
 extract_metric() {
@@ -278,6 +292,22 @@ fi
 echo "   Extracted OPT_QUANT_EVENTS: '$OPT_QUANT_EVENTS'"
 echo "   Extracted BASE_QUANT_EVENTS: '$BASE_QUANT_EVENTS'"
 
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " offloaded " ]]; then
+    # Layers Offloaded: Need the integer value
+    OPT_LAYERS_OFFLOADED=$(extract_metric "$OPT_OUT_FILE" "Layers Offloaded:" "0")
+    BASE_LAYERS_OFFLOADED=$(extract_metric "$BASE_OUT_FILE" "Layers Offloaded:" "0")
+fi
+echo "   Extracted OPT_LAYERS_OFFLOADED: '$OPT_LAYERS_OFFLOADED'"
+echo "   Extracted BASE_LAYERS_OFFLOADED: '$BASE_LAYERS_OFFLOADED'"
+
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " pruned " ]]; then
+    # Tokens Pruned: Need the integer value
+    OPT_TOKENS_PRUNED=$(extract_metric "$OPT_OUT_FILE" "Tokens Pruned:" "0")
+    BASE_TOKENS_PRUNED=$(extract_metric "$BASE_OUT_FILE" "Tokens Pruned:" "0")
+fi
+echo "   Extracted OPT_TOKENS_PRUNED: '$OPT_TOKENS_PRUNED'"
+echo "   Extracted BASE_TOKENS_PRUNED: '$BASE_TOKENS_PRUNED'"
+
 # --- Construct and Save JSON --- 
 echo ""
 echo "Saving results to $JSON_OUT_FILE ..."
@@ -296,7 +326,9 @@ JSON_CONTENT=$(cat <<EOF
     "loop_time_s": $OPT_LOOP_TIME,
     "peak_memory_mb": $OPT_PEAK_MEM,
     "layers_skipped": $OPT_LAYER_SKIPS,
-    "quant_events": $OPT_QUANT_EVENTS
+    "quant_events": $OPT_QUANT_EVENTS,
+    "layers_offloaded": $OPT_LAYERS_OFFLOADED,
+    "tokens_pruned": $OPT_TOKENS_PRUNED
   },
   "baseline_run": {
     "label": "$BASELINE_RUN_LABEL",
@@ -304,7 +336,9 @@ JSON_CONTENT=$(cat <<EOF
     "loop_time_s": $BASE_LOOP_TIME,
     "peak_memory_mb": $BASE_PEAK_MEM,
     "layers_skipped": $BASE_LAYER_SKIPS,
-    "quant_events": $BASE_QUANT_EVENTS
+    "quant_events": $BASE_QUANT_EVENTS,
+    "layers_offloaded": $BASE_LAYERS_OFFLOADED,
+    "tokens_pruned": $BASE_TOKENS_PRUNED
   }
 }
 EOF
@@ -343,6 +377,12 @@ fi
 if [[ " ${METRICS_TO_COMPARE[*]} " =~ " quants " ]]; then
     printf "$ROW_FMT_S" "Quantization Events" "$OPT_QUANT_EVENTS" "$BASE_QUANT_EVENTS"
 fi
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " offloaded " ]]; then
+    printf "$ROW_FMT_S" "Layers Offloaded" "$OPT_LAYERS_OFFLOADED" "$BASE_LAYERS_OFFLOADED"
+fi
+if [[ " ${METRICS_TO_COMPARE[*]} " =~ " pruned " ]]; then
+    printf "$ROW_FMT_S" "Tokens Pruned" "$OPT_TOKENS_PRUNED" "$BASE_TOKENS_PRUNED"
+fi
 echo "$SEPARATOR"
 
 # Calculate differences (requires bc or similar)
@@ -364,6 +404,19 @@ else
     echo " 'bc' command not found. Cannot calculate differences automatically."
 fi
 echo "==================================================="
+
+# --- <<< ADDED: Extract and Display Generated Text >>> ---
+echo ""
+echo "--- Generated Text Comparison ---"
+
+# Extract text (handle potential missing lines)
+OPT_GENERATED_TEXT=$(grep 'INFO:hybrid_inference:Newly Generated Text:' "$OPT_OUT_FILE" | tail -n 1 | sed -e 's/^.*INFO:hybrid_inference:Newly Generated Text: //' -e 's/^[[:space:].]*//' || echo "[Generated text not found in log]")
+BASE_GENERATED_TEXT=$(grep 'INFO:hybrid_inference:Newly Generated Text:' "$BASE_OUT_FILE" | tail -n 1 | sed -e 's/^.*INFO:hybrid_inference:Newly Generated Text: //' -e 's/^[[:space:].]*//' || echo "[Generated text not found in log]")
+
+printf "%-25s: %s\n" "Optimized ($OPTIMIZED_RUN_LABEL)" "$OPT_GENERATED_TEXT"
+printf "%-25s: %s\n" "Baseline ($BASELINE_RUN_LABEL)" "$BASE_GENERATED_TEXT"
+echo "---------------------------------"
+# --- <<< END: Generated Text Comparison >>> ---
 
 # Clean up log files
 # <<< COMMENTED OUT: Keep logs for inspection >>>

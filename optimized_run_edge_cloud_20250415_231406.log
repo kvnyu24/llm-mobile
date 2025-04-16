@@ -1,0 +1,71 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 30
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: False
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): False
+INFO:hybrid_inference:  - Memory Management (Quant): False
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: True (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Edge-Cloud Manager...
+INFO:edge_cloud_manager:EdgeCloudManager initialized for 12 layers.
+INFO:hybrid_inference:Starting inference loop for 30 tokens...
+INFO:hybrid_inference:  Step 1 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 2 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 3 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 4 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 5 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 6 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 7 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 8 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 9 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 10 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 11 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 12 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 13 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 14 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 15 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 16 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 17 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 18 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 19 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 20 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 21 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 22 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 23 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 24 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 25 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 26 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 27 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 28 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 29 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:  Step 30 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 3.20s
+INFO:hybrid_inference:Generation Loop Time: 2.21s
+INFO:hybrid_inference:Average time per generated token: 0.0735s (13.61 tokens/s)
+INFO:hybrid_inference:Generated 30 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 0
+INFO:hybrid_inference:Tokens pruned (decision count): 0
+INFO:hybrid_inference:Layers Offloaded: 0
+INFO:hybrid_inference:Final sequence length: 45
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Generated:  on behalf side sidewise.
+
+Example Examples: http://wwwwww://exampleexample1234567836010145783700 (…)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.

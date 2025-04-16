@@ -46,6 +46,7 @@ class TokenPruner:
         """
         self.pruning_threshold = pruning_threshold
         self.max_shadow_size = max_shadow_size
+        self.kv_cache_dim = -2 # Dimension for sequence length in KV cache
         self.shadow_set = {}  # Maps token positions to (token, hidden_state) pairs
         self.token_scores = {}  # Maps token positions to importance scores
         self.pruning_count = 0  # Counter for measuring pruning effectiveness
@@ -260,56 +261,69 @@ class TokenPruner:
             logger.debug(f"  Target mask_dim_size: {mask_dim_size}")
             # -------------------------------------------------
             
-            if len(keep_indices) == kv_cache_seq_len:
-                 logger.debug("Prune indices provided resulted in no change to KV cache length.")
-                 return past_key_values, attention_mask
+            # No need to check if keep_indices == kv_cache_seq_len, proceed with pruning mask/KV
+            # if len(keep_indices) == kv_cache_seq_len:
+            #      logger.debug("Prune indices provided resulted in no change to KV cache length.")
+            #      return past_key_values, attention_mask
 
             # Prune the attention mask carefully - REVISED APPROACH
             original_mask_len = attention_mask.shape[-1]
-            num_kept = len(keep_indices)
-            num_trailing_mask_tokens = original_mask_len - kv_cache_seq_len
-            new_mask_len = num_kept + num_trailing_mask_tokens
+            
+            # Ensure keep_indices_tensor is valid for selection
+            keep_indices_tensor_mask = torch.clamp(keep_indices_tensor, 0, original_mask_len - 1)
+            
+            # Select the parts of the original mask
+            # Part 1: Select columns corresponding to keep_indices (up to original_mask_len)
+            mask_part1 = torch.index_select(attention_mask, dim=-1, index=keep_indices_tensor_mask)
+            
+            # Part 2: Keep any trailing mask tokens (e.g., for the token being generated)
+            # Determine if there are trailing tokens beyond the KV cache length in the original mask
+            if original_mask_len > kv_cache_seq_len:
+                mask_part2 = attention_mask[:, kv_cache_seq_len:]
+                # Concatenate the selected kept part with the trailing part
+                pruned_attention_mask = torch.cat([mask_part1, mask_part2], dim=-1)
+            else:
+                # If mask length equals KV cache length, the pruned part is the whole mask
+                pruned_attention_mask = mask_part1
+                
             batch_size = attention_mask.shape[0]
             
-            # Create a new mask based on kept indices + trailing tokens
-            new_mask = torch.zeros((batch_size, new_mask_len), dtype=torch.long, device=device)
-            # Set the kept indices part to 1
-            new_mask[:, :num_kept] = 1 
-            # The trailing part is already 1 in the original mask, so this logic is correct if trailing > 0
-            # If trailing=0, new_mask[:, num_kept:] is an empty slice.
-            
-            # Assign the newly constructed mask
-            pruned_attention_mask = new_mask
-            logger.debug(f"    Reconstructed pruned_attention_mask shape: {pruned_attention_mask.shape}")
-
-            # Prune the past_key_values tuple (list of tuples of tensors)
-            # Each tensor is typically [batch_size, num_heads, seq_len, head_dim]
-            new_past_key_values = []
-            for layer_idx, (layer_keys, layer_values) in enumerate(past_key_values):
+            # Loop through each layer in the KV cache
+            pruned_kv_cache = []
+            # <<< FIXED: Handle None elements within past_key_values >>>
+            for layer_idx, layer_kv_pair in enumerate(past_key_values):
+                # Check if the layer's KV pair is None (e.g., due to edge-cloud)
+                if layer_kv_pair is None:
+                    pruned_kv_cache.append(None)
+                    if logger.isEnabledFor(logging.DEBUG):
+                        logger.debug(f"  Layer {layer_idx}: Skipping pruning, KV pair is None.")
+                    continue # Move to the next layer
+                
+                # Unpack the non-None pair
+                layer_keys, layer_values = layer_kv_pair
+                
+                # Also check if the tensors themselves are None (belt and suspenders)
                 if layer_keys is None or layer_values is None:
-                    new_past_key_values.append((layer_keys, layer_values))
+                    pruned_kv_cache.append(None)
+                    if logger.isEnabledFor(logging.DEBUG):
+                        logger.debug(f"  Layer {layer_idx}: Skipping pruning, Key or Value tensor is None.")
                     continue
+                    
+                # Perform the pruning using index_select
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f"  Layer {layer_idx}: Pruning Key {layer_keys.shape} and Value {layer_values.shape} with {len(keep_indices)} indices.")
                 
-                # Handle potential seq len inconsistency due to layer skipping
-                current_layer_len = layer_keys.shape[-2]
-                # <<< REMOVED: Check and warning for mismatched length >>>
-                # if current_layer_len != kv_cache_seq_len:
-                #      logger.warning(f"Layer {layer_idx} has unexpected seq len {current_layer_len}, expected {kv_cache_seq_len}. Skipping prune for this layer.")
-                #      new_past_key_values.append((layer_keys, layer_values))
-                #      continue
-                     
-                # <<< ADDED: Clamp indices for this specific layer's length >>>
-                clamped_indices = torch.clamp(keep_indices_tensor, max=current_layer_len - 1)
-                # Ensure indices are unique after clamping, as duplicates can cause issues
-                unique_clamped_indices = torch.unique(clamped_indices) 
-                # -----------------------------------------------------------
-                
-                # Use the layer-specific clamped indices for pruning this layer
-                pruned_keys = torch.index_select(layer_keys, dim=-2, index=unique_clamped_indices)
-                pruned_values = torch.index_select(layer_values, dim=-2, index=unique_clamped_indices)
-                new_past_key_values.append((pruned_keys, pruned_values))
+                try:
+                    pruned_keys = torch.index_select(layer_keys, dim=self.kv_cache_dim, index=keep_indices_tensor)
+                    pruned_values = torch.index_select(layer_values, dim=self.kv_cache_dim, index=keep_indices_tensor)
+                    pruned_kv_cache.append((pruned_keys, pruned_values))
+                except Exception as idx_e:
+                    logger.error(f"Error during index_select for layer {layer_idx}: {idx_e}", exc_info=True)
+                    logger.error(f"  Shapes: Key={layer_keys.shape}, Value={layer_values.shape}, Index={keep_indices_tensor.shape}")
+                    # On error, append the original layer state to avoid breaking structure
+                    pruned_kv_cache.append(layer_kv_pair)
             
-            pruned_past_key_values_tuple = tuple(new_past_key_values)
+            pruned_past_key_values_tuple = tuple(pruned_kv_cache)
             # Calculate num_pruned based on change in KV cache length
             num_pruned = kv_cache_seq_len - len(keep_indices)
             

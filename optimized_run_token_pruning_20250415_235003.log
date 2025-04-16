@@ -1,0 +1,51 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 100
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: True
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): False
+INFO:hybrid_inference:  - Memory Management (Quant): False
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: False (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Token Pruner...
+INFO:hybrid_inference:Starting inference loop for 100 tokens...
+`torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to eager attention. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+WARNING:token_pruning.token_pruner:Expected query length (Q) of 1 for scoring, but got 15. Using only the first query position.
+INFO:token_pruning.token_pruner:Pruned 1 tokens. New seq len: 23
+INFO:token_pruning.token_pruner:Pruned 5 tokens. New seq len: 19
+INFO:token_pruning.token_pruner:Pruned 2 tokens. New seq len: 23
+INFO:token_pruning.token_pruner:Pruned 6 tokens. New seq len: 19
+INFO:token_pruning.token_pruner:Pruned 5 tokens. New seq len: 18
+INFO:token_pruning.token_pruner:Pruned 2 tokens. New seq len: 18
+INFO:hybrid_inference:EOS token generated. Stopping inference at step 25.
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 2.86s
+INFO:hybrid_inference:Generation Loop Time: 2.29s
+INFO:hybrid_inference:Average time per generated token: 0.0916s (10.91 tokens/s)
+INFO:hybrid_inference:Generated 25 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 0
+INFO:hybrid_inference:Tokens Pruned: 21
+INFO:hybrid_inference:Layers Offloaded: 0
+INFO:hybrid_inference:Final sequence length: 19
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action.
+
+We've used a tool called D3 to determine the optimal timing of pruning and token prune.
+INFO:hybrid_inference:Newly Generated Text: .  We've used a tool called D3 to determine the optimal timing of pruning and token prune.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.
+INFO:hybrid_inference:Hybrid inference script finished.

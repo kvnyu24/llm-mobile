@@ -312,6 +312,14 @@ def run_inference(
     logger.info(f"Starting inference loop for {max_new_tokens} tokens...")
     start_loop_time = time.time() # Time just the loop
 
+    # Initialization for tracking
+    token_pruning_actions = 0
+    layer_skipping_decisions = 0
+    total_generated_tokens = 0
+    total_offloaded_layers_count = 0
+    total_pruned_tokens_count = 0 # <<< Initialize prune counter >>>
+    start_time = time.time()
+
     # <<< Manual layer-by-layer generation loop >>>
     try: # Wrap the main loop in try/except
         with torch.no_grad():
@@ -335,8 +343,9 @@ def run_inference(
                         partition_decision = edge_manager.decide_partition(current_step=i)
                         local_layers = partition_decision.get("local_layers", local_layers)
                         remote_layers = partition_decision.get("remote_layers", remote_layers)
-                        if detailed_logging:
-                             logger.debug(f"  Edge Partition Decision: Local={local_layers}, Remote={remote_layers}")
+                        # <<< ADDED: Log the actual lists being used >>>
+                        logger.info(f"  Step {i+1} Partition: Local={local_layers}, Remote={remote_layers}")
+                        # -----------------------------------------
                     except Exception as part_e:
                         logger.error(f"Error getting partition decision: {part_e}", exc_info=True)
                 # -----------------------------------------
@@ -414,6 +423,11 @@ def run_inference(
                         if detailed_logging:
                              logger.debug(f"    Simulating Remote Execution for Layer {layer_idx}...")
                         
+                        # <<< ADDED: Explicit log *inside* the remote block >>>
+                        logger.info(f"    [Offload Check] Layer {layer_idx} is in remote_layers: {remote_layers}. Incrementing counter.")
+                        # -------------------------------------------------
+                        total_offloaded_layers_count += 1 # <<< Increment counter >>>
+                        
                         # Placeholder: Assume instantaneous, perfect execution
                         # Hidden state passes through unchanged for now
                         hidden_state = layer_input_hidden_state 
@@ -452,60 +466,90 @@ def run_inference(
                 logits = lm_head(hidden_state)
                 # -------------------------------------------
                 
-                # <<< UNCOMMENTED AGAIN: Re-enable pruning to diagnose KV inconsistency >>>
-                # # <<< COMMENTED OUT AGAIN: Disable pruning due to KV inconsistency warnings and quality issues >>>
-                # <<< ADDED: Token Pruning Decision Logic >>>
-                pruned_indices_this_step = []
-                if enable_token_pruning and token_pruner:
-                    if detailed_logging:
-                        logger.debug("Scoring tokens for pruning...")
+                # --- Token Pruning Hook --- 
+                if token_pruner:
                     try:
-                        token_pruner.token_scores.clear()
-                        # Pass attention scores if available
-                        if output_attentions_flag and all_layer_attentions:
-                             last_layer_attentions = all_layer_attentions[-1]
-                             if past_key_values is not None and past_key_values[0] is not None and past_key_values[0][0] is not None:
-                                 kv_len_for_scoring = past_key_values[0][0].shape[-2]
-                             else:
-                                 kv_len_for_scoring = 0
-                             current_token_indices = list(range(kv_len_for_scoring)) 
-                             token_scores = token_pruner.score_tokens(
-                                 attention_scores=last_layer_attentions, 
-                                 token_indices=current_token_indices
-                             ) 
+                        # 1. Score Tokens (Requires Attention Output)
+                        # Ensure output_attentions_flag was True during layer loop
+                        if not output_attentions_flag or not all_layer_attentions:
+                            logger.warning("Token pruning requires attention scores, but they were not collected.")
+                            prune_indices = []
                         else:
-                             logger.warning("Token pruning enabled but no attention scores captured.")
-                             token_scores = None
-                        
-                        if token_scores is not None:
-                            pruned_indices_this_step = token_pruner.identify_prunable_tokens()
-                            if pruned_indices_this_step:
-                                stats["tokens_pruned_count"] += len(pruned_indices_this_step)
-                                # Check and potentially reconstruct attention_mask before pruning
-                                expected_mask_len = kv_len_for_scoring + 1
-                                if attention_mask.shape[-1] != expected_mask_len:
-                                     logger.warning(f"Attention mask length mismatch before prune! Expected {expected_mask_len}, got {attention_mask.shape[-1]}. Reconstructing.")
-                                     mask_to_pass = torch.ones((1, expected_mask_len), dtype=torch.long, device=device)
-                                else:
-                                     mask_to_pass = attention_mask
-                                logger.info(f"Attempting to prune {len(pruned_indices_this_step)} tokens at indices: {pruned_indices_this_step}")
-                                pruned_past_key_values, pruned_attention_mask = token_pruner.prune_state(
-                                    past_key_values,
-                                    mask_to_pass, 
-                                    pruned_indices_this_step
-                                )
-                                # Update the loop variables only if pruning was successful (returned non-None)
-                                if pruned_past_key_values is not None and pruned_attention_mask is not None:
-                                     past_key_values = pruned_past_key_values
-                                     attention_mask = pruned_attention_mask
-                        else:
+                            last_layer_attentions = all_layer_attentions[-1] # Assuming we need the last layer's attention
+                            # Determine the context length for scoring (usually KV cache length)
+                            kv_len_for_scoring = past_key_values[0][0].shape[-2] if past_key_values and past_key_values[0] and past_key_values[0][0] is not None else 0
+                            current_token_indices = list(range(kv_len_for_scoring))
+                            
                             if detailed_logging:
-                                logger.debug("Token scoring returned None.")
+                                logger.debug(f"  Scoring {len(current_token_indices)} tokens for pruning using last layer attention shape {last_layer_attentions.shape}")
+                            
+                            token_scores = token_pruner.score_tokens(
+                                attention_scores=last_layer_attentions,
+                                token_indices=current_token_indices # Pass indices corresponding to attention scores
+                            )
+                            
+                            # 2. Identify Prunable Tokens
+                            if token_scores is not None:
+                                prune_indices = token_pruner.identify_prunable_tokens()
+                            else:
+                                prune_indices = []
+                                if detailed_logging:
+                                    logger.debug("  Token scoring returned None.")
+                        
+                        # 3. Apply Pruning if needed
+                        if prune_indices:
+                            # <<< ADDED: Check if past_key_values is None before pruning >>>
+                            if past_key_values is None:
+                                if detailed_logging:
+                                    logger.debug(f"  Skipping pruning at step {i+1}: past_key_values is None.")
+                            # -----------------------------------------------------------
+                            elif detailed_logging:
+                                logger.debug(f"  Token Pruning triggered at step {i+1}. Indices to prune: {prune_indices}")
+                            
+                            original_len = attention_mask.shape[-1]
+                            # Calculate keep_indices (indices NOT in prune_indices)
+                            all_indices = set(range(original_len))
+                            prune_indices_set = set(prune_indices)
+                            keep_indices = sorted(list(all_indices - prune_indices_set))
+                            
+                            # Ensure keep_indices are valid before proceeding
+                            if not keep_indices or max(keep_indices) >= original_len:
+                                logger.error(f"Invalid keep_indices calculated: {keep_indices} for original_len {original_len}. Skipping prune.")
+                            else:
+                                # Call prune_state with attention_mask, past_key_values, and token_indices_to_prune
+                                # <<< FIXED: Unpack the tuple returned by prune_state >>>
+                                pruned_past_key_values, pruned_attention_mask = token_pruner.prune_state(
+                                    attention_mask=attention_mask,
+                                    past_key_values=past_key_values,
+                                    token_indices_to_prune=prune_indices # Pass indices to remove
+                                )
+                                
+                                # Update attention_mask and past_key_values from the returned tuple
+                                attention_mask = pruned_attention_mask
+                                past_key_values = pruned_past_key_values
+                                
+                                pruned_count = original_len - attention_mask.shape[-1]
+                                total_pruned_tokens_count += pruned_count
+                                if detailed_logging:
+                                    logger.debug(f"    Pruned {pruned_count} tokens. New length: {attention_mask.shape[-1]}")
+                                
+                                # <<< FIXED: Use the *original* hidden state for final layers >>>
+                                # Note: After pruning, hidden_state needs to go through final_norm and lm_head again!
+                                hidden_state = final_norm(hidden_state_before_norm) # Apply final norm to original state
+                                logits = lm_head(hidden_state) # Recalculate logits
+                                
+                        # else: # No indices to prune
+                        #     if detailed_logging:
+                        #         logger.debug(f"  Token Pruning decision at step {i+1}: Keep all.")
+                        #     # <<< If no pruning, still need to calculate logits >>>
+                        #     hidden_state = final_norm(hidden_state_before_norm)
+                        #     logits = lm_head(hidden_state)
+                            
                     except Exception as prune_e:
-                        logger.error(f"Error during token pruning decision: {prune_e}", exc_info=True)
-                # --------------------------------------------
+                        logger.error(f"Error during token pruning: {prune_e}", exc_info=True)
+                        token_pruner = None # Disable on error
 
-                # --- Token Selection --- (Focus on the last token position)
+                # --- Token Selection --- (Uses potentially recalculated logits)
                 next_token_logits = logits[:, -1, :] # Shape: [batch_size, vocab_size]
                 
                 # Sampling parameters
@@ -648,18 +692,20 @@ def run_inference(
     generated_text = tokenizer.decode(generated_token_ids, skip_special_tokens=True)
     full_text = tokenizer.decode(input_tokens[0].tolist() + generated_token_ids, skip_special_tokens=True)
 
-    # --- Output Summary ---
-    logger.info("\n=====================================================")
+    # Summarize results
+    logger.info("")
+    logger.info("="*53)
     logger.info("Inference Summary (Manual Loop with Hooks)")
-    logger.info("=====================================================")
+    logger.info("="*53)
     logger.info(f"Total Inference Time: {total_inference_time:.2f}s")
     logger.info(f"Generation Loop Time: {total_loop_time:.2f}s")
     if stats['generated_tokens'] > 0 and len(step_times) > 0:
         avg_token_time = sum(step_times) / len(step_times)
         logger.info(f"Average time per generated token: {avg_token_time:.4f}s ({1/avg_token_time:.2f} tokens/s)")
     logger.info(f"Generated {stats['generated_tokens']} new tokens")
-    logger.info(f"Layers skipped (decision count): {stats['layers_skipped_decision_count']}") 
-    logger.info(f"Tokens pruned (decision count): {stats['tokens_pruned_count']}") # <<< ADDED stat log >>>
+    logger.info(f"Layers skipped (decision count): {stats['layers_skipped_decision_count']}")
+    logger.info(f"Tokens Pruned: {total_pruned_tokens_count}")
+    logger.info(f"Layers Offloaded: {total_offloaded_layers_count}")
     logger.info(f"Final sequence length: {attention_mask.shape[1]}")
 
     if memory_manager:
@@ -709,11 +755,16 @@ def run_inference(
         except Exception as stats_e:
              logger.error(f"Error retrieving/displaying layer stats: {stats_e}")
 
+    # --- Final Generated Text --- 
     logger.info("--- Generated Text ---")
     logger.info(f"Prompt: {prompt}")
-    logger.info(f"Generated: {generated_text}")
-    # logger.info(f"Full Text: {full_text}") # Can be verbose
-    logger.info("=====================================================")
+    logger.info(f"Final Output: {full_text}") # Keep the full output log
+    # <<< FIXED: Replace newlines with spaces before logging >>>
+    single_line_generated_text = generated_text.replace('\n', ' ').strip()
+    logger.info(f"Newly Generated Text: {single_line_generated_text}") 
+
+    logger.info("="*53)
+    logger.info("Hybrid inference script finished.")
 
     return generated_text, stats
 
