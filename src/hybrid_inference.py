@@ -202,7 +202,7 @@ def run_inference(
             )
             # Apply offline compression if desired (can be separated later)
             # logger.info("Applying offline layer compression (SVD)...")
-            # layer_handler.apply_low_rank_factorization() # <-- KEEP COMMENTED
+            layer_handler.apply_low_rank_factorization() 
             # logger.info("Offline compression finished.")
         except Exception as layer_init_e:
             logger.error(f"Failed to initialize LayerCompressionAndSkipping: {layer_init_e}", exc_info=True)
@@ -418,6 +418,7 @@ def run_inference(
                         
                         # Explicit log *inside* the remote block
                         logger.info(f"    [Offload Check] Layer {layer_idx} is in remote_layers: {remote_layers}. Incrementing counter.")
+                        total_offloaded_layers_count += 1 # Increment the counter here
                         
                         # Placeholder: Assume instantaneous, perfect execution
                         # Hidden state passes through unchanged for now

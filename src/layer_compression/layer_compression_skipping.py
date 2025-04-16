@@ -2,7 +2,6 @@ import numpy as np
 import time
 from typing import Dict, List, Tuple, Any, Optional, Union
 
-# <<< MOVED Import torch to the top
 import torch
 
 # Check if torch is available (still useful for conditional logic)
@@ -70,15 +69,7 @@ class LayerCompressionAndSkipping:
             
         Returns:
             Compressed model with factorized layers
-        """
-        import numpy as np
-        
-        try:
-            import torch
-            has_torch = True
-        except ImportError:
-            has_torch = False
-            
+        """ 
         # Get all layer indices if not specified
         if layer_indices is None:
             if hasattr(self.model, 'config') and hasattr(self.model.config, 'num_hidden_layers'):
@@ -103,7 +94,7 @@ class LayerCompressionAndSkipping:
             try:
                 ratio = 1.0  # Default if no compression is applied
                 
-                if has_torch:
+                if HAS_TORCH:
                     # Try to find layers in different model architectures
                     # GPT-2 style
                     if hasattr(self.model, 'transformer') and hasattr(self.model.transformer, 'h'):

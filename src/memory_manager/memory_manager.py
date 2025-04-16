@@ -197,7 +197,7 @@ class MemoryManager:
         if self.enable_logging:
             logger.debug(f"Memory usage after compression check/actions: {usage_after_compression_mb:.4f}MB")
 
-        # --- ADDED: Eviction Logic --- 
+        # --- Eviction Logic --- 
         final_usage_mb = usage_after_compression_mb # Start with usage after compression
         memory_still_over_mb = final_usage_mb - threshold_mb
 
@@ -561,7 +561,7 @@ class MemoryManager:
                     # Use the existing helper, which logs details
                     total_bytes += self._calculate_tensor_pair_size(key_tensor, value_tensor)
                 # else: Handle potential None K/V pairs if necessary
-                # Explicitly handle None/Evicted layers >>>
+                # Explicitly handle None/Evicted layers
                 elif layer_kv is None or layer_kv == (None, None):
                      if self.enable_logging:
                           # Check metadata for why it might be None

@@ -1,0 +1,20 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 100
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: False
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): False
+INFO:hybrid_inference:  - Memory Management (Quant): False
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: False (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Starting inference loop for 100 tokens...
