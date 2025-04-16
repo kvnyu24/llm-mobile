@@ -79,7 +79,7 @@ class EdgeCloudManager:
         self.layer_costs = {}  # Cache for layer-wise costs
         self.last_partition = None  # Last partition decision
         
-        # <<< ADDED: Determine num_layers from model >>>
+        # Determine num_layers from model
         self.num_layers = 12 # Default
         if self.model and hasattr(self.model, 'config'):
             self.num_layers = getattr(self.model.config, "num_hidden_layers", 

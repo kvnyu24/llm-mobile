@@ -405,7 +405,7 @@ else
 fi
 echo "==================================================="
 
-# --- <<< ADDED: Extract and Display Generated Text >>> ---
+# --- Extract and Display Generated  ---
 echo ""
 echo "--- Generated Text Comparison ---"
 
@@ -416,10 +416,10 @@ BASE_GENERATED_TEXT=$(grep 'INFO:hybrid_inference:Newly Generated Text:' "$BASE_
 printf "%-25s: %s\n" "Optimized ($OPTIMIZED_RUN_LABEL)" "$OPT_GENERATED_TEXT"
 printf "%-25s: %s\n" "Baseline ($BASELINE_RUN_LABEL)" "$BASE_GENERATED_TEXT"
 echo "---------------------------------"
-# --- <<< END: Generated Text Comparison >>> ---
+# --- <<< END: Generated Text Comparison ---
 
 # Clean up log files
-# <<< COMMENTED OUT: Keep logs for inspection >>>
+# Keep logs for inspection
 # rm "$OPT_OUT_FILE" "$BASE_OUT_FILE"
 
 echo "Benchmark complete! JSON results saved to $JSON_OUT_FILE" 

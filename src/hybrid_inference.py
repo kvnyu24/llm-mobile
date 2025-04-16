@@ -38,26 +38,20 @@ from edge_cloud.edge_cloud_manager import EdgeCloudManager
 from token_pruning.token_pruner import TokenPruner
 from layer_compression.layer_compression_skipping import LayerCompressionAndSkipping
 from memory_manager.memory_manager import MemoryManager
-
-# <<< ADDED: Import transformers >>>
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-# <<< ADDED: Import PEFT >>>
 from peft import LoraConfig, get_peft_model, TaskType
 
 # Configure logging
 # logging.basicConfig(level=logging.INFO)
-# <<< Adjusted Logging >>>
 log_level = logging.DEBUG if 'args' in locals() and args.detailed else logging.INFO
 logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("hybrid_inference")
 # --------------------
 
-# <<< Global skip counter and hook handles >>>
 # Moved stats dictionary inside run_inference
 hook_handles = []
 
-# <<< Define the Pre-Forward Hook for Layer Skipping >>>
+# Define the Pre-Forward Hook for Layer Skipping
 def layer_skip_pre_hook(module, args, layer_idx, layer_handler, stats, detailed_logging):
     """
     Pre-forward hook to decide if a layer should be skipped.
@@ -100,10 +94,10 @@ def run_inference(
     enable_layer_optimization: bool = True,
     enable_memory_management: bool = True,
     enable_edge_cloud: bool = True, # Keep flag, logic commented
-    max_memory_mb: int = 10,    # <<< Default low budget >>>
-    detailed_logging: bool = False, # <<< Default False >>>
-    device_map: str = "auto"       # <<< Default auto >>>
-) -> Tuple[str, Dict[str, Any]]: # <<< Corrected return type hint >>>
+    max_memory_mb: int = 10,    # Default low budget
+    detailed_logging: bool = False, # Default False
+    device_map: str = "auto"       #  Default auto 
+) -> Tuple[str, Dict[str, Any]]: #  Corrected return type hint 
     """
     Run hybrid inference using a real LLM with manual layer loop.
     """
@@ -178,7 +172,7 @@ def run_inference(
                 quantization_enabled=True, # If flag is true, enable quantization
                 enable_logging=detailed_logging
             )
-            memory_manager.initialize_kv_cache(model_config) # <<< CORRECTED method name >>>
+            memory_manager.initialize_kv_cache(model_config) 
         except Exception as mem_init_e:
             logger.error(f"Failed to initialize MemoryManager: {mem_init_e}", exc_info=True)
             memory_manager = None # Ensure it's None on error
@@ -188,7 +182,7 @@ def run_inference(
         logger.info("Initializing Token Pruner...")
         try:
             token_pruner = TokenPruner(
-                pruning_threshold=0.01, # <<< Drastically LOWERED threshold >>>
+                pruning_threshold=0.01, 
             )
         except Exception as pruner_init_e:
             logger.error(f"Failed to initialize TokenPruner: {pruner_init_e}", exc_info=True)
@@ -204,7 +198,7 @@ def run_inference(
                 model=model,
                 compression_rank=-1, # Not used for skipping currently
                 hot_path_indices=hot_path_layers,
-                skip_threshold=0.5 # <<< INCREASED threshold to encourage skipping >>>
+                skip_threshold=0.5 # INCREASED threshold to encourage skipping 
             )
             # Apply offline compression if desired (can be separated later)
             # logger.info("Applying offline layer compression (SVD)...")
@@ -214,16 +208,14 @@ def run_inference(
             logger.error(f"Failed to initialize LayerCompressionAndSkipping: {layer_init_e}", exc_info=True)
             layer_handler = None # Ensure it's None on error
 
-    # edge_cloud_manager = EdgeCloudManager(...) # Keep commented
     
-    # <<< ADDED: Initialize EdgeCloudManager >>>
+    # Initialize EdgeCloudManager
     edge_manager = None
     if enable_edge_cloud:
         logger.info("Initializing Edge-Cloud Manager...")
         try:
             # Import necessary class
             from edge_cloud.edge_cloud_manager import EdgeCloudManager 
-            # <<< FIXED: Pass arguments expected by EdgeCloudManager __init__ >>>
             edge_manager = EdgeCloudManager(model=model) # Pass model, add others later if needed
             # Provide necessary config like num_layers
         except Exception as edge_init_e:
@@ -236,7 +228,7 @@ def run_inference(
         "total_tokens_processed": input_tokens.shape[1],
         "generated_tokens": 0,
         "layers_skipped_decision_count": 0, # Counter incremented by hook
-        "tokens_pruned_count": 0, # <<< ADDED for pruning >>>
+        "tokens_pruned_count": 0, 
         "step_details": []
     }
     global hook_handles # Declare we might modify the global list
@@ -302,7 +294,7 @@ def run_inference(
         logger.info(f"Successfully registered {len(hook_handles)} hooks.")
     # --------------------------------------------------------
 
-    # <<< Preparation for Manual Loop >>>
+    #  Preparation for Manual Loop
     current_tokens = input_tokens
     generated_token_ids = []
     past_key_values = None
@@ -317,14 +309,14 @@ def run_inference(
     layer_skipping_decisions = 0
     total_generated_tokens = 0
     total_offloaded_layers_count = 0
-    total_pruned_tokens_count = 0 # <<< Initialize prune counter >>>
+    total_pruned_tokens_count = 0 
     start_time = time.time()
 
-    # <<< Manual layer-by-layer generation loop >>>
+    # Manual layer-by-layer generation loop
     try: # Wrap the main loop in try/except
         with torch.no_grad():
             # Configure output flags
-            output_attentions_flag = enable_token_pruning and token_pruner # <<< Enable only if needed >>>
+            output_attentions_flag = enable_token_pruning and token_pruner 
             output_hidden_states_flag = False
             # ---------------------------
 
@@ -334,7 +326,7 @@ def run_inference(
                 if detailed_logging:
                     logger.debug(f"\n--- Gen Step {i+1}/{max_new_tokens} --- Seq Len: {current_seq_len_before_step} ---")
 
-                # <<< ADDED: Edge-Cloud Partition Decision >>>
+                # Edge-Cloud Partition Decision
                 local_layers = list(range(num_layers)) # Default: all local
                 remote_layers = []
                 if enable_edge_cloud and edge_manager:
@@ -343,13 +335,14 @@ def run_inference(
                         partition_decision = edge_manager.decide_partition(current_step=i)
                         local_layers = partition_decision.get("local_layers", local_layers)
                         remote_layers = partition_decision.get("remote_layers", remote_layers)
-                        # <<< ADDED: Log the actual lists being used >>>
+                        # Log the actual lists being used
                         logger.info(f"  Step {i+1} Partition: Local={local_layers}, Remote={remote_layers}")
                         # -----------------------------------------
                     except Exception as part_e:
                         logger.error(f"Error getting partition decision: {part_e}", exc_info=True)
                 # -----------------------------------------
 
+                # Prefill
                 # --- Prepare inputs for this step --- 
                 inputs_embeds = embedding_layer(current_tokens)
                 
@@ -364,7 +357,7 @@ def run_inference(
                 
                 # --- Layer Loop --- 
                 new_past_key_values_list = [] # Store KV states for the *next* step
-                all_layer_attentions = [] if output_attentions_flag else None # <<< Collect attentions >>>
+                all_layer_attentions = [] if output_attentions_flag else None
                 
                 for layer_idx, layer in enumerate(layers):
                     layer_past = past_key_values[layer_idx] if past_key_values else None
@@ -423,10 +416,8 @@ def run_inference(
                         if detailed_logging:
                              logger.debug(f"    Simulating Remote Execution for Layer {layer_idx}...")
                         
-                        # <<< ADDED: Explicit log *inside* the remote block >>>
+                        # Explicit log *inside* the remote block
                         logger.info(f"    [Offload Check] Layer {layer_idx} is in remote_layers: {remote_layers}. Incrementing counter.")
-                        # -------------------------------------------------
-                        total_offloaded_layers_count += 1 # <<< Increment counter >>>
                         
                         # Placeholder: Assume instantaneous, perfect execution
                         # Hidden state passes through unchanged for now
@@ -447,7 +438,7 @@ def run_inference(
                         hidden_state = layer_input_hidden_state
                         present_key_value = layer_past
 
-                    # <<< ADDED: Log shape of KV state being carried forward >>>
+                    # Log shape of KV state being carried forward
                     if detailed_logging:
                          kv_shape_log = (present_key_value[0].shape, present_key_value[1].shape) if present_key_value else None
                          run_location = "Local" if layer_idx in local_layers else "Remote (Sim)" if layer_idx in remote_layers else "ERROR"
@@ -456,7 +447,6 @@ def run_inference(
                     # --------------------------------------------------------
                     new_past_key_values_list.append(present_key_value)
                 
-                # <<< RESTORED: Update past_key_values for the next iteration >>>
                 past_key_values = tuple(new_past_key_values_list)
                 # --------------------------------------------------------------
 
@@ -498,7 +488,7 @@ def run_inference(
                         
                         # 3. Apply Pruning if needed
                         if prune_indices:
-                            # <<< ADDED: Check if past_key_values is None before pruning >>>
+                            # Check if past_key_values is None before pruning
                             if past_key_values is None:
                                 if detailed_logging:
                                     logger.debug(f"  Skipping pruning at step {i+1}: past_key_values is None.")
@@ -517,7 +507,7 @@ def run_inference(
                                 logger.error(f"Invalid keep_indices calculated: {keep_indices} for original_len {original_len}. Skipping prune.")
                             else:
                                 # Call prune_state with attention_mask, past_key_values, and token_indices_to_prune
-                                # <<< FIXED: Unpack the tuple returned by prune_state >>>
+                                # Unpack the tuple returned by prune_state
                                 pruned_past_key_values, pruned_attention_mask = token_pruner.prune_state(
                                     attention_mask=attention_mask,
                                     past_key_values=past_key_values,
@@ -533,7 +523,6 @@ def run_inference(
                                 if detailed_logging:
                                     logger.debug(f"    Pruned {pruned_count} tokens. New length: {attention_mask.shape[-1]}")
                                 
-                                # <<< FIXED: Use the *original* hidden state for final layers >>>
                                 # Note: After pruning, hidden_state needs to go through final_norm and lm_head again!
                                 hidden_state = final_norm(hidden_state_before_norm) # Apply final norm to original state
                                 logits = lm_head(hidden_state) # Recalculate logits
@@ -541,7 +530,7 @@ def run_inference(
                         # else: # No indices to prune
                         #     if detailed_logging:
                         #         logger.debug(f"  Token Pruning decision at step {i+1}: Keep all.")
-                        #     # <<< If no pruning, still need to calculate logits >>>
+                        #     # If no pruning, still need to calculate logits
                         #     hidden_state = final_norm(hidden_state_before_norm)
                         #     logits = lm_head(hidden_state)
                             
@@ -555,7 +544,7 @@ def run_inference(
                 # Sampling parameters
                 temperature = 0.7 
                 top_k = 50       
-                no_repeat_ngram_size = 2 # <<< ADDED >>>
+                no_repeat_ngram_size = 2 
                 
                 if temperature > 0:
                     # Apply temperature
@@ -575,7 +564,7 @@ def run_inference(
                         # If no top_k, use original probs
                         sampling_probs = probs
 
-                    # <<< ADDED: No Repeat N-Gram Logic >>>
+                    # No Repeat N-Gram Logic
                     if no_repeat_ngram_size > 0 and len(generated_token_ids) >= no_repeat_ngram_size - 1:
                         # Get the n-1 tokens preceding the current position
                         # Assuming batch size is 1 for generation
@@ -632,7 +621,7 @@ def run_inference(
 
                 # Call Memory Manager Update (after state is updated)
                 if enable_memory_management and memory_manager:
-                    # <<< ADDED: Call update_state to track real KV cache >>>
+                    # Call update_state to track real KV cache
                     # Pass the loop's *current* past_key_values, which might have been pruned (but pruning is disabled now)
                     memory_manager.update_state(past_key_values, attention_mask.shape[1])
                     # ---------------------------------------------------------
@@ -672,7 +661,7 @@ def run_inference(
         # Loop might terminate early, results may be partial
         
     finally:
-        # <<< ADDED: Remove hooks after generation (in finally block) >>>
+        # Remove hooks after generation (in finally block)
         if hook_handles:
             logger.info(f"Removing {len(hook_handles)} hooks...")
             for handle in hook_handles:
@@ -712,30 +701,30 @@ def run_inference(
         logger.info("--- Memory Manager Stats ---")
         try:
             mem_stats = memory_manager.get_stats()
-            # <<< ADDED: Log the received dictionary >>>
+            # Log the received dictionary
             logger.debug(f"Stats dict received by hybrid_inference summary block: {mem_stats}")
             # ---------------------------------------
             
-            # <<< ADDED: Debug before Peak Memory log >>>
+            # Debug before Peak Memory log
             peak_mem_val = mem_stats.get('peak_memory_usage_mb', 0.0)
             logger.debug(f"Value for Peak Memory Usage: {peak_mem_val} (Type: {type(peak_mem_val)})")
             # -----------------------------------------
             logger.info(f"Peak Memory Usage: {peak_mem_val:.2f} MB")
             
-            # <<< ADDED: Debug before Quant Events log >>>
+            # Debug before Quant Events log 
             quant_events_val = mem_stats.get('quantization_events', 0)
             logger.debug(f"Value for Quantization Events: {quant_events_val} (Type: {type(quant_events_val)})")
             # -------------------------------------------
             logger.info(f"Quantization Events: {quant_events_val}")
             
-            # <<< ADDED: Debug before Quant Layers log >>>
+            # Debug before Quant Layers log 
             quant_layers_val = mem_stats.get('quantized_layers', set())
             quant_layers_list = sorted(list(quant_layers_val))
             logger.debug(f"Value for Quantized Layers: {quant_layers_list} (Type: {type(quant_layers_val)} -> {type(quant_layers_list)})")
             # -------------------------------------------
             logger.info(f"Layers Quantized ({len(quant_layers_list)}): {quant_layers_list}")
             
-            # <<< ADDED: Debug before Dequant Events log >>>
+            # Debug before Dequant Events log>>>
             dequant_events_val = mem_stats.get('dequantization_events', 0)
             logger.debug(f"Value for Dequantization Events: {dequant_events_val} (Type: {type(dequant_events_val)})")
             # --------------------------------------------
@@ -759,7 +748,7 @@ def run_inference(
     logger.info("--- Generated Text ---")
     logger.info(f"Prompt: {prompt}")
     logger.info(f"Final Output: {full_text}") # Keep the full output log
-    # <<< FIXED: Replace newlines with spaces before logging >>>
+    # Replace newlines with spaces before logging
     single_line_generated_text = generated_text.replace('\n', ' ').strip()
     logger.info(f"Newly Generated Text: {single_line_generated_text}") 
 

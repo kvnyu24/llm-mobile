@@ -152,7 +152,7 @@ class TokenPruner:
             if idx < protected_tokens:
                 continue
                 
-            # <<< FIXED: Never prune the very last token in the current sequence >>>
+            # <<< FIXED: Never prune the very last token in the current sequence
             if idx == current_seq_len - 1:
                 # logger.debug(f"Skipping pruning check for last token index {idx}")
                 continue
@@ -213,7 +213,7 @@ class TokenPruner:
              logger.warning("Cannot prune state: past_key_values is None.")
              return None, attention_mask
              
-        # <<< ADDED: Log shapes of all incoming layer KVs >>>
+        # Log shapes of all incoming layer KVs
         if logger.isEnabledFor(logging.DEBUG):
              logger.debug("--- prune_state: Received KV Cache Shapes ---")
              for layer_idx, (k, v) in enumerate(past_key_values):
@@ -244,7 +244,7 @@ class TokenPruner:
                 return past_key_values, attention_mask
             keep_indices_tensor = torch.tensor(keep_indices, dtype=torch.long, device=device)
             
-            # <<< ADDED: Detailed logging before mask pruning >>>
+            # Detailed logging before mask pruning
             mask_dim_size = attention_mask.shape[-1]
             logger.debug(f"--- prune_state: Before Mask Pruning --- ")
             logger.debug(f"  Input token_indices_to_prune: {token_indices_to_prune}")
@@ -290,7 +290,7 @@ class TokenPruner:
             
             # Loop through each layer in the KV cache
             pruned_kv_cache = []
-            # <<< FIXED: Handle None elements within past_key_values >>>
+            # Handle None elements within past_key_values
             for layer_idx, layer_kv_pair in enumerate(past_key_values):
                 # Check if the layer's KV pair is None (e.g., due to edge-cloud)
                 if layer_kv_pair is None:

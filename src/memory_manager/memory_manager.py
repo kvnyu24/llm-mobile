@@ -67,11 +67,11 @@ class MemoryManager:
             "memory_savings_mb": 0.0,
             "dequantization_time_ms": 0.0,
             "estimated_memory_usage_mb": 0.0, # Current estimate
-            "peak_memory_usage_mb": 0.0, # <<< ADDED >>>
-            "quantization_events": 0,   # <<< ADDED >>>
-            "quantized_layers": set(),   # <<< ADDED (using set) >>>
-            "dequantization_events": 0, # <<< ADDED >>>
-            # <<< ADDED Eviction Stats >>>
+            "peak_memory_usage_mb": 0.0, 
+            "quantization_events": 0,   
+            "quantized_layers": set(),   
+            "dequantization_events": 0, 
+            #  Eviction Stats
             "eviction_events": 0,
             "evicted_layers": set(),
             "memory_saved_by_eviction_mb": 0.0,
@@ -141,7 +141,7 @@ class MemoryManager:
         if not self.quantization_enabled: # Only action currently is compression
             return True 
 
-        # <<< Use estimated usage from update_state for check >>>
+        # <<< Use estimated usage from update_state for checks
         usage_before_action_mb = self.stats.get("estimated_memory_usage_mb", 0.0)
         threshold_mb = self.max_memory_mb * (self.memory_threshold_percent / 100.0)
 
@@ -306,7 +306,7 @@ class MemoryManager:
         if layer_metadata.get('compressed', False):
             # logger.debug(f"Layer {layer_idx} already compressed.")
             return 0
-        # <<< ADDED: Check if evicted >>>
+        # Check if evicted
         if layer_metadata.get('evicted', False):
             if self.enable_logging:
                 logger.debug(f"Layer {layer_idx} is evicted, cannot compress.")
@@ -374,7 +374,7 @@ class MemoryManager:
             # self.real_past_key_values[layer_idx] = (None, None) # This doesn't work on tuples
             # Let calculate_memory_usage handle the logic based on metadata['compressed']
             
-            # <<< ADDED: Update stats >>>
+            # Update states
             self.stats["compressions"] += 1
             self.stats["quantization_events"] += 1
             self.stats["quantized_layers"].add(layer_idx)
@@ -404,7 +404,7 @@ class MemoryManager:
              # logger.debug(f"Layer {layer_idx} not compressed or no metadata, skipping dequantization.")
              return
              
-        # <<< ADDED: Check if evicted >>>
+        # Check if evicted
         if metadata.get('evicted', False):
              if self.enable_logging:
                   logger.warning(f"Attempted to dequantize layer {layer_idx}, but it is marked as evicted.")
@@ -452,7 +452,7 @@ class MemoryManager:
             metadata.pop('quantized_keys', None) # Remove quantized data
             metadata.pop('quantized_values', None)
             
-            # <<< ADDED: Update stats >>>
+            # Update stats
             self.stats["dequantization_events"] += 1
             dequant_time = (time.time() - start_time) * 1000
             self.stats["dequantization_time_ms"] += dequant_time
@@ -506,7 +506,7 @@ class MemoryManager:
         if HAS_TORCH:
             if isinstance(keys, torch.Tensor):
                 try:
-                    # <<< ADDED Detailed Logging >>>
+                    # Detailed Logging
                     if self.enable_logging:
                          logger.debug(f"    _calc_size: Key Tensor - Device={keys.device}, Dtype={keys.dtype}, Shape={keys.shape}, NElement={keys.nelement()}, ElemSize={keys.element_size()}")
                     # ----------------------------
@@ -515,7 +515,7 @@ class MemoryManager:
                     logger.warning(f"Could not get size for key tensor: {e}")
             if isinstance(values, torch.Tensor):
                  try:
-                    # <<< ADDED Detailed Logging >>>
+                    # Detailed Logging
                     if self.enable_logging:
                         logger.debug(f"    _calc_size: Value Tensor - Device={values.device}, Dtype={values.dtype}, Shape={values.shape}, NElement={values.nelement()}, ElemSize={values.element_size()}")
                     # ----------------------------
@@ -561,7 +561,7 @@ class MemoryManager:
                     # Use the existing helper, which logs details
                     total_bytes += self._calculate_tensor_pair_size(key_tensor, value_tensor)
                 # else: Handle potential None K/V pairs if necessary
-                # <<< ADDED: Explicitly handle None/Evicted layers >>>
+                # Explicitly handle None/Evicted layers >>>
                 elif layer_kv is None or layer_kv == (None, None):
                      if self.enable_logging:
                           # Check metadata for why it might be None
@@ -575,12 +575,10 @@ class MemoryManager:
             self.stats["estimated_memory_usage_mb"] = 0.0 # Reset stat on error
             return 0.0 # Return 0 on error
 
-        # <<< ADDED Logging >>>
         if self.enable_logging:
              logger.debug(f"    _calc_usage: Total Calculated Bytes = {total_bytes}")
         # --------------------
         total_mb = total_bytes / (1024 * 1024)
-        # <<< ADDED Logging >>>
         if self.enable_logging:
              logger.debug(f"    _calc_usage: Total Calculated MB = {total_mb}")
         # --------------------
@@ -592,7 +590,7 @@ class MemoryManager:
         current_usage = self.calculate_memory_usage() 
         stats_copy = dict(self.stats)
         stats_copy["current_memory_usage_mb"] = current_usage # Ensure key exists and is current
-        # <<< ADDED Logging >>>
+        # Logging
         if self.enable_logging:
             logger.debug(f"MemoryManager get_stats() returning: {stats_copy}")
         # --------------------

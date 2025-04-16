@@ -2,7 +2,7 @@ import numpy as np
 import time
 from typing import Dict, List, Tuple, Any, Optional, Union
 
-# <<< MOVED Import torch to the top >>>
+# <<< MOVED Import torch to the top
 import torch
 
 # Check if torch is available (still useful for conditional logic)
@@ -411,7 +411,7 @@ class LayerCompressionAndSkipping:
             # Ensure temperature is in [0, 1] range
             layer_temp_clamped = max(0.0, min(1.0, layer_temp))
             
-            # <<< ADDED: Detailed logging for temperature calculation >>>
+            # Detailed logging for temperature calculation
             # Note: This logging might become very verbose
             # Use a logger if available, otherwise print
             try:
