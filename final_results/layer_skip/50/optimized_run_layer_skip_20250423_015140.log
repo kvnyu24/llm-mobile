@@ -265,9 +265,9 @@ INFO:hybrid_inference:
 INFO:hybrid_inference:=====================================================
 INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
 INFO:hybrid_inference:=====================================================
-INFO:hybrid_inference:Total Inference Time: 8.41s
-INFO:hybrid_inference:Generation Loop Time: 7.06s
-INFO:hybrid_inference:Average time per generated token: 0.1411s (7.09 tokens/s)
+INFO:hybrid_inference:Total Inference Time: 8.28s
+INFO:hybrid_inference:Generation Loop Time: 7.12s
+INFO:hybrid_inference:Average time per generated token: 0.1423s (7.03 tokens/s)
 INFO:hybrid_inference:Generated 50 new tokens
 INFO:hybrid_inference:Layers skipped (decision count): 134
 INFO:hybrid_inference:Tokens Pruned: 0

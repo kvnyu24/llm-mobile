@@ -1,0 +1,28 @@
+{
+  "timestamp": "20250423_022322",
+  "comparison_type": "token_pruning_vs_baseline_mem_measure",
+  "model_name": "gpt2",
+  "prompt": "Test memory compression, layer skipping, and token pruning with pruning action",
+  "tokens": 50,
+  "device": "auto",
+  "optimized_run": {
+    "label": "Token Pruning (Mem Measure)",
+    "flags": "--token-pruning --memory-opt --mem-budget 10000",
+    "loop_time_s": 2.11,
+    "peak_memory_mb": 1.69,
+    "layers_skipped": 0,
+    "quant_events": 0,
+    "layers_offloaded": 0,
+    "tokens_pruned": 21
+  },
+  "baseline_run": {
+    "label": "Baseline (Mem Measure Only)",
+    "flags": "--memory-opt --mem-budget 10000",
+    "loop_time_s": 6.75,
+    "peak_memory_mb": 4.5,
+    "layers_skipped": 0,
+    "quant_events": 0,
+    "layers_offloaded": 0,
+    "tokens_pruned": 0
+  }
+}

@@ -294,27 +294,24 @@ class MemoryManager:
         Returns:
             Memory saved in bytes, or 0 if not compressed or error.
         """
-        if not self.quantization_enabled:
-             return 0
+        if not self.quantization_enabled or not HAS_TORCH:
+            return 0
 
-        if not (HAS_TORCH and self.real_past_key_values and 0 <= layer_idx < len(self.real_past_key_values)):
-             # logger.warning(f"Cannot compress layer {layer_idx}: Real KV cache not available or index invalid.")
-             return 0
-             
-        # Check if already compressed
-        layer_metadata = self.layer_metadata.get(layer_idx, {})
-        if layer_metadata.get('compressed', False):
-            # logger.debug(f"Layer {layer_idx} already compressed.")
+        if not self.real_past_key_values or layer_idx >= len(self.real_past_key_values):
+            logger.warning(f"Cannot compress layer {layer_idx}: Invalid past_key_values state.")
             return 0
-        # Check if evicted
-        if layer_metadata.get('evicted', False):
-            if self.enable_logging:
-                logger.debug(f"Layer {layer_idx} is evicted, cannot compress.")
+
+        # --- Check if layer entry is None before unpacking --- 
+        layer_entry = self.real_past_key_values[layer_idx]
+        if layer_entry is None:
+            logger.debug(f"Skipping compression for layer {layer_idx}: KV entry is None.")
             return 0
-        # ---------------------------
+        # ------------------------------------------------------
             
         try:
-            keys, values = self.real_past_key_values[layer_idx]
+            # Attempt to unpack now that we know it's not None
+            keys, values = layer_entry
+
             if keys is None or values is None:
                  # logger.debug(f"Layer {layer_idx} has no KV cache to compress.")
                  return 0

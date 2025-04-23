@@ -1,0 +1,400 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 50
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: False
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): False
+INFO:hybrid_inference:  - Memory Management (Quant): True
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: True (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Memory Manager...
+INFO:memory_manager:Memory Manager initialized with 10000MB budget, threshold 90%, Quantization: True
+INFO:hybrid_inference:Initializing Edge-Cloud Manager...
+INFO:edge_cloud_manager:EdgeCloudManager initialized for 12 layers.
+INFO:hybrid_inference:Starting inference loop for 50 tokens...
+INFO:hybrid_inference:  Step 1 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 2 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 3 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 4 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 5 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 6 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 7 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 8 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 9 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 10 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 11 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 12 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 13 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 14 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 15 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 16 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 17 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 18 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 19 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 20 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 21 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 22 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 23 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 24 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 25 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 26 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 27 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 28 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 29 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 30 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 31 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 32 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 33 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 34 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 35 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 36 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 37 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 38 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 39 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 40 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 41 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 42 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 43 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 44 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 45 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 46 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 47 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 48 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 49 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 50 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 8.25s
+INFO:hybrid_inference:Generation Loop Time: 7.14s
+INFO:hybrid_inference:Average time per generated token: 0.1427s (7.01 tokens/s)
+INFO:hybrid_inference:Generated 50 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 0
+INFO:hybrid_inference:Tokens Pruned: 0
+INFO:hybrid_inference:Layers Offloaded: 300
+INFO:hybrid_inference:Final sequence length: 65
+INFO:hybrid_inference:--- Memory Manager Stats ---
+INFO:hybrid_inference:Peak Memory Usage: 2.25 MB
+INFO:hybrid_inference:Quantization Events: 0
+INFO:hybrid_inference:Layers Quantized (0): []
+INFO:hybrid_inference:Dequantization Events: 0
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action on behalf side sidewise.
+
+Example Examples: http://wwwwww://exampleexample1234567836010145783700 (…) , which resulted a significant amount of times consuming the entire length length of the previous generation of record records
+INFO:hybrid_inference:Newly Generated Text: on behalf side sidewise.  Example Examples: http://wwwwww://exampleexample1234567836010145783700 (…) , which resulted a significant amount of times consuming the entire length length of the previous generation of record records
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.
+INFO:hybrid_inference:Hybrid inference script finished.

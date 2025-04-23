@@ -1,0 +1,1046 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 100
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: True
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): True
+INFO:hybrid_inference:  - Memory Management (Quant): True
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: True (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Memory Manager...
+INFO:memory_manager:Memory Manager initialized with 5MB budget, threshold 90%, Quantization: True
+INFO:hybrid_inference:Initializing Token Pruner...
+INFO:hybrid_inference:Initializing Layer Compression/Skipping Manager...
+INFO:hybrid_inference:Initializing Edge-Cloud Manager...
+INFO:edge_cloud_manager:EdgeCloudManager initialized for 12 layers.
+INFO:hybrid_inference:Registering pre-forward hooks for layer skipping on 12 layers...
+INFO:hybrid_inference:Successfully registered 12 hooks.
+INFO:hybrid_inference:Starting inference loop for 100 tokens...
+INFO:hybrid_inference:  Step 1 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+`torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to eager attention. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+WARNING:token_pruning.token_pruner:Expected query length (Q) of 1 for scoring, but got 15. Using only the first query position.
+INFO:hybrid_inference:  Step 2 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 3 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 4 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 5 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 6 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 7 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 8 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 9 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 10 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 11 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 12 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 13 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 14 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 15 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 16 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 17 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 18 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 19 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 20 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 21 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 22 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 23 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 24 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 25 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 26 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 27 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 28 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 29 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 30 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 31 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 32 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 33 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 34 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 35 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 36 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 37 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 38 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 39 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 40 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 41 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 42 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 43 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 44 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 45 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 46 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 47 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 48 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 49 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 50 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 51 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 52 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 53 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 54 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 55 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 56 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 57 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 58 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 59 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 60 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 61 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 62 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+[DEBUG Temp Layer 2] Raw Temp: 0.4356 | Clamped: 0.4356 | MagNorm: 0.1257 (AvgMag: 1.2570) | VarNorm: 1.0000 (Var: 37.7082) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4886 | Clamped: 0.4886 | MagNorm: 0.1590 (AvgMag: 1.5903) | VarNorm: 1.0000 (Var: 580.7483) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5338 | Clamped: 0.5338 | MagNorm: 0.1766 (AvgMag: 1.7661) | VarNorm: 1.0000 (Var: 661.8407) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5785 | Clamped: 0.5785 | MagNorm: 0.1934 (AvgMag: 1.9344) | VarNorm: 1.0000 (Var: 734.1968) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4902 | Clamped: 0.4902 | MagNorm: 0.0896 (AvgMag: 0.8956) | VarNorm: 1.0000 (Var: 3.9703) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5317 | Clamped: 0.5317 | MagNorm: 0.0999 (AvgMag: 0.9986) | VarNorm: 1.0000 (Var: 3.7093) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4410 | Clamped: 0.4410 | MagNorm: 0.1365 (AvgMag: 1.3650) | VarNorm: 1.0000 (Var: 5.1746) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4828 | Clamped: 0.4828 | MagNorm: 0.1475 (AvgMag: 1.4746) | VarNorm: 1.0000 (Var: 5.7988) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5599 | Clamped: 0.5599 | MagNorm: 0.1561 (AvgMag: 1.5610) | VarNorm: 1.0000 (Var: 6.4412) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5058 | Clamped: 0.5058 | MagNorm: 0.1206 (AvgMag: 1.2059) | VarNorm: 1.0000 (Var: 4.1942) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5463 | Clamped: 0.5463 | MagNorm: 0.1289 (AvgMag: 1.2887) | VarNorm: 1.0000 (Var: 4.3879) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4309 | Clamped: 0.4309 | MagNorm: 0.1163 (AvgMag: 1.1629) | VarNorm: 1.0000 (Var: 4.2447) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4759 | Clamped: 0.4759 | MagNorm: 0.1336 (AvgMag: 1.3357) | VarNorm: 1.0000 (Var: 5.0113) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5208 | Clamped: 0.5208 | MagNorm: 0.1507 (AvgMag: 1.5067) | VarNorm: 1.0000 (Var: 5.7169) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5642 | Clamped: 0.5642 | MagNorm: 0.1647 (AvgMag: 1.6467) | VarNorm: 1.0000 (Var: 6.4977) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5072 | Clamped: 0.5072 | MagNorm: 0.1234 (AvgMag: 1.2345) | VarNorm: 1.0000 (Var: 4.2169) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5492 | Clamped: 0.5492 | MagNorm: 0.1348 (AvgMag: 1.3479) | VarNorm: 1.0000 (Var: 4.9653) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4325 | Clamped: 0.4325 | MagNorm: 0.1195 (AvgMag: 1.1955) | VarNorm: 1.0000 (Var: 4.2223) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4743 | Clamped: 0.4743 | MagNorm: 0.1304 (AvgMag: 1.3043) | VarNorm: 1.0000 (Var: 4.7417) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5215 | Clamped: 0.5215 | MagNorm: 0.1522 (AvgMag: 1.5215) | VarNorm: 1.0000 (Var: 6.1458) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5645 | Clamped: 0.5645 | MagNorm: 0.1653 (AvgMag: 1.6534) | VarNorm: 1.0000 (Var: 7.1862) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4934 | Clamped: 0.4934 | MagNorm: 0.0959 (AvgMag: 0.9594) | VarNorm: 1.0000 (Var: 3.9911) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5357 | Clamped: 0.5357 | MagNorm: 0.1078 (AvgMag: 1.0779) | VarNorm: 1.0000 (Var: 3.9761) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4343 | Clamped: 0.4343 | MagNorm: 0.1231 (AvgMag: 1.2310) | VarNorm: 1.0000 (Var: 5.1796) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4754 | Clamped: 0.4754 | MagNorm: 0.1326 (AvgMag: 1.3258) | VarNorm: 1.0000 (Var: 5.6059) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5541 | Clamped: 0.5541 | MagNorm: 0.1445 (AvgMag: 1.4449) | VarNorm: 1.0000 (Var: 5.7077) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4853 | Clamped: 0.4853 | MagNorm: 0.0796 (AvgMag: 0.7960) | VarNorm: 1.0000 (Var: 3.9367) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5232 | Clamped: 0.5232 | MagNorm: 0.0827 (AvgMag: 0.8271) | VarNorm: 1.0000 (Var: 3.3416) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4382 | Clamped: 0.4382 | MagNorm: 0.1309 (AvgMag: 1.3085) | VarNorm: 1.0000 (Var: 4.4015) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4811 | Clamped: 0.4811 | MagNorm: 0.1441 (AvgMag: 1.4409) | VarNorm: 1.0000 (Var: 4.9552) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5599 | Clamped: 0.5599 | MagNorm: 0.1563 (AvgMag: 1.5625) | VarNorm: 1.0000 (Var: 5.3740) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5138 | Clamped: 0.5138 | MagNorm: 0.1367 (AvgMag: 1.3666) | VarNorm: 1.0000 (Var: 5.0139) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5501 | Clamped: 0.5501 | MagNorm: 0.1366 (AvgMag: 1.3660) | VarNorm: 1.0000 (Var: 4.8986) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4290 | Clamped: 0.4290 | MagNorm: 0.1125 (AvgMag: 1.1251) | VarNorm: 1.0000 (Var: 4.2697) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4744 | Clamped: 0.4744 | MagNorm: 0.1307 (AvgMag: 1.3070) | VarNorm: 1.0000 (Var: 5.0305) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5165 | Clamped: 0.5165 | MagNorm: 0.1421 (AvgMag: 1.4210) | VarNorm: 1.0000 (Var: 5.7073) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5561 | Clamped: 0.5561 | MagNorm: 0.1485 (AvgMag: 1.4849) | VarNorm: 1.0000 (Var: 5.8947) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4998 | Clamped: 0.4998 | MagNorm: 0.1087 (AvgMag: 1.0866) | VarNorm: 1.0000 (Var: 4.3234) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5402 | Clamped: 0.5402 | MagNorm: 0.1167 (AvgMag: 1.1668) | VarNorm: 1.0000 (Var: 4.4369) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4152 | Clamped: 0.4152 | MagNorm: 0.0850 (AvgMag: 0.8504) | VarNorm: 1.0000 (Var: 3.9570) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4603 | Clamped: 0.4603 | MagNorm: 0.1025 (AvgMag: 1.0251) | VarNorm: 1.0000 (Var: 4.6128) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5383 | Clamped: 0.5383 | MagNorm: 0.1130 (AvgMag: 1.1297) | VarNorm: 1.0000 (Var: 4.8089) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4831 | Clamped: 0.4831 | MagNorm: 0.0753 (AvgMag: 0.7532) | VarNorm: 1.0000 (Var: 3.8611) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5223 | Clamped: 0.5223 | MagNorm: 0.0810 (AvgMag: 0.8104) | VarNorm: 1.0000 (Var: 3.3458) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4344 | Clamped: 0.4344 | MagNorm: 0.1233 (AvgMag: 1.2325) | VarNorm: 1.0000 (Var: 4.6117) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4774 | Clamped: 0.4774 | MagNorm: 0.1365 (AvgMag: 1.3654) | VarNorm: 1.0000 (Var: 5.2634) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5565 | Clamped: 0.5565 | MagNorm: 0.1493 (AvgMag: 1.4926) | VarNorm: 1.0000 (Var: 6.0089) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5083 | Clamped: 0.5083 | MagNorm: 0.1257 (AvgMag: 1.2566) | VarNorm: 1.0000 (Var: 4.9084) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5465 | Clamped: 0.5465 | MagNorm: 0.1293 (AvgMag: 1.2928) | VarNorm: 1.0000 (Var: 4.9764) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4357 | Clamped: 0.4357 | MagNorm: 0.1259 (AvgMag: 1.2591) | VarNorm: 1.0000 (Var: 5.0685) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4802 | Clamped: 0.4802 | MagNorm: 0.1422 (AvgMag: 1.4221) | VarNorm: 1.0000 (Var: 5.9575) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5207 | Clamped: 0.5207 | MagNorm: 0.1505 (AvgMag: 1.5052) | VarNorm: 1.0000 (Var: 6.2587) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5633 | Clamped: 0.5633 | MagNorm: 0.1630 (AvgMag: 1.6298) | VarNorm: 1.0000 (Var: 6.8534) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5083 | Clamped: 0.5083 | MagNorm: 0.1257 (AvgMag: 1.2566) | VarNorm: 1.0000 (Var: 5.4705) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5475 | Clamped: 0.5475 | MagNorm: 0.1313 (AvgMag: 1.3127) | VarNorm: 1.0000 (Var: 5.5087) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4364 | Clamped: 0.4364 | MagNorm: 0.1274 (AvgMag: 1.2740) | VarNorm: 1.0000 (Var: 5.6646) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4796 | Clamped: 0.4796 | MagNorm: 0.1410 (AvgMag: 1.4102) | VarNorm: 1.0000 (Var: 6.2626) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5220 | Clamped: 0.5220 | MagNorm: 0.1530 (AvgMag: 1.5301) | VarNorm: 1.0000 (Var: 6.6147) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5654 | Clamped: 0.5654 | MagNorm: 0.1672 (AvgMag: 1.6719) | VarNorm: 1.0000 (Var: 7.2067) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5114 | Clamped: 0.5114 | MagNorm: 0.1319 (AvgMag: 1.3188) | VarNorm: 1.0000 (Var: 5.4945) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5512 | Clamped: 0.5512 | MagNorm: 0.1388 (AvgMag: 1.3882) | VarNorm: 1.0000 (Var: 5.5036) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4376 | Clamped: 0.4376 | MagNorm: 0.1298 (AvgMag: 1.2980) | VarNorm: 1.0000 (Var: 5.4904) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4802 | Clamped: 0.4802 | MagNorm: 0.1423 (AvgMag: 1.4228) | VarNorm: 1.0000 (Var: 6.1966) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5230 | Clamped: 0.5230 | MagNorm: 0.1552 (AvgMag: 1.5518) | VarNorm: 1.0000 (Var: 6.5842) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5639 | Clamped: 0.5639 | MagNorm: 0.1642 (AvgMag: 1.6420) | VarNorm: 1.0000 (Var: 6.8510) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5112 | Clamped: 0.5112 | MagNorm: 0.1314 (AvgMag: 1.3139) | VarNorm: 1.0000 (Var: 5.6877) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5503 | Clamped: 0.5503 | MagNorm: 0.1370 (AvgMag: 1.3704) | VarNorm: 1.0000 (Var: 5.5995) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4364 | Clamped: 0.4364 | MagNorm: 0.1274 (AvgMag: 1.2742) | VarNorm: 1.0000 (Var: 5.2725) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4792 | Clamped: 0.4792 | MagNorm: 0.1402 (AvgMag: 1.4024) | VarNorm: 1.0000 (Var: 5.9436) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5222 | Clamped: 0.5222 | MagNorm: 0.1535 (AvgMag: 1.5354) | VarNorm: 1.0000 (Var: 6.4784) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5629 | Clamped: 0.5629 | MagNorm: 0.1621 (AvgMag: 1.6209) | VarNorm: 1.0000 (Var: 6.7309) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5081 | Clamped: 0.5081 | MagNorm: 0.1253 (AvgMag: 1.2531) | VarNorm: 1.0000 (Var: 5.1968) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5491 | Clamped: 0.5491 | MagNorm: 0.1345 (AvgMag: 1.3451) | VarNorm: 1.0000 (Var: 5.2194) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4375 | Clamped: 0.4375 | MagNorm: 0.1296 (AvgMag: 1.2964) | VarNorm: 1.0000 (Var: 5.2759) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4810 | Clamped: 0.4810 | MagNorm: 0.1439 (AvgMag: 1.4386) | VarNorm: 1.0000 (Var: 5.7846) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5230 | Clamped: 0.5230 | MagNorm: 0.1550 (AvgMag: 1.5499) | VarNorm: 1.0000 (Var: 6.5022) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5646 | Clamped: 0.5646 | MagNorm: 0.1656 (AvgMag: 1.6561) | VarNorm: 1.0000 (Var: 6.6788) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5139 | Clamped: 0.5139 | MagNorm: 0.1368 (AvgMag: 1.3685) | VarNorm: 1.0000 (Var: 5.4440) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5535 | Clamped: 0.5535 | MagNorm: 0.1434 (AvgMag: 1.4343) | VarNorm: 1.0000 (Var: 5.4945) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4267 | Clamped: 0.4267 | MagNorm: 0.1079 (AvgMag: 1.0791) | VarNorm: 1.0000 (Var: 3.9486) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4648 | Clamped: 0.4648 | MagNorm: 0.1114 (AvgMag: 1.1137) | VarNorm: 1.0000 (Var: 3.7360) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5091 | Clamped: 0.5091 | MagNorm: 0.1272 (AvgMag: 1.2723) | VarNorm: 1.0000 (Var: 4.7169) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5541 | Clamped: 0.5541 | MagNorm: 0.1445 (AvgMag: 1.4453) | VarNorm: 1.0000 (Var: 6.0578) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4949 | Clamped: 0.4949 | MagNorm: 0.0990 (AvgMag: 0.9896) | VarNorm: 1.0000 (Var: 4.6316) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5342 | Clamped: 0.5342 | MagNorm: 0.1048 (AvgMag: 1.0477) | VarNorm: 1.0000 (Var: 4.3497) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4367 | Clamped: 0.4367 | MagNorm: 0.1279 (AvgMag: 1.2789) | VarNorm: 1.0000 (Var: 5.6412) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4794 | Clamped: 0.4794 | MagNorm: 0.1406 (AvgMag: 1.4062) | VarNorm: 1.0000 (Var: 5.9643) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5616 | Clamped: 0.5616 | MagNorm: 0.1596 (AvgMag: 1.5957) | VarNorm: 1.0000 (Var: 6.7003) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4931 | Clamped: 0.4931 | MagNorm: 0.0952 (AvgMag: 0.9523) | VarNorm: 1.0000 (Var: 4.4099) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5337 | Clamped: 0.5337 | MagNorm: 0.1038 (AvgMag: 1.0376) | VarNorm: 1.0000 (Var: 4.1779) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4387 | Clamped: 0.4387 | MagNorm: 0.1320 (AvgMag: 1.3198) | VarNorm: 1.0000 (Var: 5.7079) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4853 | Clamped: 0.4853 | MagNorm: 0.1523 (AvgMag: 1.5233) | VarNorm: 1.0000 (Var: 6.8118) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5648 | Clamped: 0.5648 | MagNorm: 0.1659 (AvgMag: 1.6587) | VarNorm: 1.0000 (Var: 7.4549) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5080 | Clamped: 0.5080 | MagNorm: 0.1252 (AvgMag: 1.2516) | VarNorm: 1.0000 (Var: 5.3058) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5466 | Clamped: 0.5466 | MagNorm: 0.1296 (AvgMag: 1.2962) | VarNorm: 1.0000 (Var: 5.1125) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4342 | Clamped: 0.4342 | MagNorm: 0.1230 (AvgMag: 1.2302) | VarNorm: 1.0000 (Var: 4.9432) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4774 | Clamped: 0.4774 | MagNorm: 0.1366 (AvgMag: 1.3659) | VarNorm: 1.0000 (Var: 5.4454) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5201 | Clamped: 0.5201 | MagNorm: 0.1493 (AvgMag: 1.4931) | VarNorm: 1.0000 (Var: 6.0506) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5670 | Clamped: 0.5670 | MagNorm: 0.1704 (AvgMag: 1.7039) | VarNorm: 1.0000 (Var: 7.3401) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5078 | Clamped: 0.5078 | MagNorm: 0.1246 (AvgMag: 1.2464) | VarNorm: 1.0000 (Var: 4.7311) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5471 | Clamped: 0.5471 | MagNorm: 0.1305 (AvgMag: 1.3052) | VarNorm: 1.0000 (Var: 4.9746) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4349 | Clamped: 0.4349 | MagNorm: 0.1244 (AvgMag: 1.2440) | VarNorm: 1.0000 (Var: 4.8440) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4794 | Clamped: 0.4794 | MagNorm: 0.1407 (AvgMag: 1.4068) | VarNorm: 1.0000 (Var: 5.9941) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5212 | Clamped: 0.5212 | MagNorm: 0.1516 (AvgMag: 1.5155) | VarNorm: 1.0000 (Var: 6.2880) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5624 | Clamped: 0.5624 | MagNorm: 0.1612 (AvgMag: 1.6115) | VarNorm: 1.0000 (Var: 6.9508) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5076 | Clamped: 0.5076 | MagNorm: 0.1242 (AvgMag: 1.2423) | VarNorm: 1.0000 (Var: 5.3347) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5464 | Clamped: 0.5464 | MagNorm: 0.1291 (AvgMag: 1.2915) | VarNorm: 1.0000 (Var: 5.3467) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4349 | Clamped: 0.4349 | MagNorm: 0.1243 (AvgMag: 1.2428) | VarNorm: 1.0000 (Var: 5.4358) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4791 | Clamped: 0.4791 | MagNorm: 0.1401 (AvgMag: 1.4007) | VarNorm: 1.0000 (Var: 6.5132) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5221 | Clamped: 0.5221 | MagNorm: 0.1533 (AvgMag: 1.5325) | VarNorm: 1.0000 (Var: 6.7989) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5626 | Clamped: 0.5626 | MagNorm: 0.1616 (AvgMag: 1.6164) | VarNorm: 1.0000 (Var: 7.0467) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5081 | Clamped: 0.5081 | MagNorm: 0.1253 (AvgMag: 1.2531) | VarNorm: 1.0000 (Var: 5.0970) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5461 | Clamped: 0.5461 | MagNorm: 0.1286 (AvgMag: 1.2862) | VarNorm: 1.0000 (Var: 5.0172) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4353 | Clamped: 0.4353 | MagNorm: 0.1252 (AvgMag: 1.2515) | VarNorm: 1.0000 (Var: 5.0506) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4819 | Clamped: 0.4819 | MagNorm: 0.1457 (AvgMag: 1.4567) | VarNorm: 1.0000 (Var: 6.4918) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5279 | Clamped: 0.5279 | MagNorm: 0.1648 (AvgMag: 1.6481) | VarNorm: 1.0000 (Var: 7.3811) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5651 | Clamped: 0.5651 | MagNorm: 0.1666 (AvgMag: 1.6659) | VarNorm: 1.0000 (Var: 7.2196) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5046 | Clamped: 0.5046 | MagNorm: 0.1184 (AvgMag: 1.1837) | VarNorm: 1.0000 (Var: 4.5766) | PosF: 0.7273
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 63 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 64 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 65 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 66 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 67 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 68 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 69 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 70 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 71 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 72 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 73 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 74 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 75 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 76 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 77 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 78 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 79 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 80 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 81 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 82 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 83 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 84 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 85 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 86 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 87 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 88 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 89 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 90 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 91 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 92 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 93 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 94 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 95 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 96 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 97 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 98 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 99 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:  Step 100 Partition: Local=[0, 1, 2, 3, 4, 5], Remote=[6, 7, 8, 9, 10, 11]
+INFO:hybrid_inference:    [Offload Check] Layer 6 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 7 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 8 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 9 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 10 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:    [Offload Check] Layer 11 is in remote_layers: [6, 7, 8, 9, 10, 11]. Incrementing counter.
+INFO:hybrid_inference:Removing 12 hooks...
+INFO:hybrid_inference:Hooks removed.
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 25.56s
+INFO:hybrid_inference:Generation Loop Time: 24.21s
+INFO:hybrid_inference:Average time per generated token: 0.2420s (4.13 tokens/s)
+INFO:hybrid_inference:Generated 100 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 117
+INFO:hybrid_inference:Tokens Pruned: 85
+INFO:hybrid_inference:Layers Offloaded: 600
+INFO:hybrid_inference:Final sequence length: 30
+INFO:hybrid_inference:--- Memory Manager Stats ---
+INFO:hybrid_inference:Peak Memory Usage: 1.00 MB
+INFO:hybrid_inference:Quantization Events: 0
+INFO:hybrid_inference:Layers Quantized (0): []
+INFO:hybrid_inference:Dequantization Events: 0
+INFO:hybrid_inference:--- Layer Optimization Stats ---
+INFO:hybrid_inference:Compression Ratio (Handler): 0.0
+INFO:hybrid_inference:Total Layers Evaluated for Skipping (Handler): 283
+INFO:hybrid_inference:Total Layers Skipped (Handler): 117
+INFO:hybrid_inference:Skipping Efficiency (Handler): 0.4179
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action on behalf side sidewisewise (including the same exact amount amount of the entire length length lengths lengths length height height dimensions dimensions dimension chartered (excluding) Choose Choose choose button button buttons buttons buttonbuttonholehole hole hole holes holes hole diameter diameter size size sizes range ranges range range between the size range of sorts sortable by default default defaults defaults settings settings configuration settings default settings setting level level of higher than normalization effectivenessinessinessnessiness level levels of life expectancy.
+
+                                        
+INFO:hybrid_inference:Newly Generated Text: on behalf side sidewisewise (including the same exact amount amount of the entire length length lengths lengths length height height dimensions dimensions dimension chartered (excluding) Choose Choose choose button button buttons buttons buttonbuttonholehole hole hole holes holes hole diameter diameter size size sizes range ranges range range between the size range of sorts sortable by default default defaults defaults settings settings configuration settings default settings setting level level of higher than normalization effectivenessinessinessnessiness level levels of life expectancy.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.
+INFO:hybrid_inference:Hybrid inference script finished.
+[DEBUG Temp Layer 5] Raw Temp: 0.5465 | Clamped: 0.5465 | MagNorm: 0.1294 (AvgMag: 1.2936) | VarNorm: 1.0000 (Var: 4.9400) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4315 | Clamped: 0.4315 | MagNorm: 0.1175 (AvgMag: 1.1749) | VarNorm: 1.0000 (Var: 4.7679) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4791 | Clamped: 0.4791 | MagNorm: 0.1400 (AvgMag: 1.4003) | VarNorm: 1.0000 (Var: 6.0831) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5233 | Clamped: 0.5233 | MagNorm: 0.1558 (AvgMag: 1.5576) | VarNorm: 1.0000 (Var: 6.8541) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5630 | Clamped: 0.5630 | MagNorm: 0.1625 (AvgMag: 1.6246) | VarNorm: 1.0000 (Var: 7.2266) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5053 | Clamped: 0.5053 | MagNorm: 0.1197 (AvgMag: 1.1965) | VarNorm: 1.0000 (Var: 4.8191) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5469 | Clamped: 0.5469 | MagNorm: 0.1301 (AvgMag: 1.3014) | VarNorm: 1.0000 (Var: 5.1786) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4318 | Clamped: 0.4318 | MagNorm: 0.1181 (AvgMag: 1.1814) | VarNorm: 1.0000 (Var: 4.9075) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4784 | Clamped: 0.4784 | MagNorm: 0.1386 (AvgMag: 1.3860) | VarNorm: 1.0000 (Var: 6.1208) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5213 | Clamped: 0.5213 | MagNorm: 0.1517 (AvgMag: 1.5169) | VarNorm: 1.0000 (Var: 6.8501) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5621 | Clamped: 0.5621 | MagNorm: 0.1606 (AvgMag: 1.6064) | VarNorm: 1.0000 (Var: 7.0898) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5050 | Clamped: 0.5050 | MagNorm: 0.1191 (AvgMag: 1.1906) | VarNorm: 1.0000 (Var: 5.0175) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5470 | Clamped: 0.5470 | MagNorm: 0.1304 (AvgMag: 1.3039) | VarNorm: 1.0000 (Var: 5.3478) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4322 | Clamped: 0.4322 | MagNorm: 0.1189 (AvgMag: 1.1889) | VarNorm: 1.0000 (Var: 5.0601) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4798 | Clamped: 0.4798 | MagNorm: 0.1414 (AvgMag: 1.4144) | VarNorm: 1.0000 (Var: 6.4978) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5235 | Clamped: 0.5235 | MagNorm: 0.1561 (AvgMag: 1.5614) | VarNorm: 1.0000 (Var: 7.2634) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5651 | Clamped: 0.5651 | MagNorm: 0.1666 (AvgMag: 1.6663) | VarNorm: 1.0000 (Var: 7.4626) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5039 | Clamped: 0.5039 | MagNorm: 0.1169 (AvgMag: 1.1689) | VarNorm: 1.0000 (Var: 4.9802) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5453 | Clamped: 0.5453 | MagNorm: 0.1270 (AvgMag: 1.2699) | VarNorm: 1.0000 (Var: 5.1572) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4344 | Clamped: 0.4344 | MagNorm: 0.1233 (AvgMag: 1.2327) | VarNorm: 1.0000 (Var: 5.0269) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4821 | Clamped: 0.4821 | MagNorm: 0.1460 (AvgMag: 1.4601) | VarNorm: 1.0000 (Var: 6.4048) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5253 | Clamped: 0.5253 | MagNorm: 0.1598 (AvgMag: 1.5979) | VarNorm: 1.0000 (Var: 6.7215) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5658 | Clamped: 0.5658 | MagNorm: 0.1680 (AvgMag: 1.6798) | VarNorm: 1.0000 (Var: 7.0253) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5062 | Clamped: 0.5062 | MagNorm: 0.1214 (AvgMag: 1.2142) | VarNorm: 1.0000 (Var: 5.0197) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5463 | Clamped: 0.5463 | MagNorm: 0.1289 (AvgMag: 1.2891) | VarNorm: 1.0000 (Var: 4.8331) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4335 | Clamped: 0.4335 | MagNorm: 0.1215 (AvgMag: 1.2151) | VarNorm: 1.0000 (Var: 4.6153) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4788 | Clamped: 0.4788 | MagNorm: 0.1394 (AvgMag: 1.3943) | VarNorm: 1.0000 (Var: 5.6073) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5201 | Clamped: 0.5201 | MagNorm: 0.1494 (AvgMag: 1.4939) | VarNorm: 1.0000 (Var: 5.7144) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5620 | Clamped: 0.5620 | MagNorm: 0.1604 (AvgMag: 1.6038) | VarNorm: 1.0000 (Var: 6.3308) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5059 | Clamped: 0.5059 | MagNorm: 0.1209 (AvgMag: 1.2090) | VarNorm: 1.0000 (Var: 4.6690) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5458 | Clamped: 0.5458 | MagNorm: 0.1279 (AvgMag: 1.2789) | VarNorm: 1.0000 (Var: 4.6217) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4335 | Clamped: 0.4335 | MagNorm: 0.1216 (AvgMag: 1.2161) | VarNorm: 1.0000 (Var: 4.9307) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4757 | Clamped: 0.4757 | MagNorm: 0.1332 (AvgMag: 1.3325) | VarNorm: 1.0000 (Var: 5.6077) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5207 | Clamped: 0.5207 | MagNorm: 0.1505 (AvgMag: 1.5050) | VarNorm: 1.0000 (Var: 6.1379) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5631 | Clamped: 0.5631 | MagNorm: 0.1626 (AvgMag: 1.6263) | VarNorm: 1.0000 (Var: 6.7724) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5088 | Clamped: 0.5088 | MagNorm: 0.1266 (AvgMag: 1.2662) | VarNorm: 1.0000 (Var: 4.5592) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5506 | Clamped: 0.5506 | MagNorm: 0.1375 (AvgMag: 1.3749) | VarNorm: 1.0000 (Var: 4.8402) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4350 | Clamped: 0.4350 | MagNorm: 0.1245 (AvgMag: 1.2453) | VarNorm: 1.0000 (Var: 4.7524) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4780 | Clamped: 0.4780 | MagNorm: 0.1379 (AvgMag: 1.3791) | VarNorm: 1.0000 (Var: 5.4876) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5261 | Clamped: 0.5261 | MagNorm: 0.1613 (AvgMag: 1.6132) | VarNorm: 1.0000 (Var: 6.7829) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5695 | Clamped: 0.5695 | MagNorm: 0.1754 (AvgMag: 1.7535) | VarNorm: 1.0000 (Var: 7.5080) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5084 | Clamped: 0.5084 | MagNorm: 0.1259 (AvgMag: 1.2591) | VarNorm: 1.0000 (Var: 4.5789) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5501 | Clamped: 0.5501 | MagNorm: 0.1366 (AvgMag: 1.3655) | VarNorm: 1.0000 (Var: 4.8968) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4358 | Clamped: 0.4358 | MagNorm: 0.1260 (AvgMag: 1.2605) | VarNorm: 1.0000 (Var: 4.6188) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4800 | Clamped: 0.4800 | MagNorm: 0.1418 (AvgMag: 1.4175) | VarNorm: 1.0000 (Var: 5.6556) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5276 | Clamped: 0.5276 | MagNorm: 0.1643 (AvgMag: 1.6434) | VarNorm: 1.0000 (Var: 6.8761) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5697 | Clamped: 0.5697 | MagNorm: 0.1757 (AvgMag: 1.7567) | VarNorm: 1.0000 (Var: 7.4498) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5051 | Clamped: 0.5051 | MagNorm: 0.1192 (AvgMag: 1.1924) | VarNorm: 1.0000 (Var: 4.6034) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5459 | Clamped: 0.5459 | MagNorm: 0.1282 (AvgMag: 1.2821) | VarNorm: 1.0000 (Var: 4.8371) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4108 | Clamped: 0.4108 | MagNorm: 0.0762 (AvgMag: 0.7616) | VarNorm: 1.0000 (Var: 3.9646) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4513 | Clamped: 0.4513 | MagNorm: 0.0843 (AvgMag: 0.8432) | VarNorm: 1.0000 (Var: 4.1251) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4959 | Clamped: 0.4959 | MagNorm: 0.1010 (AvgMag: 1.0097) | VarNorm: 1.0000 (Var: 4.6677) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5392 | Clamped: 0.5392 | MagNorm: 0.1148 (AvgMag: 1.1476) | VarNorm: 1.0000 (Var: 5.1194) | PosF: 0.9091
+[DEBUG Temp Layer 5] Raw Temp: 0.5399 | Clamped: 0.5399 | MagNorm: 0.1162 (AvgMag: 1.1616) | VarNorm: 1.0000 (Var: 4.4476) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4347 | Clamped: 0.4347 | MagNorm: 0.1240 (AvgMag: 1.2396) | VarNorm: 1.0000 (Var: 4.4439) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4771 | Clamped: 0.4771 | MagNorm: 0.1360 (AvgMag: 1.3598) | VarNorm: 1.0000 (Var: 5.3025) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5226 | Clamped: 0.5226 | MagNorm: 0.1542 (AvgMag: 1.5420) | VarNorm: 1.0000 (Var: 6.2115) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5658 | Clamped: 0.5658 | MagNorm: 0.1680 (AvgMag: 1.6802) | VarNorm: 1.0000 (Var: 7.0154) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4856 | Clamped: 0.4856 | MagNorm: 0.0804 (AvgMag: 0.8035) | VarNorm: 1.0000 (Var: 3.8104) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5275 | Clamped: 0.5275 | MagNorm: 0.0913 (AvgMag: 0.9129) | VarNorm: 1.0000 (Var: 3.7146) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4304 | Clamped: 0.4304 | MagNorm: 0.1154 (AvgMag: 1.1543) | VarNorm: 1.0000 (Var: 4.1108) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4755 | Clamped: 0.4755 | MagNorm: 0.1327 (AvgMag: 1.3273) | VarNorm: 1.0000 (Var: 4.7057) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5524 | Clamped: 0.5524 | MagNorm: 0.1411 (AvgMag: 1.4112) | VarNorm: 1.0000 (Var: 5.3341) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5060 | Clamped: 0.5060 | MagNorm: 0.1210 (AvgMag: 1.2102) | VarNorm: 1.0000 (Var: 4.2030) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5472 | Clamped: 0.5472 | MagNorm: 0.1307 (AvgMag: 1.3074) | VarNorm: 1.0000 (Var: 4.7704) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4239 | Clamped: 0.4239 | MagNorm: 0.1024 (AvgMag: 1.0242) | VarNorm: 1.0000 (Var: 3.6490) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4693 | Clamped: 0.4693 | MagNorm: 0.1204 (AvgMag: 1.2036) | VarNorm: 1.0000 (Var: 4.2077) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5178 | Clamped: 0.5178 | MagNorm: 0.1448 (AvgMag: 1.4476) | VarNorm: 1.0000 (Var: 6.2404) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5568 | Clamped: 0.5568 | MagNorm: 0.1499 (AvgMag: 1.4992) | VarNorm: 1.0000 (Var: 6.4025) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4916 | Clamped: 0.4916 | MagNorm: 0.0923 (AvgMag: 0.9234) | VarNorm: 1.0000 (Var: 3.7454) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5349 | Clamped: 0.5349 | MagNorm: 0.1063 (AvgMag: 1.0625) | VarNorm: 1.0000 (Var: 3.9603) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4396 | Clamped: 0.4396 | MagNorm: 0.1337 (AvgMag: 1.3368) | VarNorm: 1.0000 (Var: 4.7207) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4848 | Clamped: 0.4848 | MagNorm: 0.1515 (AvgMag: 1.5149) | VarNorm: 1.0000 (Var: 5.9252) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5665 | Clamped: 0.5665 | MagNorm: 0.1693 (AvgMag: 1.6929) | VarNorm: 1.0000 (Var: 7.3938) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5105 | Clamped: 0.5105 | MagNorm: 0.1301 (AvgMag: 1.3011) | VarNorm: 1.0000 (Var: 4.6683) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5512 | Clamped: 0.5512 | MagNorm: 0.1387 (AvgMag: 1.3874) | VarNorm: 1.0000 (Var: 5.3896) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4387 | Clamped: 0.4387 | MagNorm: 0.1318 (AvgMag: 1.3185) | VarNorm: 1.0000 (Var: 5.1811) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4847 | Clamped: 0.4847 | MagNorm: 0.1512 (AvgMag: 1.5119) | VarNorm: 1.0000 (Var: 6.3355) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5298 | Clamped: 0.5298 | MagNorm: 0.1686 (AvgMag: 1.6863) | VarNorm: 1.0000 (Var: 7.3344) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5705 | Clamped: 0.5705 | MagNorm: 0.1774 (AvgMag: 1.7745) | VarNorm: 1.0000 (Var: 7.8381) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5100 | Clamped: 0.5100 | MagNorm: 0.1291 (AvgMag: 1.2907) | VarNorm: 1.0000 (Var: 5.0986) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5493 | Clamped: 0.5493 | MagNorm: 0.1349 (AvgMag: 1.3487) | VarNorm: 1.0000 (Var: 5.4540) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4352 | Clamped: 0.4352 | MagNorm: 0.1249 (AvgMag: 1.2492) | VarNorm: 1.0000 (Var: 4.9571) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4848 | Clamped: 0.4848 | MagNorm: 0.1514 (AvgMag: 1.5141) | VarNorm: 1.0000 (Var: 6.4742) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5270 | Clamped: 0.5270 | MagNorm: 0.1631 (AvgMag: 1.6308) | VarNorm: 1.0000 (Var: 7.2831) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5685 | Clamped: 0.5685 | MagNorm: 0.1734 (AvgMag: 1.7338) | VarNorm: 1.0000 (Var: 7.8367) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5075 | Clamped: 0.5075 | MagNorm: 0.1241 (AvgMag: 1.2413) | VarNorm: 1.0000 (Var: 4.9962) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5476 | Clamped: 0.5476 | MagNorm: 0.1315 (AvgMag: 1.3152) | VarNorm: 1.0000 (Var: 5.3125) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4361 | Clamped: 0.4361 | MagNorm: 0.1267 (AvgMag: 1.2665) | VarNorm: 1.0000 (Var: 5.0831) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4837 | Clamped: 0.4837 | MagNorm: 0.1492 (AvgMag: 1.4920) | VarNorm: 1.0000 (Var: 6.1875) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5270 | Clamped: 0.5270 | MagNorm: 0.1630 (AvgMag: 1.6304) | VarNorm: 1.0000 (Var: 7.0339) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5688 | Clamped: 0.5688 | MagNorm: 0.1741 (AvgMag: 1.7406) | VarNorm: 1.0000 (Var: 7.6061) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5084 | Clamped: 0.5084 | MagNorm: 0.1260 (AvgMag: 1.2598) | VarNorm: 1.0000 (Var: 5.1768) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5480 | Clamped: 0.5480 | MagNorm: 0.1323 (AvgMag: 1.3234) | VarNorm: 1.0000 (Var: 5.2900) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4387 | Clamped: 0.4387 | MagNorm: 0.1319 (AvgMag: 1.3185) | VarNorm: 1.0000 (Var: 4.8382) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4863 | Clamped: 0.4863 | MagNorm: 0.1545 (AvgMag: 1.5451) | VarNorm: 1.0000 (Var: 6.3537) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5314 | Clamped: 0.5314 | MagNorm: 0.1718 (AvgMag: 1.7181) | VarNorm: 1.0000 (Var: 7.5565) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5724 | Clamped: 0.5724 | MagNorm: 0.1813 (AvgMag: 1.8126) | VarNorm: 1.0000 (Var: 7.8517) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5084 | Clamped: 0.5084 | MagNorm: 0.1260 (AvgMag: 1.2596) | VarNorm: 1.0000 (Var: 5.2032) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5495 | Clamped: 0.5495 | MagNorm: 0.1353 (AvgMag: 1.3533) | VarNorm: 1.0000 (Var: 5.4063) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4362 | Clamped: 0.4362 | MagNorm: 0.1269 (AvgMag: 1.2688) | VarNorm: 1.0000 (Var: 4.9822) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4812 | Clamped: 0.4812 | MagNorm: 0.1442 (AvgMag: 1.4423) | VarNorm: 1.0000 (Var: 5.8910) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5227 | Clamped: 0.5227 | MagNorm: 0.1544 (AvgMag: 1.5445) | VarNorm: 1.0000 (Var: 6.3520) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5655 | Clamped: 0.5655 | MagNorm: 0.1674 (AvgMag: 1.6737) | VarNorm: 1.0000 (Var: 6.8642) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5003 | Clamped: 0.5003 | MagNorm: 0.1098 (AvgMag: 1.0978) | VarNorm: 1.0000 (Var: 3.9974) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5436 | Clamped: 0.5436 | MagNorm: 0.1236 (AvgMag: 1.2356) | VarNorm: 1.0000 (Var: 4.4821) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4277 | Clamped: 0.4277 | MagNorm: 0.1099 (AvgMag: 1.0993) | VarNorm: 1.0000 (Var: 4.0756) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4740 | Clamped: 0.4740 | MagNorm: 0.1299 (AvgMag: 1.2992) | VarNorm: 1.0000 (Var: 4.8733) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5153 | Clamped: 0.5153 | MagNorm: 0.1397 (AvgMag: 1.3973) | VarNorm: 1.0000 (Var: 5.3278) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5553 | Clamped: 0.5553 | MagNorm: 0.1469 (AvgMag: 1.4695) | VarNorm: 1.0000 (Var: 5.5936) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4876 | Clamped: 0.4876 | MagNorm: 0.0843 (AvgMag: 0.8433) | VarNorm: 1.0000 (Var: 3.9691) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5301 | Clamped: 0.5301 | MagNorm: 0.0965 (AvgMag: 0.9652) | VarNorm: 1.0000 (Var: 3.8471) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4340 | Clamped: 0.4340 | MagNorm: 0.1224 (AvgMag: 1.2245) | VarNorm: 1.0000 (Var: 4.6759) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4793 | Clamped: 0.4793 | MagNorm: 0.1405 (AvgMag: 1.4051) | VarNorm: 1.0000 (Var: 5.4970) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5562 | Clamped: 0.5562 | MagNorm: 0.1487 (AvgMag: 1.4867) | VarNorm: 1.0000 (Var: 5.7052) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5009 | Clamped: 0.5009 | MagNorm: 0.1108 (AvgMag: 1.1081) | VarNorm: 1.0000 (Var: 4.6584) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5428 | Clamped: 0.5428 | MagNorm: 0.1219 (AvgMag: 1.2190) | VarNorm: 1.0000 (Var: 4.6866) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4328 | Clamped: 0.4328 | MagNorm: 0.1202 (AvgMag: 1.2019) | VarNorm: 1.0000 (Var: 4.4134) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4735 | Clamped: 0.4735 | MagNorm: 0.1287 (AvgMag: 1.2873) | VarNorm: 1.0000 (Var: 4.8367) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5164 | Clamped: 0.5164 | MagNorm: 0.1420 (AvgMag: 1.4197) | VarNorm: 1.0000 (Var: 5.3597) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5585 | Clamped: 0.5585 | MagNorm: 0.1533 (AvgMag: 1.5331) | VarNorm: 1.0000 (Var: 5.9871) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5002 | Clamped: 0.5002 | MagNorm: 0.1095 (AvgMag: 1.0953) | VarNorm: 1.0000 (Var: 4.4162) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5428 | Clamped: 0.5428 | MagNorm: 0.1219 (AvgMag: 1.2189) | VarNorm: 1.0000 (Var: 5.1322) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4315 | Clamped: 0.4315 | MagNorm: 0.1175 (AvgMag: 1.1750) | VarNorm: 1.0000 (Var: 4.1818) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4769 | Clamped: 0.4769 | MagNorm: 0.1357 (AvgMag: 1.3567) | VarNorm: 1.0000 (Var: 5.2728) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5178 | Clamped: 0.5178 | MagNorm: 0.1448 (AvgMag: 1.4476) | VarNorm: 1.0000 (Var: 5.7549) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5596 | Clamped: 0.5596 | MagNorm: 0.1556 (AvgMag: 1.5556) | VarNorm: 1.0000 (Var: 6.7150) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4992 | Clamped: 0.4992 | MagNorm: 0.1076 (AvgMag: 1.0759) | VarNorm: 1.0000 (Var: 4.1009) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5421 | Clamped: 0.5421 | MagNorm: 0.1205 (AvgMag: 1.2054) | VarNorm: 1.0000 (Var: 4.7460) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4255 | Clamped: 0.4255 | MagNorm: 0.1055 (AvgMag: 1.0551) | VarNorm: 1.0000 (Var: 4.2693) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4705 | Clamped: 0.4705 | MagNorm: 0.1228 (AvgMag: 1.2279) | VarNorm: 1.0000 (Var: 4.9592) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5570 | Clamped: 0.5570 | MagNorm: 0.1504 (AvgMag: 1.5043) | VarNorm: 1.0000 (Var: 7.0015) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4983 | Clamped: 0.4983 | MagNorm: 0.1058 (AvgMag: 1.0576) | VarNorm: 1.0000 (Var: 4.4301) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5388 | Clamped: 0.5388 | MagNorm: 0.1139 (AvgMag: 1.1393) | VarNorm: 1.0000 (Var: 4.6672) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4301 | Clamped: 0.4301 | MagNorm: 0.1147 (AvgMag: 1.1469) | VarNorm: 1.0000 (Var: 4.5406) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4738 | Clamped: 0.4738 | MagNorm: 0.1294 (AvgMag: 1.2939) | VarNorm: 1.0000 (Var: 5.1387) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5579 | Clamped: 0.5579 | MagNorm: 0.1522 (AvgMag: 1.5219) | VarNorm: 1.0000 (Var: 6.7198) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4991 | Clamped: 0.4991 | MagNorm: 0.1073 (AvgMag: 1.0726) | VarNorm: 1.0000 (Var: 4.6058) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5390 | Clamped: 0.5390 | MagNorm: 0.1143 (AvgMag: 1.1428) | VarNorm: 1.0000 (Var: 4.7020) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4284 | Clamped: 0.4284 | MagNorm: 0.1114 (AvgMag: 1.1144) | VarNorm: 1.0000 (Var: 4.1533) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4737 | Clamped: 0.4737 | MagNorm: 0.1291 (AvgMag: 1.2912) | VarNorm: 1.0000 (Var: 4.9788) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5501 | Clamped: 0.5501 | MagNorm: 0.1366 (AvgMag: 1.3661) | VarNorm: 1.0000 (Var: 5.1407) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4990 | Clamped: 0.4990 | MagNorm: 0.1071 (AvgMag: 1.0706) | VarNorm: 1.0000 (Var: 4.1925) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5403 | Clamped: 0.5403 | MagNorm: 0.1171 (AvgMag: 1.1706) | VarNorm: 1.0000 (Var: 4.4917) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4134 | Clamped: 0.4134 | MagNorm: 0.0814 (AvgMag: 0.8137) | VarNorm: 1.0000 (Var: 3.8900) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4559 | Clamped: 0.4559 | MagNorm: 0.0937 (AvgMag: 0.9371) | VarNorm: 1.0000 (Var: 4.2712) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5376 | Clamped: 0.5376 | MagNorm: 0.1116 (AvgMag: 1.1163) | VarNorm: 1.0000 (Var: 4.7277) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5046 | Clamped: 0.5046 | MagNorm: 0.1183 (AvgMag: 1.1827) | VarNorm: 1.0000 (Var: 4.5086) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5458 | Clamped: 0.5458 | MagNorm: 0.1279 (AvgMag: 1.2789) | VarNorm: 1.0000 (Var: 5.0282) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4403 | Clamped: 0.4403 | MagNorm: 0.1351 (AvgMag: 1.3506) | VarNorm: 1.0000 (Var: 5.7653) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4823 | Clamped: 0.4823 | MagNorm: 0.1464 (AvgMag: 1.4640) | VarNorm: 1.0000 (Var: 6.6632) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5246 | Clamped: 0.5246 | MagNorm: 0.1583 (AvgMag: 1.5830) | VarNorm: 1.0000 (Var: 7.7607) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5659 | Clamped: 0.5659 | MagNorm: 0.1682 (AvgMag: 1.6823) | VarNorm: 1.0000 (Var: 8.1813) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4848 | Clamped: 0.4848 | MagNorm: 0.0787 (AvgMag: 0.7873) | VarNorm: 1.0000 (Var: 4.4495) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5268 | Clamped: 0.5268 | MagNorm: 0.0901 (AvgMag: 0.9006) | VarNorm: 1.0000 (Var: 4.0914) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4110 | Clamped: 0.4110 | MagNorm: 0.0765 (AvgMag: 0.7648) | VarNorm: 1.0000 (Var: 3.9602) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4485 | Clamped: 0.4485 | MagNorm: 0.0788 (AvgMag: 0.7882) | VarNorm: 1.0000 (Var: 3.6536) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5291 | Clamped: 0.5291 | MagNorm: 0.0945 (AvgMag: 0.9448) | VarNorm: 1.0000 (Var: 4.0210) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.4836 | Clamped: 0.4836 | MagNorm: 0.0764 (AvgMag: 0.7639) | VarNorm: 1.0000 (Var: 3.9574) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5271 | Clamped: 0.5271 | MagNorm: 0.0906 (AvgMag: 0.9064) | VarNorm: 1.0000 (Var: 3.7362) | PosF: 0.9091
+[DEBUG Temp Layer 2] Raw Temp: 0.4531 | Clamped: 0.4531 | MagNorm: 0.1608 (AvgMag: 1.6076) | VarNorm: 1.0000 (Var: 6.3412) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4951 | Clamped: 0.4951 | MagNorm: 0.1720 (AvgMag: 1.7205) | VarNorm: 1.0000 (Var: 7.3070) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5789 | Clamped: 0.5789 | MagNorm: 0.1941 (AvgMag: 1.9411) | VarNorm: 1.0000 (Var: 8.5452) | PosF: 0.9091
+[DEBUG Temp Layer 4] Raw Temp: 0.5225 | Clamped: 0.5225 | MagNorm: 0.1541 (AvgMag: 1.5408) | VarNorm: 1.0000 (Var: 6.1210) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5626 | Clamped: 0.5626 | MagNorm: 0.1617 (AvgMag: 1.6165) | VarNorm: 1.0000 (Var: 6.4855) | PosF: 0.9091

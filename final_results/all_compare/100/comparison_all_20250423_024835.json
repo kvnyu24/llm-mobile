@@ -1,0 +1,28 @@
+{
+  "timestamp": "20250423_024835",
+  "comparison_type": "all_vs_baseline_mem_measure_edge_prune",
+  "model_name": "gpt2",
+  "prompt": "Test memory compression, layer skipping, and token pruning with pruning action",
+  "tokens": 100,
+  "device": "auto",
+  "optimized_run": {
+    "label": "All Enabled (Skip+Quant+Edge+Prune)",
+    "flags": "--layer-opt --memory-opt --mem-budget 5 --edge-cloud --token-pruning",
+    "loop_time_s": 24.21,
+    "peak_memory_mb": 1,
+    "layers_skipped": 117,
+    "quant_events": 0,
+    "layers_offloaded": 600,
+    "tokens_pruned": 85
+  },
+  "baseline_run": {
+    "label": "Baseline (Mem Measure Only)",
+    "flags": "--memory-opt --mem-budget 10000",
+    "loop_time_s": 24.9,
+    "peak_memory_mb": 8.02,
+    "layers_skipped": 0,
+    "quant_events": 0,
+    "layers_offloaded": 0,
+    "tokens_pruned": 0
+  }
+}

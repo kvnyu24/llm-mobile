@@ -10,7 +10,7 @@ INFO:hybrid_inference:Model: gpt2
 INFO:hybrid_inference:Device: cpu
 INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
 INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
-INFO:hybrid_inference:Max New Tokens: 50
+INFO:hybrid_inference:Max New Tokens: 200
 INFO:hybrid_inference:Enabled optimizations:
 INFO:hybrid_inference:  - Token Pruning: False
 INFO:hybrid_inference:  - Layer Opt (Skip/Compress): False
@@ -19,21 +19,21 @@ INFO:hybrid_inference:  - Edge-Cloud Partitioning: False (Logic not active)
 INFO:hybrid_inference:=====================================================
 INFO:hybrid_inference:Initializing Memory Manager...
 INFO:memory_manager:Memory Manager initialized with 10000MB budget, threshold 90%, Quantization: True
-INFO:hybrid_inference:Starting inference loop for 50 tokens...
+INFO:hybrid_inference:Starting inference loop for 200 tokens...
 INFO:hybrid_inference:
 INFO:hybrid_inference:=====================================================
 INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
 INFO:hybrid_inference:=====================================================
-INFO:hybrid_inference:Total Inference Time: 7.72s
-INFO:hybrid_inference:Generation Loop Time: 6.90s
-INFO:hybrid_inference:Average time per generated token: 0.1379s (7.25 tokens/s)
-INFO:hybrid_inference:Generated 50 new tokens
+INFO:hybrid_inference:Total Inference Time: 99.98s
+INFO:hybrid_inference:Generation Loop Time: 97.30s
+INFO:hybrid_inference:Average time per generated token: 0.4864s (2.06 tokens/s)
+INFO:hybrid_inference:Generated 200 new tokens
 INFO:hybrid_inference:Layers skipped (decision count): 0
 INFO:hybrid_inference:Tokens Pruned: 0
 INFO:hybrid_inference:Layers Offloaded: 0
-INFO:hybrid_inference:Final sequence length: 65
+INFO:hybrid_inference:Final sequence length: 215
 INFO:hybrid_inference:--- Memory Manager Stats ---
-INFO:hybrid_inference:Peak Memory Usage: 4.50 MB
+INFO:hybrid_inference:Peak Memory Usage: 15.05 MB
 INFO:hybrid_inference:Quantization Events: 0
 INFO:hybrid_inference:Layers Quantized (0): []
 INFO:hybrid_inference:Dequantization Events: 0
@@ -41,8 +41,8 @@ INFO:hybrid_inference:--- Generated Text ---
 INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
 INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action.
 
-We've used a tool called D3 to help us analyze and optimize memory usage while we're on the road. Once D4 is deployed and running, we will see our code run at its peak performance as we continue to push our
-INFO:hybrid_inference:Newly Generated Text: .  We've used a tool called D3 to help us analyze and optimize memory usage while we're on the road. Once D4 is deployed and running, we will see our code run at its peak performance as we continue to push our
+We've used a tool called D3 to help us analyze and optimize memory usage while we're on the road. Once D4 is deployed and running, we will see our code run at its peak performance as we continue to push our client code to the network. In this instance, it was a huge boost since we ran our benchmark using 4GB of memory. This is a really big win for our tests because it makes it easier for us to test the process in real time. We can now see that our test network is running at 4Gbps, making it more efficient for the testnet. And it's also a win because we can see what it is doing when we push a test to it. The performance of our network performance shows when our server is used to perform a large workload. More than half of the time it uses 4Gb of RAM, which is much faster than the previous estimates. Let's see how the new 6GB RAM performance compares to our previous
+INFO:hybrid_inference:Newly Generated Text: .  We've used a tool called D3 to help us analyze and optimize memory usage while we're on the road. Once D4 is deployed and running, we will see our code run at its peak performance as we continue to push our client code to the network. In this instance, it was a huge boost since we ran our benchmark using 4GB of memory. This is a really big win for our tests because it makes it easier for us to test the process in real time. We can now see that our test network is running at 4Gbps, making it more efficient for the testnet. And it's also a win because we can see what it is doing when we push a test to it. The performance of our network performance shows when our server is used to perform a large workload. More than half of the time it uses 4Gb of RAM, which is much faster than the previous estimates. Let's see how the new 6GB RAM performance compares to our previous
 INFO:hybrid_inference:=====================================================
 INFO:hybrid_inference:Hybrid inference script finished.
 INFO:hybrid_inference:Hybrid inference script finished.
