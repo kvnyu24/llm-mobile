@@ -1,0 +1,377 @@
+INFO:hybrid_inference:Log level set to: INFO
+INFO:hybrid_inference:Set pad_token to eos_token for tokenizer.
+INFO:hybrid_inference:Using device: cpu
+INFO:hybrid_inference:Loading model: gpt2...
+INFO:hybrid_inference:Using float32 for model loading on CPU.
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:HYBRID INFERENCE - REAL MODEL EXECUTION
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Model: gpt2
+INFO:hybrid_inference:Device: cpu
+INFO:hybrid_inference:Model dimensions: 768d, 12 layers, 12 attention heads
+INFO:hybrid_inference:Prompt: "Test memory compression, layer skipping, and token pruning with pruning action"
+INFO:hybrid_inference:Max New Tokens: 50
+INFO:hybrid_inference:Enabled optimizations:
+INFO:hybrid_inference:  - Token Pruning: False
+INFO:hybrid_inference:  - Layer Opt (Skip/Compress): True
+INFO:hybrid_inference:  - Memory Management (Quant): True
+INFO:hybrid_inference:  - Edge-Cloud Partitioning: False (Logic not active)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Initializing Memory Manager...
+INFO:memory_manager:Memory Manager initialized with 10000MB budget, threshold 90%, Quantization: True
+INFO:hybrid_inference:Initializing Layer Compression/Skipping Manager...
+INFO:hybrid_inference:Registering pre-forward hooks for layer skipping on 12 layers...
+INFO:hybrid_inference:Successfully registered 12 hooks.
+INFO:hybrid_inference:Starting inference loop for 50 tokens...
+[DEBUG Temp Layer 2] Raw Temp: 0.4356 | Clamped: 0.4356 | MagNorm: 0.1257 (AvgMag: 1.2570) | VarNorm: 1.0000 (Var: 37.7082) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4886 | Clamped: 0.4886 | MagNorm: 0.1590 (AvgMag: 1.5903) | VarNorm: 1.0000 (Var: 580.7483) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5338 | Clamped: 0.5338 | MagNorm: 0.1766 (AvgMag: 1.7661) | VarNorm: 1.0000 (Var: 661.8407) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5785 | Clamped: 0.5785 | MagNorm: 0.1934 (AvgMag: 1.9344) | VarNorm: 1.0000 (Var: 734.1968) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5871 | Clamped: 0.5871 | MagNorm: 0.2106 (AvgMag: 2.1065) | VarNorm: 1.0000 (Var: 781.8510) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5613 | Clamped: 0.5613 | MagNorm: 0.2317 (AvgMag: 2.3170) | VarNorm: 1.0000 (Var: 812.3603) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5372 | Clamped: 0.5372 | MagNorm: 0.2563 (AvgMag: 2.5627) | VarNorm: 1.0000 (Var: 833.3137) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.5171 | Clamped: 0.5171 | MagNorm: 0.2887 (AvgMag: 2.8870) | VarNorm: 1.0000 (Var: 849.6505) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.5030 | Clamped: 0.5030 | MagNorm: 0.3333 (AvgMag: 3.3328) | VarNorm: 1.0000 (Var: 866.3646) | PosF: 0.1818
+[DEBUG Temp Layer 4] Raw Temp: 0.4823 | Clamped: 0.4823 | MagNorm: 0.0737 (AvgMag: 0.7371) | VarNorm: 1.0000 (Var: 3.8782) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5244 | Clamped: 0.5244 | MagNorm: 0.0852 (AvgMag: 0.8515) | VarNorm: 1.0000 (Var: 3.7465) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5343 | Clamped: 0.5343 | MagNorm: 0.1049 (AvgMag: 1.0487) | VarNorm: 1.0000 (Var: 5.1457) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5127 | Clamped: 0.5127 | MagNorm: 0.1345 (AvgMag: 1.3451) | VarNorm: 1.0000 (Var: 7.6126) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4902 | Clamped: 0.4902 | MagNorm: 0.1622 (AvgMag: 1.6219) | VarNorm: 1.0000 (Var: 10.6462) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4814 | Clamped: 0.4814 | MagNorm: 0.2174 (AvgMag: 2.1737) | VarNorm: 1.0000 (Var: 19.5136) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4708 | Clamped: 0.4708 | MagNorm: 0.2688 (AvgMag: 2.6882) | VarNorm: 1.0000 (Var: 35.8376) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4115 | Clamped: 0.4115 | MagNorm: 0.0774 (AvgMag: 0.7745) | VarNorm: 1.0000 (Var: 3.9548) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4534 | Clamped: 0.4534 | MagNorm: 0.0885 (AvgMag: 0.8852) | VarNorm: 1.0000 (Var: 4.1949) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5341 | Clamped: 0.5341 | MagNorm: 0.1045 (AvgMag: 1.0453) | VarNorm: 1.0000 (Var: 4.8164) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5400 | Clamped: 0.5400 | MagNorm: 0.1164 (AvgMag: 1.1635) | VarNorm: 1.0000 (Var: 5.0487) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5200 | Clamped: 0.5200 | MagNorm: 0.1492 (AvgMag: 1.4917) | VarNorm: 1.0000 (Var: 7.9607) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4821 | Clamped: 0.4821 | MagNorm: 0.0732 (AvgMag: 0.7323) | VarNorm: 1.0000 (Var: 3.8841) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5215 | Clamped: 0.5215 | MagNorm: 0.0793 (AvgMag: 0.7934) | VarNorm: 1.0000 (Var: 3.3715) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5309 | Clamped: 0.5309 | MagNorm: 0.0981 (AvgMag: 0.9807) | VarNorm: 1.0000 (Var: 4.8103) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5044 | Clamped: 0.5044 | MagNorm: 0.1179 (AvgMag: 1.1793) | VarNorm: 1.0000 (Var: 6.2428) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4790 | Clamped: 0.4790 | MagNorm: 0.1398 (AvgMag: 1.3984) | VarNorm: 1.0000 (Var: 8.7690) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4635 | Clamped: 0.4635 | MagNorm: 0.1816 (AvgMag: 1.8160) | VarNorm: 1.0000 (Var: 13.5086) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4526 | Clamped: 0.4526 | MagNorm: 0.2324 (AvgMag: 2.3245) | VarNorm: 1.0000 (Var: 27.7476) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4235 | Clamped: 0.4235 | MagNorm: 0.1016 (AvgMag: 1.0156) | VarNorm: 1.0000 (Var: 4.1406) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4672 | Clamped: 0.4672 | MagNorm: 0.1162 (AvgMag: 1.1621) | VarNorm: 1.0000 (Var: 4.3422) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5475 | Clamped: 0.5475 | MagNorm: 0.1313 (AvgMag: 1.3135) | VarNorm: 1.0000 (Var: 4.6662) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5537 | Clamped: 0.5537 | MagNorm: 0.1437 (AvgMag: 1.4370) | VarNorm: 1.0000 (Var: 5.3332) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5311 | Clamped: 0.5311 | MagNorm: 0.1714 (AvgMag: 1.7139) | VarNorm: 1.0000 (Var: 7.4568) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4873 | Clamped: 0.4873 | MagNorm: 0.0838 (AvgMag: 0.8378) | VarNorm: 1.0000 (Var: 3.9134) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5266 | Clamped: 0.5266 | MagNorm: 0.0896 (AvgMag: 0.8963) | VarNorm: 1.0000 (Var: 3.3940) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5343 | Clamped: 0.5343 | MagNorm: 0.1050 (AvgMag: 1.0498) | VarNorm: 1.0000 (Var: 4.3096) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5121 | Clamped: 0.5121 | MagNorm: 0.1334 (AvgMag: 1.3337) | VarNorm: 1.0000 (Var: 5.8912) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4910 | Clamped: 0.4910 | MagNorm: 0.1637 (AvgMag: 1.6375) | VarNorm: 1.0000 (Var: 8.4055) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4710 | Clamped: 0.4710 | MagNorm: 0.1966 (AvgMag: 1.9657) | VarNorm: 1.0000 (Var: 11.7346) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4581 | Clamped: 0.4581 | MagNorm: 0.2435 (AvgMag: 2.4355) | VarNorm: 1.0000 (Var: 22.8211) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4200 | Clamped: 0.4200 | MagNorm: 0.0946 (AvgMag: 0.9458) | VarNorm: 1.0000 (Var: 3.9366) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4646 | Clamped: 0.4646 | MagNorm: 0.1111 (AvgMag: 1.1109) | VarNorm: 1.0000 (Var: 4.3363) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5499 | Clamped: 0.5499 | MagNorm: 0.1363 (AvgMag: 1.3626) | VarNorm: 1.0000 (Var: 5.2022) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5554 | Clamped: 0.5554 | MagNorm: 0.1472 (AvgMag: 1.4725) | VarNorm: 1.0000 (Var: 5.3596) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5301 | Clamped: 0.5301 | MagNorm: 0.1694 (AvgMag: 1.6937) | VarNorm: 1.0000 (Var: 7.3486) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4814 | Clamped: 0.4814 | MagNorm: 0.0719 (AvgMag: 0.7186) | VarNorm: 1.0000 (Var: 3.7315) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5204 | Clamped: 0.5204 | MagNorm: 0.0772 (AvgMag: 0.7716) | VarNorm: 1.0000 (Var: 3.1525) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5320 | Clamped: 0.5320 | MagNorm: 0.1004 (AvgMag: 1.0037) | VarNorm: 1.0000 (Var: 4.4132) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5107 | Clamped: 0.5107 | MagNorm: 0.1306 (AvgMag: 1.3056) | VarNorm: 1.0000 (Var: 6.4314) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4860 | Clamped: 0.4860 | MagNorm: 0.1538 (AvgMag: 1.5381) | VarNorm: 1.0000 (Var: 8.8974) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4708 | Clamped: 0.4708 | MagNorm: 0.1962 (AvgMag: 1.9619) | VarNorm: 1.0000 (Var: 12.3434) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4542 | Clamped: 0.4542 | MagNorm: 0.2357 (AvgMag: 2.3574) | VarNorm: 1.0000 (Var: 23.8993) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4206 | Clamped: 0.4206 | MagNorm: 0.0958 (AvgMag: 0.9575) | VarNorm: 1.0000 (Var: 3.8711) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4638 | Clamped: 0.4638 | MagNorm: 0.1095 (AvgMag: 1.0947) | VarNorm: 1.0000 (Var: 4.1202) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5463 | Clamped: 0.5463 | MagNorm: 0.1289 (AvgMag: 1.2892) | VarNorm: 1.0000 (Var: 5.0313) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5522 | Clamped: 0.5522 | MagNorm: 0.1407 (AvgMag: 1.4074) | VarNorm: 1.0000 (Var: 5.4163) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5274 | Clamped: 0.5274 | MagNorm: 0.1640 (AvgMag: 1.6397) | VarNorm: 1.0000 (Var: 7.3569) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4873 | Clamped: 0.4873 | MagNorm: 0.0838 (AvgMag: 0.8377) | VarNorm: 1.0000 (Var: 3.8185) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5267 | Clamped: 0.5267 | MagNorm: 0.0897 (AvgMag: 0.8972) | VarNorm: 1.0000 (Var: 3.2322) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5362 | Clamped: 0.5362 | MagNorm: 0.1089 (AvgMag: 1.0885) | VarNorm: 1.0000 (Var: 4.1359) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5142 | Clamped: 0.5142 | MagNorm: 0.1375 (AvgMag: 1.3750) | VarNorm: 1.0000 (Var: 5.9158) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4951 | Clamped: 0.4951 | MagNorm: 0.1720 (AvgMag: 1.7204) | VarNorm: 1.0000 (Var: 8.7118) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4728 | Clamped: 0.4728 | MagNorm: 0.2002 (AvgMag: 2.0023) | VarNorm: 1.0000 (Var: 12.0464) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4611 | Clamped: 0.4611 | MagNorm: 0.2494 (AvgMag: 2.4938) | VarNorm: 1.0000 (Var: 26.4442) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4347 | Clamped: 0.4347 | MagNorm: 0.1239 (AvgMag: 1.2386) | VarNorm: 1.0000 (Var: 4.5909) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4804 | Clamped: 0.4804 | MagNorm: 0.1427 (AvgMag: 1.4266) | VarNorm: 1.0000 (Var: 5.7415) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5595 | Clamped: 0.5595 | MagNorm: 0.1553 (AvgMag: 1.5527) | VarNorm: 1.0000 (Var: 6.7338) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5673 | Clamped: 0.5673 | MagNorm: 0.1709 (AvgMag: 1.7094) | VarNorm: 1.0000 (Var: 7.3972) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5465 | Clamped: 0.5465 | MagNorm: 0.2021 (AvgMag: 2.0206) | VarNorm: 1.0000 (Var: 10.2009) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4876 | Clamped: 0.4876 | MagNorm: 0.0842 (AvgMag: 0.8422) | VarNorm: 1.0000 (Var: 3.4909) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5267 | Clamped: 0.5267 | MagNorm: 0.0898 (AvgMag: 0.8983) | VarNorm: 1.0000 (Var: 3.2345) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5358 | Clamped: 0.5358 | MagNorm: 0.1079 (AvgMag: 1.0791) | VarNorm: 1.0000 (Var: 4.3550) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5100 | Clamped: 0.5100 | MagNorm: 0.1290 (AvgMag: 1.2901) | VarNorm: 1.0000 (Var: 6.0579) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4900 | Clamped: 0.4900 | MagNorm: 0.1619 (AvgMag: 1.6187) | VarNorm: 1.0000 (Var: 9.4423) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4747 | Clamped: 0.4747 | MagNorm: 0.2040 (AvgMag: 2.0402) | VarNorm: 1.0000 (Var: 15.3614) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4726 | Clamped: 0.4726 | MagNorm: 0.2725 (AvgMag: 2.7247) | VarNorm: 1.0000 (Var: 31.0091) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4174 | Clamped: 0.4174 | MagNorm: 0.0893 (AvgMag: 0.8930) | VarNorm: 1.0000 (Var: 3.8810) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4619 | Clamped: 0.4619 | MagNorm: 0.1056 (AvgMag: 1.0562) | VarNorm: 1.0000 (Var: 4.5447) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5407 | Clamped: 0.5407 | MagNorm: 0.1177 (AvgMag: 1.1775) | VarNorm: 1.0000 (Var: 5.0827) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5517 | Clamped: 0.5517 | MagNorm: 0.1398 (AvgMag: 1.3984) | VarNorm: 1.0000 (Var: 6.0823) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5289 | Clamped: 0.5289 | MagNorm: 0.1669 (AvgMag: 1.6691) | VarNorm: 1.0000 (Var: 8.2935) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4932 | Clamped: 0.4932 | MagNorm: 0.0955 (AvgMag: 0.9550) | VarNorm: 1.0000 (Var: 3.8775) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5325 | Clamped: 0.5325 | MagNorm: 0.1013 (AvgMag: 1.0133) | VarNorm: 1.0000 (Var: 3.5996) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5432 | Clamped: 0.5432 | MagNorm: 0.1228 (AvgMag: 1.2283) | VarNorm: 1.0000 (Var: 4.3173) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5230 | Clamped: 0.5230 | MagNorm: 0.1552 (AvgMag: 1.5517) | VarNorm: 1.0000 (Var: 6.2778) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4983 | Clamped: 0.4983 | MagNorm: 0.1784 (AvgMag: 1.7843) | VarNorm: 1.0000 (Var: 8.3571) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4733 | Clamped: 0.4733 | MagNorm: 0.2012 (AvgMag: 2.0119) | VarNorm: 1.0000 (Var: 12.2773) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4548 | Clamped: 0.4548 | MagNorm: 0.2368 (AvgMag: 2.3682) | VarNorm: 1.0000 (Var: 22.3072) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4287 | Clamped: 0.4287 | MagNorm: 0.1119 (AvgMag: 1.1190) | VarNorm: 1.0000 (Var: 3.8112) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4758 | Clamped: 0.4758 | MagNorm: 0.1335 (AvgMag: 1.3346) | VarNorm: 1.0000 (Var: 4.7650) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5561 | Clamped: 0.5561 | MagNorm: 0.1485 (AvgMag: 1.4848) | VarNorm: 1.0000 (Var: 5.2858) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5648 | Clamped: 0.5648 | MagNorm: 0.1661 (AvgMag: 1.6605) | VarNorm: 1.0000 (Var: 6.2203) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5409 | Clamped: 0.5409 | MagNorm: 0.1910 (AvgMag: 1.9099) | VarNorm: 1.0000 (Var: 8.6891) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4867 | Clamped: 0.4867 | MagNorm: 0.0824 (AvgMag: 0.8244) | VarNorm: 1.0000 (Var: 3.4474) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5261 | Clamped: 0.5261 | MagNorm: 0.0886 (AvgMag: 0.8861) | VarNorm: 1.0000 (Var: 3.2287) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5373 | Clamped: 0.5373 | MagNorm: 0.1110 (AvgMag: 1.1096) | VarNorm: 1.0000 (Var: 4.5310) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5136 | Clamped: 0.5136 | MagNorm: 0.1363 (AvgMag: 1.3634) | VarNorm: 1.0000 (Var: 6.4893) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4912 | Clamped: 0.4912 | MagNorm: 0.1642 (AvgMag: 1.6424) | VarNorm: 1.0000 (Var: 9.5583) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4745 | Clamped: 0.4745 | MagNorm: 0.2036 (AvgMag: 2.0364) | VarNorm: 1.0000 (Var: 15.3701) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4735 | Clamped: 0.4735 | MagNorm: 0.2742 (AvgMag: 2.7421) | VarNorm: 1.0000 (Var: 31.9655) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4135 | Clamped: 0.4135 | MagNorm: 0.0815 (AvgMag: 0.8147) | VarNorm: 1.0000 (Var: 3.9399) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4559 | Clamped: 0.4559 | MagNorm: 0.0935 (AvgMag: 0.9354) | VarNorm: 1.0000 (Var: 3.9356) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5327 | Clamped: 0.5327 | MagNorm: 0.1018 (AvgMag: 1.0175) | VarNorm: 1.0000 (Var: 4.2968) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5423 | Clamped: 0.5423 | MagNorm: 0.1209 (AvgMag: 1.2088) | VarNorm: 1.0000 (Var: 5.1520) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5199 | Clamped: 0.5199 | MagNorm: 0.1490 (AvgMag: 1.4896) | VarNorm: 1.0000 (Var: 7.6890) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.5036 | Clamped: 0.5036 | MagNorm: 0.1162 (AvgMag: 1.1622) | VarNorm: 1.0000 (Var: 4.3929) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5437 | Clamped: 0.5437 | MagNorm: 0.1237 (AvgMag: 1.2372) | VarNorm: 1.0000 (Var: 4.4020) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5539 | Clamped: 0.5539 | MagNorm: 0.1443 (AvgMag: 1.4425) | VarNorm: 1.0000 (Var: 5.9025) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5264 | Clamped: 0.5264 | MagNorm: 0.1619 (AvgMag: 1.6185) | VarNorm: 1.0000 (Var: 7.3387) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5037 | Clamped: 0.5037 | MagNorm: 0.1893 (AvgMag: 1.8926) | VarNorm: 1.0000 (Var: 11.0696) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4841 | Clamped: 0.4841 | MagNorm: 0.2227 (AvgMag: 2.2266) | VarNorm: 1.0000 (Var: 15.5727) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4744 | Clamped: 0.4744 | MagNorm: 0.2761 (AvgMag: 2.7610) | VarNorm: 1.0000 (Var: 27.2618) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4361 | Clamped: 0.4361 | MagNorm: 0.1266 (AvgMag: 1.2665) | VarNorm: 1.0000 (Var: 4.8700) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4794 | Clamped: 0.4794 | MagNorm: 0.1406 (AvgMag: 1.4059) | VarNorm: 1.0000 (Var: 5.7334) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5231 | Clamped: 0.5231 | MagNorm: 0.1552 (AvgMag: 1.5524) | VarNorm: 1.0000 (Var: 6.4135) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5675 | Clamped: 0.5675 | MagNorm: 0.1713 (AvgMag: 1.7131) | VarNorm: 1.0000 (Var: 8.2005) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5767 | Clamped: 0.5767 | MagNorm: 0.1898 (AvgMag: 1.8979) | VarNorm: 1.0000 (Var: 10.2827) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5496 | Clamped: 0.5496 | MagNorm: 0.2083 (AvgMag: 2.0827) | VarNorm: 1.0000 (Var: 11.9089) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5281 | Clamped: 0.5281 | MagNorm: 0.2380 (AvgMag: 2.3799) | VarNorm: 1.0000 (Var: 15.2160) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4926 | Clamped: 0.4926 | MagNorm: 0.0942 (AvgMag: 0.9420) | VarNorm: 1.0000 (Var: 4.0479) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5337 | Clamped: 0.5337 | MagNorm: 0.1039 (AvgMag: 1.0385) | VarNorm: 1.0000 (Var: 3.9951) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5546 | Clamped: 0.5546 | MagNorm: 0.1456 (AvgMag: 1.4560) | VarNorm: 1.0000 (Var: 6.2322) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5366 | Clamped: 0.5366 | MagNorm: 0.1822 (AvgMag: 1.8220) | VarNorm: 1.0000 (Var: 8.9152) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5163 | Clamped: 0.5163 | MagNorm: 0.2145 (AvgMag: 2.1447) | VarNorm: 1.0000 (Var: 11.1584) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4946 | Clamped: 0.4946 | MagNorm: 0.2438 (AvgMag: 2.4376) | VarNorm: 1.0000 (Var: 14.0888) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4816 | Clamped: 0.4816 | MagNorm: 0.2906 (AvgMag: 2.9055) | VarNorm: 1.0000 (Var: 24.0159) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4210 | Clamped: 0.4210 | MagNorm: 0.0966 (AvgMag: 0.9661) | VarNorm: 1.0000 (Var: 3.8242) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4628 | Clamped: 0.4628 | MagNorm: 0.1075 (AvgMag: 1.0749) | VarNorm: 1.0000 (Var: 4.2733) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5422 | Clamped: 0.5422 | MagNorm: 0.1207 (AvgMag: 1.2074) | VarNorm: 1.0000 (Var: 4.5336) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5507 | Clamped: 0.5507 | MagNorm: 0.1377 (AvgMag: 1.3773) | VarNorm: 1.0000 (Var: 5.2874) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5329 | Clamped: 0.5329 | MagNorm: 0.1749 (AvgMag: 1.7485) | VarNorm: 1.0000 (Var: 8.0947) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5156 | Clamped: 0.5156 | MagNorm: 0.2129 (AvgMag: 2.1293) | VarNorm: 1.0000 (Var: 10.9834) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4929 | Clamped: 0.4929 | MagNorm: 0.0949 (AvgMag: 0.9491) | VarNorm: 1.0000 (Var: 4.1931) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5301 | Clamped: 0.5301 | MagNorm: 0.0965 (AvgMag: 0.9654) | VarNorm: 1.0000 (Var: 3.7094) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5400 | Clamped: 0.5400 | MagNorm: 0.1164 (AvgMag: 1.1640) | VarNorm: 1.0000 (Var: 4.2907) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5170 | Clamped: 0.5170 | MagNorm: 0.1431 (AvgMag: 1.4307) | VarNorm: 1.0000 (Var: 5.8170) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4900 | Clamped: 0.4900 | MagNorm: 0.1619 (AvgMag: 1.6186) | VarNorm: 1.0000 (Var: 7.4549) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4664 | Clamped: 0.4664 | MagNorm: 0.1874 (AvgMag: 1.8739) | VarNorm: 1.0000 (Var: 10.1256) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4469 | Clamped: 0.4469 | MagNorm: 0.2212 (AvgMag: 2.2117) | VarNorm: 1.0000 (Var: 21.6553) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4377 | Clamped: 0.4377 | MagNorm: 0.1299 (AvgMag: 1.2989) | VarNorm: 1.0000 (Var: 5.2942) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4761 | Clamped: 0.4761 | MagNorm: 0.1340 (AvgMag: 1.3398) | VarNorm: 1.0000 (Var: 5.4962) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5568 | Clamped: 0.5568 | MagNorm: 0.1499 (AvgMag: 1.4993) | VarNorm: 1.0000 (Var: 6.2002) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5666 | Clamped: 0.5666 | MagNorm: 0.1696 (AvgMag: 1.6963) | VarNorm: 1.0000 (Var: 7.2452) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5567 | Clamped: 0.5567 | MagNorm: 0.2224 (AvgMag: 2.2243) | VarNorm: 1.0000 (Var: 11.6954) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4929 | Clamped: 0.4929 | MagNorm: 0.0950 (AvgMag: 0.9496) | VarNorm: 1.0000 (Var: 4.0053) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5343 | Clamped: 0.5343 | MagNorm: 0.1050 (AvgMag: 1.0500) | VarNorm: 1.0000 (Var: 3.7556) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5457 | Clamped: 0.5457 | MagNorm: 0.1277 (AvgMag: 1.2769) | VarNorm: 1.0000 (Var: 5.1638) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5217 | Clamped: 0.5217 | MagNorm: 0.1525 (AvgMag: 1.5250) | VarNorm: 1.0000 (Var: 6.7725) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5007 | Clamped: 0.5007 | MagNorm: 0.1832 (AvgMag: 1.8324) | VarNorm: 1.0000 (Var: 8.7696) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4885 | Clamped: 0.4885 | MagNorm: 0.2315 (AvgMag: 2.3151) | VarNorm: 1.0000 (Var: 13.8894) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4740 | Clamped: 0.4740 | MagNorm: 0.2753 (AvgMag: 2.7529) | VarNorm: 1.0000 (Var: 20.8662) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4333 | Clamped: 0.4333 | MagNorm: 0.1212 (AvgMag: 1.2118) | VarNorm: 1.0000 (Var: 4.5653) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4767 | Clamped: 0.4767 | MagNorm: 0.1353 (AvgMag: 1.3530) | VarNorm: 1.0000 (Var: 5.2918) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5543 | Clamped: 0.5543 | MagNorm: 0.1449 (AvgMag: 1.4488) | VarNorm: 1.0000 (Var: 5.7541) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5641 | Clamped: 0.5641 | MagNorm: 0.1646 (AvgMag: 1.6457) | VarNorm: 1.0000 (Var: 7.0856) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5426 | Clamped: 0.5426 | MagNorm: 0.1943 (AvgMag: 1.9430) | VarNorm: 1.0000 (Var: 9.4212) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5198 | Clamped: 0.5198 | MagNorm: 0.2214 (AvgMag: 2.2141) | VarNorm: 1.0000 (Var: 11.6923) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5180 | Clamped: 0.5180 | MagNorm: 0.1451 (AvgMag: 1.4511) | VarNorm: 1.0000 (Var: 5.7974) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5559 | Clamped: 0.5559 | MagNorm: 0.1482 (AvgMag: 1.4818) | VarNorm: 1.0000 (Var: 5.7908) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5606 | Clamped: 0.5606 | MagNorm: 0.1576 (AvgMag: 1.5762) | VarNorm: 1.0000 (Var: 6.3756) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5374 | Clamped: 0.5374 | MagNorm: 0.1839 (AvgMag: 1.8390) | VarNorm: 1.0000 (Var: 8.6311) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5135 | Clamped: 0.5135 | MagNorm: 0.2089 (AvgMag: 2.0887) | VarNorm: 1.0000 (Var: 11.4108) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4967 | Clamped: 0.4967 | MagNorm: 0.2480 (AvgMag: 2.4801) | VarNorm: 1.0000 (Var: 17.6800) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4797 | Clamped: 0.4797 | MagNorm: 0.2868 (AvgMag: 2.8675) | VarNorm: 1.0000 (Var: 24.9960) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4203 | Clamped: 0.4203 | MagNorm: 0.0952 (AvgMag: 0.9518) | VarNorm: 1.0000 (Var: 4.1014) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4610 | Clamped: 0.4610 | MagNorm: 0.1038 (AvgMag: 1.0379) | VarNorm: 1.0000 (Var: 4.3534) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5015 | Clamped: 0.5015 | MagNorm: 0.1121 (AvgMag: 1.1206) | VarNorm: 1.0000 (Var: 4.5278) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5408 | Clamped: 0.5408 | MagNorm: 0.1179 (AvgMag: 1.1788) | VarNorm: 1.0000 (Var: 4.5133) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5479 | Clamped: 0.5479 | MagNorm: 0.1321 (AvgMag: 1.3207) | VarNorm: 1.0000 (Var: 5.1439) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5255 | Clamped: 0.5255 | MagNorm: 0.1601 (AvgMag: 1.6010) | VarNorm: 1.0000 (Var: 7.3820) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5063 | Clamped: 0.5063 | MagNorm: 0.1943 (AvgMag: 1.9432) | VarNorm: 1.0000 (Var: 11.3118) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5088 | Clamped: 0.5088 | MagNorm: 0.1266 (AvgMag: 1.2661) | VarNorm: 1.0000 (Var: 4.9192) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5496 | Clamped: 0.5496 | MagNorm: 0.1356 (AvgMag: 1.3565) | VarNorm: 1.0000 (Var: 5.4888) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5582 | Clamped: 0.5582 | MagNorm: 0.1527 (AvgMag: 1.5274) | VarNorm: 1.0000 (Var: 6.7125) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5317 | Clamped: 0.5317 | MagNorm: 0.1724 (AvgMag: 1.7241) | VarNorm: 1.0000 (Var: 8.9394) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5120 | Clamped: 0.5120 | MagNorm: 0.2058 (AvgMag: 2.0577) | VarNorm: 1.0000 (Var: 12.4561) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4908 | Clamped: 0.4908 | MagNorm: 0.2362 (AvgMag: 2.3622) | VarNorm: 1.0000 (Var: 16.6448) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4712 | Clamped: 0.4712 | MagNorm: 0.2696 (AvgMag: 2.6962) | VarNorm: 1.0000 (Var: 21.6253) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4154 | Clamped: 0.4154 | MagNorm: 0.0854 (AvgMag: 0.8541) | VarNorm: 1.0000 (Var: 3.6484) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4570 | Clamped: 0.4570 | MagNorm: 0.0958 (AvgMag: 0.9576) | VarNorm: 1.0000 (Var: 4.1931) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5003 | Clamped: 0.5003 | MagNorm: 0.1097 (AvgMag: 1.0968) | VarNorm: 1.0000 (Var: 4.6989) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5435 | Clamped: 0.5435 | MagNorm: 0.1234 (AvgMag: 1.2340) | VarNorm: 1.0000 (Var: 5.3360) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5536 | Clamped: 0.5536 | MagNorm: 0.1436 (AvgMag: 1.4357) | VarNorm: 1.0000 (Var: 6.6147) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5315 | Clamped: 0.5315 | MagNorm: 0.1721 (AvgMag: 1.7207) | VarNorm: 1.0000 (Var: 10.1076) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5135 | Clamped: 0.5135 | MagNorm: 0.2089 (AvgMag: 2.0888) | VarNorm: 1.0000 (Var: 13.4138) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5026 | Clamped: 0.5026 | MagNorm: 0.1144 (AvgMag: 1.1436) | VarNorm: 1.0000 (Var: 4.9700) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5434 | Clamped: 0.5434 | MagNorm: 0.1231 (AvgMag: 1.2310) | VarNorm: 1.0000 (Var: 5.0492) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5524 | Clamped: 0.5524 | MagNorm: 0.1411 (AvgMag: 1.4106) | VarNorm: 1.0000 (Var: 6.6660) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5246 | Clamped: 0.5246 | MagNorm: 0.1582 (AvgMag: 1.5824) | VarNorm: 1.0000 (Var: 8.7241) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5058 | Clamped: 0.5058 | MagNorm: 0.1934 (AvgMag: 1.9337) | VarNorm: 1.0000 (Var: 11.4833) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4956 | Clamped: 0.4956 | MagNorm: 0.2458 (AvgMag: 2.4576) | VarNorm: 1.0000 (Var: 18.3657) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4916 | Clamped: 0.4916 | MagNorm: 0.3104 (AvgMag: 3.1045) | VarNorm: 1.0000 (Var: 27.4731) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4167 | Clamped: 0.4167 | MagNorm: 0.0880 (AvgMag: 0.8804) | VarNorm: 1.0000 (Var: 3.8704) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4581 | Clamped: 0.4581 | MagNorm: 0.0980 (AvgMag: 0.9805) | VarNorm: 1.0000 (Var: 3.8796) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5012 | Clamped: 0.5012 | MagNorm: 0.1114 (AvgMag: 1.1141) | VarNorm: 1.0000 (Var: 4.2622) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5472 | Clamped: 0.5472 | MagNorm: 0.1308 (AvgMag: 1.3076) | VarNorm: 1.0000 (Var: 5.5017) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5544 | Clamped: 0.5544 | MagNorm: 0.1452 (AvgMag: 1.4517) | VarNorm: 1.0000 (Var: 6.3039) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5294 | Clamped: 0.5294 | MagNorm: 0.1680 (AvgMag: 1.6797) | VarNorm: 1.0000 (Var: 7.9402) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5116 | Clamped: 0.5116 | MagNorm: 0.2050 (AvgMag: 2.0502) | VarNorm: 1.0000 (Var: 11.2040) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4899 | Clamped: 0.4899 | MagNorm: 0.0889 (AvgMag: 0.8888) | VarNorm: 1.0000 (Var: 4.2379) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5293 | Clamped: 0.5293 | MagNorm: 0.0951 (AvgMag: 0.9506) | VarNorm: 1.0000 (Var: 3.8756) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5402 | Clamped: 0.5402 | MagNorm: 0.1168 (AvgMag: 1.1678) | VarNorm: 1.0000 (Var: 5.1305) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5105 | Clamped: 0.5105 | MagNorm: 0.1300 (AvgMag: 1.3005) | VarNorm: 1.0000 (Var: 6.0421) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4933 | Clamped: 0.4933 | MagNorm: 0.1685 (AvgMag: 1.6849) | VarNorm: 1.0000 (Var: 9.3702) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4850 | Clamped: 0.4850 | MagNorm: 0.2246 (AvgMag: 2.2456) | VarNorm: 1.0000 (Var: 15.5902) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4843 | Clamped: 0.4843 | MagNorm: 0.2959 (AvgMag: 2.9590) | VarNorm: 1.0000 (Var: 30.0252) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4386 | Clamped: 0.4386 | MagNorm: 0.1317 (AvgMag: 1.3172) | VarNorm: 1.0000 (Var: 5.2016) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4922 | Clamped: 0.4922 | MagNorm: 0.1662 (AvgMag: 1.6618) | VarNorm: 1.0000 (Var: 7.4956) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5783 | Clamped: 0.5783 | MagNorm: 0.1929 (AvgMag: 1.9292) | VarNorm: 1.0000 (Var: 9.1503) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5850 | Clamped: 0.5850 | MagNorm: 0.2064 (AvgMag: 2.0635) | VarNorm: 1.0000 (Var: 10.2665) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5577 | Clamped: 0.5577 | MagNorm: 0.2245 (AvgMag: 2.2449) | VarNorm: 1.0000 (Var: 12.9143) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4936 | Clamped: 0.4936 | MagNorm: 0.0963 (AvgMag: 0.9630) | VarNorm: 1.0000 (Var: 4.1919) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5311 | Clamped: 0.5311 | MagNorm: 0.0986 (AvgMag: 0.9863) | VarNorm: 1.0000 (Var: 3.6760) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5400 | Clamped: 0.5400 | MagNorm: 0.1164 (AvgMag: 1.1644) | VarNorm: 1.0000 (Var: 4.3456) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5186 | Clamped: 0.5186 | MagNorm: 0.1462 (AvgMag: 1.4623) | VarNorm: 1.0000 (Var: 5.9910) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4946 | Clamped: 0.4946 | MagNorm: 0.1709 (AvgMag: 1.7094) | VarNorm: 1.0000 (Var: 7.7893) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4720 | Clamped: 0.4720 | MagNorm: 0.1986 (AvgMag: 1.9862) | VarNorm: 1.0000 (Var: 10.8195) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4558 | Clamped: 0.4558 | MagNorm: 0.2388 (AvgMag: 2.3882) | VarNorm: 1.0000 (Var: 21.2445) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4375 | Clamped: 0.4375 | MagNorm: 0.1295 (AvgMag: 1.2946) | VarNorm: 1.0000 (Var: 5.3452) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4806 | Clamped: 0.4806 | MagNorm: 0.1430 (AvgMag: 1.4302) | VarNorm: 1.0000 (Var: 5.9950) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5652 | Clamped: 0.5652 | MagNorm: 0.1668 (AvgMag: 1.6678) | VarNorm: 1.0000 (Var: 7.2471) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5713 | Clamped: 0.5713 | MagNorm: 0.1790 (AvgMag: 1.7905) | VarNorm: 1.0000 (Var: 8.3969) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5441 | Clamped: 0.5441 | MagNorm: 0.1974 (AvgMag: 1.9735) | VarNorm: 1.0000 (Var: 11.0782) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.5058 | Clamped: 0.5058 | MagNorm: 0.1207 (AvgMag: 1.2065) | VarNorm: 1.0000 (Var: 4.8064) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5457 | Clamped: 0.5457 | MagNorm: 0.1278 (AvgMag: 1.2780) | VarNorm: 1.0000 (Var: 5.1420) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5507 | Clamped: 0.5507 | MagNorm: 0.1379 (AvgMag: 1.3785) | VarNorm: 1.0000 (Var: 5.7606) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5261 | Clamped: 0.5261 | MagNorm: 0.1614 (AvgMag: 1.6137) | VarNorm: 1.0000 (Var: 7.7243) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5036 | Clamped: 0.5036 | MagNorm: 0.1890 (AvgMag: 1.8905) | VarNorm: 1.0000 (Var: 10.7972) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4847 | Clamped: 0.4847 | MagNorm: 0.2239 (AvgMag: 2.2389) | VarNorm: 1.0000 (Var: 15.4381) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4737 | Clamped: 0.4737 | MagNorm: 0.2747 (AvgMag: 2.7468) | VarNorm: 1.0000 (Var: 22.3558) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4127 | Clamped: 0.4127 | MagNorm: 0.0799 (AvgMag: 0.7993) | VarNorm: 1.0000 (Var: 3.8733) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4528 | Clamped: 0.4528 | MagNorm: 0.0874 (AvgMag: 0.8743) | VarNorm: 1.0000 (Var: 3.9009) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4947 | Clamped: 0.4947 | MagNorm: 0.0985 (AvgMag: 0.9846) | VarNorm: 1.0000 (Var: 3.8314) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5344 | Clamped: 0.5344 | MagNorm: 0.1052 (AvgMag: 1.0517) | VarNorm: 1.0000 (Var: 4.1032) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5416 | Clamped: 0.5416 | MagNorm: 0.1196 (AvgMag: 1.1959) | VarNorm: 1.0000 (Var: 4.8679) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5205 | Clamped: 0.5205 | MagNorm: 0.1501 (AvgMag: 1.5010) | VarNorm: 1.0000 (Var: 7.3609) | PosF: 0.7273
+INFO:hybrid_inference:Removing 12 hooks...
+INFO:hybrid_inference:Hooks removed.
+INFO:hybrid_inference:
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Inference Summary (Manual Loop with Hooks)
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Total Inference Time: 8.41s
+INFO:hybrid_inference:Generation Loop Time: 7.06s
+INFO:hybrid_inference:Average time per generated token: 0.1411s (7.09 tokens/s)
+INFO:hybrid_inference:Generated 50 new tokens
+INFO:hybrid_inference:Layers skipped (decision count): 134
+INFO:hybrid_inference:Tokens Pruned: 0
+INFO:hybrid_inference:Layers Offloaded: 0
+INFO:hybrid_inference:Final sequence length: 65
+INFO:hybrid_inference:--- Memory Manager Stats ---
+INFO:hybrid_inference:Peak Memory Usage: 3.73 MB
+INFO:hybrid_inference:Quantization Events: 0
+INFO:hybrid_inference:Layers Quantized (0): []
+INFO:hybrid_inference:Dequantization Events: 0
+INFO:hybrid_inference:--- Layer Optimization Stats ---
+INFO:hybrid_inference:Compression Ratio (Handler): 0.0
+INFO:hybrid_inference:Total Layers Evaluated for Skipping (Handler): 318
+INFO:hybrid_inference:Total Layers Skipped (Handler): 134
+INFO:hybrid_inference:Skipping Efficiency (Handler): 0.4214
+INFO:hybrid_inference:--- Generated Text ---
+INFO:hybrid_inference:Prompt: Test memory compression, layer skipping, and token pruning with pruning action
+INFO:hybrid_inference:Final Output: Test memory compression, layer skipping, and token pruning with pruning action.
+
+1.1
+A. Add: A-O: a new memory-to-memory (Kernel) extension that allows for an attacker-specific functions to be made available to the memory. This means, a single kernel can
+INFO:hybrid_inference:Newly Generated Text: .  1.1 A. Add: A-O: a new memory-to-memory (Kernel) extension that allows for an attacker-specific functions to be made available to the memory. This means, a single kernel can
+INFO:hybrid_inference:=====================================================
+INFO:hybrid_inference:Hybrid inference script finished.
+INFO:hybrid_inference:Hybrid inference script finished.
+[DEBUG Temp Layer 8] Raw Temp: 0.5073 | Clamped: 0.5073 | MagNorm: 0.1965 (AvgMag: 1.9647) | VarNorm: 1.0000 (Var: 11.5552) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5315 | Clamped: 0.5315 | MagNorm: 0.0994 (AvgMag: 0.9944) | VarNorm: 1.0000 (Var: 4.1338) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5350 | Clamped: 0.5350 | MagNorm: 0.1064 (AvgMag: 1.0636) | VarNorm: 1.0000 (Var: 3.7673) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5127 | Clamped: 0.5127 | MagNorm: 0.1344 (AvgMag: 1.3443) | VarNorm: 1.0000 (Var: 5.4477) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4945 | Clamped: 0.4945 | MagNorm: 0.1708 (AvgMag: 1.7083) | VarNorm: 1.0000 (Var: 8.5828) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4842 | Clamped: 0.4842 | MagNorm: 0.2229 (AvgMag: 2.2288) | VarNorm: 1.0000 (Var: 14.5977) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4835 | Clamped: 0.4835 | MagNorm: 0.2942 (AvgMag: 2.9424) | VarNorm: 1.0000 (Var: 26.1562) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4277 | Clamped: 0.4277 | MagNorm: 0.1099 (AvgMag: 1.0992) | VarNorm: 1.0000 (Var: 4.1739) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4721 | Clamped: 0.4721 | MagNorm: 0.1260 (AvgMag: 1.2605) | VarNorm: 1.0000 (Var: 4.8202) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5129 | Clamped: 0.5129 | MagNorm: 0.1348 (AvgMag: 1.3482) | VarNorm: 1.0000 (Var: 4.9313) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5542 | Clamped: 0.5542 | MagNorm: 0.1449 (AvgMag: 1.4485) | VarNorm: 1.0000 (Var: 5.3695) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5630 | Clamped: 0.5630 | MagNorm: 0.1623 (AvgMag: 1.6232) | VarNorm: 1.0000 (Var: 6.0297) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5387 | Clamped: 0.5387 | MagNorm: 0.1865 (AvgMag: 1.8654) | VarNorm: 1.0000 (Var: 8.3169) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.5026 | Clamped: 0.5026 | MagNorm: 0.1144 (AvgMag: 1.1435) | VarNorm: 1.0000 (Var: 4.3026) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5412 | Clamped: 0.5412 | MagNorm: 0.1189 (AvgMag: 1.1886) | VarNorm: 1.0000 (Var: 4.3009) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5474 | Clamped: 0.5474 | MagNorm: 0.1312 (AvgMag: 1.3122) | VarNorm: 1.0000 (Var: 4.9422) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5214 | Clamped: 0.5214 | MagNorm: 0.1518 (AvgMag: 1.5180) | VarNorm: 1.0000 (Var: 6.8550) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5022 | Clamped: 0.5022 | MagNorm: 0.1863 (AvgMag: 1.8626) | VarNorm: 1.0000 (Var: 10.0501) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4865 | Clamped: 0.4865 | MagNorm: 0.2275 (AvgMag: 2.2747) | VarNorm: 1.0000 (Var: 14.7895) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4765 | Clamped: 0.4765 | MagNorm: 0.2802 (AvgMag: 2.8024) | VarNorm: 1.0000 (Var: 21.9369) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4111 | Clamped: 0.4111 | MagNorm: 0.0767 (AvgMag: 0.7668) | VarNorm: 1.0000 (Var: 3.6515) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4544 | Clamped: 0.4544 | MagNorm: 0.0906 (AvgMag: 0.9059) | VarNorm: 1.0000 (Var: 3.8023) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4971 | Clamped: 0.4971 | MagNorm: 0.1033 (AvgMag: 1.0330) | VarNorm: 1.0000 (Var: 4.0715) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5369 | Clamped: 0.5369 | MagNorm: 0.1102 (AvgMag: 1.1021) | VarNorm: 1.0000 (Var: 4.4400) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5430 | Clamped: 0.5430 | MagNorm: 0.1224 (AvgMag: 1.2245) | VarNorm: 1.0000 (Var: 4.8641) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5140 | Clamped: 0.5140 | MagNorm: 0.1370 (AvgMag: 1.3705) | VarNorm: 1.0000 (Var: 5.9918) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4974 | Clamped: 0.4974 | MagNorm: 0.1765 (AvgMag: 1.7655) | VarNorm: 1.0000 (Var: 9.7244) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5200 | Clamped: 0.5200 | MagNorm: 0.0763 (AvgMag: 0.7631) | VarNorm: 1.0000 (Var: 4.0271) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5230 | Clamped: 0.5230 | MagNorm: 0.0824 (AvgMag: 0.8235) | VarNorm: 1.0000 (Var: 3.3615) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.4953 | Clamped: 0.4953 | MagNorm: 0.0997 (AvgMag: 0.9971) | VarNorm: 1.0000 (Var: 4.5935) | PosF: 0.7273
+[DEBUG Temp Layer 9] Raw Temp: 0.4359 | Clamped: 0.4359 | MagNorm: 0.1263 (AvgMag: 1.2632) | VarNorm: 1.0000 (Var: 6.8906) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4342 | Clamped: 0.4342 | MagNorm: 0.1957 (AvgMag: 1.9568) | VarNorm: 1.0000 (Var: 20.4755) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4361 | Clamped: 0.4361 | MagNorm: 0.1268 (AvgMag: 1.2680) | VarNorm: 1.0000 (Var: 4.8235) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4796 | Clamped: 0.4796 | MagNorm: 0.1410 (AvgMag: 1.4103) | VarNorm: 1.0000 (Var: 5.5723) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5237 | Clamped: 0.5237 | MagNorm: 0.1565 (AvgMag: 1.5653) | VarNorm: 1.0000 (Var: 6.3155) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5650 | Clamped: 0.5650 | MagNorm: 0.1663 (AvgMag: 1.6631) | VarNorm: 1.0000 (Var: 7.2534) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5728 | Clamped: 0.5728 | MagNorm: 0.1821 (AvgMag: 1.8205) | VarNorm: 1.0000 (Var: 8.9544) | PosF: 0.9091
+[DEBUG Temp Layer 8] Raw Temp: 0.5114 | Clamped: 0.5114 | MagNorm: 0.2047 (AvgMag: 2.0471) | VarNorm: 1.0000 (Var: 11.4399) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.4823 | Clamped: 0.4823 | MagNorm: 0.0737 (AvgMag: 0.7375) | VarNorm: 1.0000 (Var: 4.0073) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5237 | Clamped: 0.5237 | MagNorm: 0.0837 (AvgMag: 0.8370) | VarNorm: 1.0000 (Var: 3.6304) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5294 | Clamped: 0.5294 | MagNorm: 0.0951 (AvgMag: 0.9508) | VarNorm: 1.0000 (Var: 4.1052) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5088 | Clamped: 0.5088 | MagNorm: 0.1267 (AvgMag: 1.2670) | VarNorm: 1.0000 (Var: 6.6724) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4916 | Clamped: 0.4916 | MagNorm: 0.1650 (AvgMag: 1.6500) | VarNorm: 1.0000 (Var: 9.8789) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4765 | Clamped: 0.4765 | MagNorm: 0.2075 (AvgMag: 2.0753) | VarNorm: 1.0000 (Var: 14.8732) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4705 | Clamped: 0.4705 | MagNorm: 0.2682 (AvgMag: 2.6822) | VarNorm: 1.0000 (Var: 27.6084) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4258 | Clamped: 0.4258 | MagNorm: 0.1062 (AvgMag: 1.0619) | VarNorm: 1.0000 (Var: 4.5475) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4671 | Clamped: 0.4671 | MagNorm: 0.1160 (AvgMag: 1.1604) | VarNorm: 1.0000 (Var: 4.8345) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5447 | Clamped: 0.5447 | MagNorm: 0.1257 (AvgMag: 1.2574) | VarNorm: 1.0000 (Var: 5.2994) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5526 | Clamped: 0.5526 | MagNorm: 0.1415 (AvgMag: 1.4153) | VarNorm: 1.0000 (Var: 6.1195) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5327 | Clamped: 0.5327 | MagNorm: 0.1744 (AvgMag: 1.7440) | VarNorm: 1.0000 (Var: 9.2530) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.5021 | Clamped: 0.5021 | MagNorm: 0.1133 (AvgMag: 1.1328) | VarNorm: 1.0000 (Var: 4.1842) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5384 | Clamped: 0.5384 | MagNorm: 0.1132 (AvgMag: 1.1319) | VarNorm: 1.0000 (Var: 3.7783) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5456 | Clamped: 0.5456 | MagNorm: 0.1275 (AvgMag: 1.2747) | VarNorm: 1.0000 (Var: 4.9232) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5221 | Clamped: 0.5221 | MagNorm: 0.1533 (AvgMag: 1.5335) | VarNorm: 1.0000 (Var: 7.0424) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4970 | Clamped: 0.4970 | MagNorm: 0.1758 (AvgMag: 1.7577) | VarNorm: 1.0000 (Var: 9.1100) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4833 | Clamped: 0.4833 | MagNorm: 0.2212 (AvgMag: 2.2117) | VarNorm: 1.0000 (Var: 14.7590) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4824 | Clamped: 0.4824 | MagNorm: 0.2920 (AvgMag: 2.9203) | VarNorm: 1.0000 (Var: 25.8381) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4120 | Clamped: 0.4120 | MagNorm: 0.0785 (AvgMag: 0.7849) | VarNorm: 1.0000 (Var: 3.7903) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4547 | Clamped: 0.4547 | MagNorm: 0.0912 (AvgMag: 0.9119) | VarNorm: 1.0000 (Var: 4.2038) | PosF: 0.5455
+[DEBUG Temp Layer 4] Raw Temp: 0.5012 | Clamped: 0.5012 | MagNorm: 0.1116 (AvgMag: 1.1159) | VarNorm: 1.0000 (Var: 4.9142) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5419 | Clamped: 0.5419 | MagNorm: 0.1202 (AvgMag: 1.2023) | VarNorm: 1.0000 (Var: 5.4124) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5485 | Clamped: 0.5485 | MagNorm: 0.1334 (AvgMag: 1.3341) | VarNorm: 1.0000 (Var: 6.0403) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5244 | Clamped: 0.5244 | MagNorm: 0.1579 (AvgMag: 1.5791) | VarNorm: 1.0000 (Var: 8.2275) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.4858 | Clamped: 0.4858 | MagNorm: 0.0808 (AvgMag: 0.8078) | VarNorm: 1.0000 (Var: 3.8714) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5271 | Clamped: 0.5271 | MagNorm: 0.0906 (AvgMag: 0.9058) | VarNorm: 1.0000 (Var: 3.6816) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5394 | Clamped: 0.5394 | MagNorm: 0.1151 (AvgMag: 1.1512) | VarNorm: 1.0000 (Var: 5.1178) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5118 | Clamped: 0.5118 | MagNorm: 0.1326 (AvgMag: 1.3265) | VarNorm: 1.0000 (Var: 6.2695) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.4910 | Clamped: 0.4910 | MagNorm: 0.1639 (AvgMag: 1.6391) | VarNorm: 1.0000 (Var: 9.1558) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4791 | Clamped: 0.4791 | MagNorm: 0.2128 (AvgMag: 2.1280) | VarNorm: 1.0000 (Var: 15.2007) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4820 | Clamped: 0.4820 | MagNorm: 0.2913 (AvgMag: 2.9129) | VarNorm: 1.0000 (Var: 27.7937) | PosF: 0.1818
+[DEBUG Temp Layer 2] Raw Temp: 0.4362 | Clamped: 0.4362 | MagNorm: 0.1269 (AvgMag: 1.2695) | VarNorm: 1.0000 (Var: 4.6132) | PosF: 0.3636
+[DEBUG Temp Layer 3] Raw Temp: 0.4777 | Clamped: 0.4777 | MagNorm: 0.1372 (AvgMag: 1.3718) | VarNorm: 1.0000 (Var: 5.0635) | PosF: 0.5455
+[DEBUG Temp Layer 5] Raw Temp: 0.5566 | Clamped: 0.5566 | MagNorm: 0.1496 (AvgMag: 1.4960) | VarNorm: 1.0000 (Var: 5.7579) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5632 | Clamped: 0.5632 | MagNorm: 0.1627 (AvgMag: 1.6268) | VarNorm: 1.0000 (Var: 6.5596) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5393 | Clamped: 0.5393 | MagNorm: 0.1878 (AvgMag: 1.8777) | VarNorm: 1.0000 (Var: 8.3906) | PosF: 0.7273
+[DEBUG Temp Layer 4] Raw Temp: 0.5135 | Clamped: 0.5135 | MagNorm: 0.1361 (AvgMag: 1.3609) | VarNorm: 1.0000 (Var: 5.4164) | PosF: 0.7273
+[DEBUG Temp Layer 5] Raw Temp: 0.5529 | Clamped: 0.5529 | MagNorm: 0.1422 (AvgMag: 1.4222) | VarNorm: 1.0000 (Var: 5.6880) | PosF: 0.9091
+[DEBUG Temp Layer 6] Raw Temp: 0.5608 | Clamped: 0.5608 | MagNorm: 0.1580 (AvgMag: 1.5799) | VarNorm: 1.0000 (Var: 7.3180) | PosF: 0.9091
+[DEBUG Temp Layer 7] Raw Temp: 0.5369 | Clamped: 0.5369 | MagNorm: 0.1828 (AvgMag: 1.8280) | VarNorm: 1.0000 (Var: 9.3233) | PosF: 0.7273
+[DEBUG Temp Layer 8] Raw Temp: 0.5155 | Clamped: 0.5155 | MagNorm: 0.2128 (AvgMag: 2.1280) | VarNorm: 1.0000 (Var: 13.3307) | PosF: 0.5455
+[DEBUG Temp Layer 9] Raw Temp: 0.4964 | Clamped: 0.4964 | MagNorm: 0.2473 (AvgMag: 2.4730) | VarNorm: 1.0000 (Var: 18.9026) | PosF: 0.3636
+[DEBUG Temp Layer 10] Raw Temp: 0.4820 | Clamped: 0.4820 | MagNorm: 0.2912 (AvgMag: 2.9118) | VarNorm: 1.0000 (Var: 25.8308) | PosF: 0.1818

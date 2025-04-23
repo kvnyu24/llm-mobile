@@ -124,13 +124,13 @@ METRICS_TO_COMPARE=() # Array to hold metrics like time, mem, skips, quants
 
 case $COMPARISON_MODE in
     layer_skip)
-        OPTIMIZED_FLAGS="--layer-opt"
-        BASELINE_FLAGS="" # No opt flags for baseline
-        COMPARISON_TITLE="LAYER SKIP ONLY VS BASELINE"
-        JSON_COMPARISON_TYPE="layer_skip_vs_baseline"
-        OPTIMIZED_RUN_LABEL="Layer Skip Only"
-        BASELINE_RUN_LABEL="Baseline (No Opts)"
-        METRICS_TO_COMPARE=("time" "skips")
+        OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="LAYER SKIP ONLY VS BASELINE (MEM MEASURE)"
+        JSON_COMPARISON_TYPE="layer_skip_vs_baseline_mem_measure"
+        OPTIMIZED_RUN_LABEL="Layer Skip (Mem Measure)"
+        BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
+        METRICS_TO_COMPARE=("time" "mem" "skips")
         ;;
     memory)
         OPTIMIZED_FLAGS="--memory-opt --mem-budget $LOW_MEM_BUDGET"
@@ -143,40 +143,40 @@ case $COMPARISON_MODE in
         ;;
     mem_overhead)
         OPTIMIZED_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
-        BASELINE_FLAGS="" # No opt flags for baseline
-        COMPARISON_TITLE="MEMORY OVERHEAD VS BASELINE"
-        JSON_COMPARISON_TYPE="mem_overhead_vs_baseline"
+        BASELINE_FLAGS=""
+        COMPARISON_TITLE="MEMORY OVERHEAD VS BASELINE (NO MANAGER)"
+        JSON_COMPARISON_TYPE="mem_overhead_vs_no_manager"
         OPTIMIZED_RUN_LABEL="Memory Measure (High Budget)"
-        BASELINE_RUN_LABEL="Baseline (No Opts)"
-        METRICS_TO_COMPARE=("time" "mem" "quants") # Compare mem even if expected to be same
+        BASELINE_RUN_LABEL="Baseline (No Manager)"
+        METRICS_TO_COMPARE=("time" "mem" "quants")
         ;;
     skip_plus_mem_overhead)
         OPTIMIZED_FLAGS="--layer-opt --memory-opt --mem-budget $HIGH_MEM_BUDGET"
-        BASELINE_FLAGS="" # No opt flags for baseline
-        COMPARISON_TITLE="SKIP + MEMORY OVERHEAD VS BASELINE"
-        JSON_COMPARISON_TYPE="skip_plus_mem_overhead_vs_baseline"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="SKIP + MEMORY OVERHEAD VS BASELINE (MEM MEASURE)"
+        JSON_COMPARISON_TYPE="skip_plus_mem_overhead_vs_baseline_mem_measure"
         OPTIMIZED_RUN_LABEL="Skip + Mem Measure (High Budget)"
-        BASELINE_RUN_LABEL="Baseline (No Opts)"
+        BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
         METRICS_TO_COMPARE=("time" "mem" "skips" "quants")
         ;;
     token_pruning)
-        OPTIMIZED_FLAGS="--token-pruning"
-        BASELINE_FLAGS=""
-        COMPARISON_TITLE="[EXPERIMENTAL] TOKEN PRUNING VS BASELINE"
-        JSON_COMPARISON_TYPE="token_pruning_vs_baseline"
-        OPTIMIZED_RUN_LABEL="Token Pruning Only"
-        BASELINE_RUN_LABEL="Baseline (No Opts)"
-        METRICS_TO_COMPARE=("time" "pruned")
+        OPTIMIZED_FLAGS="--token-pruning --memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="[EXPERIMENTAL] TOKEN PRUNING VS BASELINE (MEM MEASURE)"
+        JSON_COMPARISON_TYPE="token_pruning_vs_baseline_mem_measure"
+        OPTIMIZED_RUN_LABEL="Token Pruning (Mem Measure)"
+        BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
+        METRICS_TO_COMPARE=("time" "mem" "pruned")
         echo "WARNING: --compare-token-pruning assumes pruning logic in Python is functional and uncommented."
         ;;
     edge_cloud)
-        OPTIMIZED_FLAGS="--edge-cloud"
-        BASELINE_FLAGS="" # No opt flags for baseline
-        COMPARISON_TITLE="EDGE-CLOUD ONLY VS BASELINE"
-        JSON_COMPARISON_TYPE="edge_cloud_vs_baseline"
-        OPTIMIZED_RUN_LABEL="Edge-Cloud Only"
-        BASELINE_RUN_LABEL="Baseline (No Opts)"
-        METRICS_TO_COMPARE=("time" "offloaded") # Add offloaded metric
+        OPTIMIZED_FLAGS="--edge-cloud --memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        BASELINE_FLAGS="--memory-opt --mem-budget $HIGH_MEM_BUDGET"
+        COMPARISON_TITLE="EDGE-CLOUD ONLY VS BASELINE (MEM MEASURE)"
+        JSON_COMPARISON_TYPE="edge_cloud_vs_baseline_mem_measure"
+        OPTIMIZED_RUN_LABEL="Edge-Cloud (Mem Measure)"
+        BASELINE_RUN_LABEL="Baseline (Mem Measure Only)"
+        METRICS_TO_COMPARE=("time" "mem" "offloaded")
         ;;
     all | *)
         # Default to comparing all enabled vs baseline
@@ -260,51 +260,39 @@ extract_metric() {
     echo "$result"
 }
 
+# Extract ALL metrics unconditionally
 OPT_LOOP_TIME=$(extract_metric "$OPT_OUT_FILE" "Generation Loop Time:" "0")
 BASE_LOOP_TIME=$(extract_metric "$BASE_OUT_FILE" "Generation Loop Time:" "0")
+
+OPT_PEAK_MEM=$(extract_metric "$OPT_OUT_FILE" "Peak Memory Usage:" "0.0")
+BASE_PEAK_MEM=$(extract_metric "$BASE_OUT_FILE" "Peak Memory Usage:" "0.0")
+# Handle cases where memory manager wasn't enabled (grep finds nothing)
+if ! grep -q "Peak Memory Usage:" "$OPT_OUT_FILE"; then OPT_PEAK_MEM="0.0"; fi
+if ! grep -q "Peak Memory Usage:" "$BASE_OUT_FILE"; then BASE_PEAK_MEM="0.0"; fi
+
+OPT_LAYER_SKIPS=$(extract_metric "$OPT_OUT_FILE" "Layers skipped (decision count):" "0")
+BASE_LAYER_SKIPS=$(extract_metric "$BASE_OUT_FILE" "Layers skipped (decision count):" "0")
+
+OPT_QUANT_EVENTS=$(extract_metric "$OPT_OUT_FILE" "Quantization Events:" "0")
+BASE_QUANT_EVENTS=$(extract_metric "$BASE_OUT_FILE" "Quantization Events:" "0")
+
+OPT_LAYERS_OFFLOADED=$(extract_metric "$OPT_OUT_FILE" "Layers Offloaded:" "0")
+BASE_LAYERS_OFFLOADED=$(extract_metric "$BASE_OUT_FILE" "Layers Offloaded:" "0")
+
+OPT_TOKENS_PRUNED=$(extract_metric "$OPT_OUT_FILE" "Tokens Pruned:" "0")
+BASE_TOKENS_PRUNED=$(extract_metric "$BASE_OUT_FILE" "Tokens Pruned:" "0")
+
+# Log extracted values for debugging
 echo "   Extracted OPT_LOOP_TIME: '$OPT_LOOP_TIME'"
 echo "   Extracted BASE_LOOP_TIME: '$BASE_LOOP_TIME'"
-
-# Extract other metrics only if needed for the comparison mode
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
-    OPT_PEAK_MEM=$(extract_metric "$OPT_OUT_FILE" "Peak Memory Usage:" "0.0")
-    BASE_PEAK_MEM=$(extract_metric "$BASE_OUT_FILE" "Peak Memory Usage:" "0.0")
-    # Handle cases where memory manager wasn't enabled (grep finds nothing)
-    if ! grep -q "Peak Memory Usage:" "$OPT_OUT_FILE"; then OPT_PEAK_MEM="0.0"; fi
-    if ! grep -q "Peak Memory Usage:" "$BASE_OUT_FILE"; then BASE_PEAK_MEM="0.0"; fi
-fi
 echo "   Extracted OPT_PEAK_MEM: '$OPT_PEAK_MEM'"
 echo "   Extracted BASE_PEAK_MEM: '$BASE_PEAK_MEM'"
-
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " skips " ]]; then
-    # Layers skipped: Need the integer value
-    OPT_LAYER_SKIPS=$(extract_metric "$OPT_OUT_FILE" "Layers skipped (decision count):" "0")
-    BASE_LAYER_SKIPS=$(extract_metric "$BASE_OUT_FILE" "Layers skipped (decision count):" "0")
-fi
 echo "   Extracted OPT_LAYER_SKIPS: '$OPT_LAYER_SKIPS'"
 echo "   Extracted BASE_LAYER_SKIPS: '$BASE_LAYER_SKIPS'"
-
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " quants " ]]; then
-    # Quantization Events: Need the integer value
-    OPT_QUANT_EVENTS=$(extract_metric "$OPT_OUT_FILE" "Quantization Events:" "0")
-    BASE_QUANT_EVENTS=$(extract_metric "$BASE_OUT_FILE" "Quantization Events:" "0")
-fi
 echo "   Extracted OPT_QUANT_EVENTS: '$OPT_QUANT_EVENTS'"
 echo "   Extracted BASE_QUANT_EVENTS: '$BASE_QUANT_EVENTS'"
-
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " offloaded " ]]; then
-    # Layers Offloaded: Need the integer value
-    OPT_LAYERS_OFFLOADED=$(extract_metric "$OPT_OUT_FILE" "Layers Offloaded:" "0")
-    BASE_LAYERS_OFFLOADED=$(extract_metric "$BASE_OUT_FILE" "Layers Offloaded:" "0")
-fi
 echo "   Extracted OPT_LAYERS_OFFLOADED: '$OPT_LAYERS_OFFLOADED'"
 echo "   Extracted BASE_LAYERS_OFFLOADED: '$BASE_LAYERS_OFFLOADED'"
-
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " pruned " ]]; then
-    # Tokens Pruned: Need the integer value
-    OPT_TOKENS_PRUNED=$(extract_metric "$OPT_OUT_FILE" "Tokens Pruned:" "0")
-    BASE_TOKENS_PRUNED=$(extract_metric "$BASE_OUT_FILE" "Tokens Pruned:" "0")
-fi
 echo "   Extracted OPT_TOKENS_PRUNED: '$OPT_TOKENS_PRUNED'"
 echo "   Extracted BASE_TOKENS_PRUNED: '$BASE_TOKENS_PRUNED'"
 
@@ -365,41 +353,29 @@ SEPARATOR=$(printf -- '-%.0s' {1..81})
 printf "$HEADER_FMT" "Metric" "$OPTIMIZED_RUN_LABEL" "$BASELINE_RUN_LABEL"
 echo "$SEPARATOR"
 
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " time " ]]; then
-    printf "$ROW_FMT_F" "Loop Time (s)" "$OPT_LOOP_TIME" "$BASE_LOOP_TIME"
-fi
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
-    printf "$ROW_FMT_F" "Peak Memory (MB)" "$OPT_PEAK_MEM" "$BASE_PEAK_MEM"
-fi
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " skips " ]]; then
-    printf "$ROW_FMT_S" "Layers Skipped" "$OPT_LAYER_SKIPS" "$BASE_LAYER_SKIPS"
-fi
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " quants " ]]; then
-    printf "$ROW_FMT_S" "Quantization Events" "$OPT_QUANT_EVENTS" "$BASE_QUANT_EVENTS"
-fi
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " offloaded " ]]; then
-    printf "$ROW_FMT_S" "Layers Offloaded" "$OPT_LAYERS_OFFLOADED" "$BASE_LAYERS_OFFLOADED"
-fi
-if [[ " ${METRICS_TO_COMPARE[*]} " =~ " pruned " ]]; then
-    printf "$ROW_FMT_S" "Tokens Pruned" "$OPT_TOKENS_PRUNED" "$BASE_TOKENS_PRUNED"
-fi
+# Unconditionally print all metrics
+printf "$ROW_FMT_F" "Loop Time (s)" "$OPT_LOOP_TIME" "$BASE_LOOP_TIME"
+printf "$ROW_FMT_F" "Peak Memory (MB)" "$OPT_PEAK_MEM" "$BASE_PEAK_MEM"
+printf "$ROW_FMT_S" "Layers Skipped" "$OPT_LAYER_SKIPS" "$BASE_LAYER_SKIPS"
+printf "$ROW_FMT_S" "Quantization Events" "$OPT_QUANT_EVENTS" "$BASE_QUANT_EVENTS"
+printf "$ROW_FMT_S" "Layers Offloaded" "$OPT_LAYERS_OFFLOADED" "$BASE_LAYERS_OFFLOADED"
+printf "$ROW_FMT_S" "Tokens Pruned" "$OPT_TOKENS_PRUNED" "$BASE_TOKENS_PRUNED"
+
 echo "$SEPARATOR"
 
 # Calculate differences (requires bc or similar)
 echo "Calculation Hints (requires 'bc'):"
 if command -v bc >/dev/null 2>&1; then
-    if [[ " ${METRICS_TO_COMPARE[*]} " =~ " time " ]]; then
-        TIME_SAVED=$(echo "scale=2; $BASE_LOOP_TIME - $OPT_LOOP_TIME" | bc)
-        echo "Time Saved (Baseline - Opt): $TIME_SAVED s"
-        if (( $(echo "$OPT_LOOP_TIME > 0" | bc -l) )); then
-            SPEEDUP=$(echo "scale=2; $BASE_LOOP_TIME / $OPT_LOOP_TIME" | bc)
-            echo "Speedup: ${SPEEDUP}x"
-        fi
+    # Always calculate time and memory diff if possible
+    TIME_SAVED=$(echo "scale=2; $BASE_LOOP_TIME - $OPT_LOOP_TIME" | bc)
+    echo "Time Saved (Baseline - Opt): $TIME_SAVED s"
+    if (( $(echo "$OPT_LOOP_TIME > 0" | bc -l) )); then
+        SPEEDUP=$(echo "scale=2; $BASE_LOOP_TIME / $OPT_LOOP_TIME" | bc)
+        echo "Speedup: ${SPEEDUP}x"
     fi
-    if [[ " ${METRICS_TO_COMPARE[*]} " =~ " mem " ]]; then
-         MEM_SAVED=$(echo "scale=2; $BASE_PEAK_MEM - $OPT_PEAK_MEM" | bc)
-         echo "Memory Saved (Base - Opt): $MEM_SAVED MB"
-    fi
+    
+    MEM_SAVED=$(echo "scale=2; $BASE_PEAK_MEM - $OPT_PEAK_MEM" | bc)
+    echo "Memory Saved (Base - Opt): $MEM_SAVED MB"
 else
     echo " 'bc' command not found. Cannot calculate differences automatically."
 fi
