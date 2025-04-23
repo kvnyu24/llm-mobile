@@ -202,7 +202,7 @@ def run_inference(
             )
             # Apply offline compression if desired (can be separated later)
             # logger.info("Applying offline layer compression (SVD)...")
-            layer_handler.apply_low_rank_factorization() 
+            # layer_handler.apply_low_rank_factorization() 
             # logger.info("Offline compression finished.")
         except Exception as layer_init_e:
             logger.error(f"Failed to initialize LayerCompressionAndSkipping: {layer_init_e}", exc_info=True)
